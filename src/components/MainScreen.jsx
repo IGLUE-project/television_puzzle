@@ -302,7 +302,7 @@ const MainScreen = (props) => {
   }, [processingSolution]); // Se ejecuta cada vez que cambia la solución*/
 
   const wrongChannel = () => {
-    setPlayerOptions(mp4VideoOptions); // Guarda las opciones en el estado `playerOptions`  
+    setPlayerOptions(appSettings.defaultVideo); // Guarda las opciones en el estado `playerOptions`  
     setLight("red");
     if (playerRef.current) {
       try{
