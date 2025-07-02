@@ -1,0 +1,360 @@
+@import url('https://fonts.googleapis.com/css2?family=Sixtyfour:BLED,SCAN@33,-2&display=swap');
+div#screen_main {
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	//z-index: 1;
+	position: relative;
+	overflow-y: hidden;
+}
+
+div#keypad {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+}
+
+div#keypad div.row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+
+div.boxButton {
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	display: flex;
+	color: white;
+}
+
+div.boxButton:active {
+	transform: scale(0.9);
+}
+
+div.retro div.boxButton {
+  transition: transform 0.4s ease;
+}
+
+div.retro div.boxButton:active {
+	transform: scale(0.85);
+}
+
+div.boxButton div {
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	font-size: 4vmin;
+	font-family: "Consolas", "Roboto", sans-serif;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none; 
+  -moz-user-select: none;
+  -ms-user-select: none; 
+  user-select: none;
+  cursor: pointer; 
+}
+
+div.boxButton div img.symbol {
+  align-self: center;
+	max-height: 55%;
+  max-width: 55%;
+}
+
+/*div.retro div.boxButton div {
+  padding-top: 0.5px;
+  font-size: 3.5vmin;
+  font-family: 'Retro';
+  font-weight: bold;
+}*/
+
+div.boxLight {
+	position: absolute;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	border: none;
+	outline: none;
+	text-decoration: none;
+	border-image: none;
+	pointer-events: none;
+}
+
+div.retro div.boxLight {
+	transition: opacity 2.5s ease, visibility ease 2.5s;
+}
+
+
+///////
+
+.lockContainer{
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	display: flex;
+	position: absolute;
+	//pointer-events: none;
+	//z-index: -1;
+	//top: 21%;
+	transform: (-50%, - 50px); // Centra el lock en la pantalla
+	//z-index: 1;
+	//position: relative;
+}
+
+div#lock{
+	//background-image: url("../images/lock.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	display: flex;
+	position: absolute;
+	//position: relative;
+	pointer-events: none;
+	//position: absolute;
+	//z-index: 2;
+	//top: 21%;
+	//z-index: -500;
+	transform: (-50%, - 50px); // Centra el lock en la pantalla
+}
+div.lockFuture{
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	display: flex;
+	position: absolute;
+	pointer-events: none;
+	//z-index: -1;
+	//top: 21%;
+	transform: (-50%, - 50px); // Centra el lock en la pantalla
+}
+
+p#rotationNum{
+	position: absolute;
+	z-index: 10;
+	top: 50%; // Centra verticalmente
+	left: 50%; // Centra horizontalmente
+	//font-family: Verdana, Geneva, Tahoma, sans-serif;
+	transform: translate(-50%, -50%); // Ajusta el centrado
+	margin: 0; // Elimina el margen del <p>
+	pointer-events: none; // Permite que los eventos del mouse pasen a través del <p>
+	//color: black; // Cambia el color del texto
+	user-select: none; // Evita que el texto sea seleccionable
+	font-style: bold; // Aplica el estilo en negrita
+	//font-size : 13vmin; // Cambia el tamaño de la fuente
+	//z-index: 1;
+}
+
+.blinking-dots span {
+  opacity: 0.2;
+  animation: blink 1.4s infinite both;
+  font-size: 2em;
+}
+
+.blinking-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.blinking-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0.2; }
+  40% { opacity: 1; }
+}
+
+p.volume{
+font-size: 7vmin;
+position: absolute;
+color: rgb(15, 167, 15);
+font-family: "Sixtyfour", sans-serif;
+font-optical-sizing: auto;
+text-align: right;
+margin:0;
+flex-shrink: 0;
+
+//font-weight: 400;
+font-style: normal;
+font-variation-settings:
+	"BLED" 70,
+	"SCAN" 10;
+}
+
+.volume_div{
+	position: absolute;
+	display:flex;
+	
+	align-items: center;
+}
+
+div.volumeBar{
+	background-color: rgba(0, 0, 0, 0.623);
+	//left:25vmin;
+	//width: 50vmin;
+	position:absolute;
+	//height:5vmin;
+	//overflow:hidden;
+}
+
+div.volumeBarFilled{
+	background-color: rgba(15, 167, 15, 0.76);
+	//position: relative;
+	height: 100%;
+}
+
+.remote {
+	//cursor: pointer;
+	//width: 25%;
+	position: absolute;
+	//left: 70%;
+	transform: translateX(-50%);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	//bottom: -60%; // inicial, solo la mitad visible
+	transition: bottom 0.4s cubic-bezier(.4,2,.6,1);
+	z-index: 4;
+}
+.remote:hover {
+	bottom:-20% !important;
+}
+
+.empty_black {
+	background-color: rgb(0, 0, 0);
+	position: absolute;
+	
+	width: 90%;
+	height: 65%;
+}
+
+///
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+}
+
+body {
+	background: black;
+	color: white;
+}
+
+.container {
+	position: relative;
+	overflow: hidden;
+}
+
+.title {
+	font-size: 96px;
+}
+
+.content {
+	//height: 100%;
+	display: grid;
+	place-items: center;
+	display: flex;
+	z-index: 5;
+	//position: relative;
+}
+
+.fuzzy-overlay {
+	position: absolute;
+	
+	inset: -200%;
+	background-image: url("images/black-noise.png");
+	opacity: 20%;
+	z-index: 0;
+	/* pointer-events: none; */
+
+	animation: shift 0.2s linear infinite both;
+}
+
+@keyframes shift {
+	0% {
+		transform: translateX(10%) translateY(10%);
+	}
+
+	100% {
+		transform: translateX(-10%) translateY(-10%);
+	}
+}
+
+p.channel{
+	font-size: 7vmin;
+	position: absolute;
+	z-index: 10;
+	color: rgb(15, 167, 15);
+	
+	//max-width: 40%;
+	//background-color: rgba(0, 0, 0, 0.425);
+	/*font-family: "Sixtyfour Convergence", sans-serif;
+	font-optical-sizing: auto;
+	//font-weight: 400;
+	//font-style: normal;
+	font-variation-settings:
+	  "BLED" 80,
+	  "SCAN" 80,
+	  "XELA" 80,
+	  "YELA" 80;*/
+	font-family: "Sixtyfour", sans-serif;
+	font-optical-sizing: auto;
+	//font-weight: 400;
+	font-style: normal;
+	font-variation-settings:
+		"BLED" 70,
+		"SCAN" 10;
+
+	/* Fondo semitransparente detrás del texto */
+	background-color: rgba(0, 0, 0, 0.5); /* Fondo negro semitransparente */
+	display: inline-block; /* Asegura que el fondo solo ocupe el área del texto */
+	//padding: 0.2em 0.4em; /* Espaciado alrededor del texto */
+	//padding-right: 0.2em;
+	padding-left: 0.2em;
+	border-radius: 6px; /* Bordes redondeados opcionales */
+	/* Añade el guion bajo parpadeante */
+	/* Guion bajo parpadeante solo si tiene la clase `show-cursor` */
+	&::after {
+		content: ""; /* Por defecto, no muestra nada */
+		display: inline-block;
+		margin-left: 0.2em;
+		color: rgb(15, 167, 15);
+		animation: none; /* Sin animación por defecto */
+	}
+  
+	&.show-cursor::after {
+		content: "_"; /* Muestra el guion bajo */
+	  	animation: blink 1s steps(2, start) infinite; /* Aplica la animación */
+	}
+  }
+  
+  /* Animación de parpadeo */
+  @keyframes blink {
+	0%, 50% {
+	  opacity: 1;
+	}
+	50.01%, 100% {
+	  opacity: 0;
+	}
+  }
+
+  div.row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	position: absolute;
+	transform: translateX(-50%);
+
+	justify-content: center;
+
+	
+}
