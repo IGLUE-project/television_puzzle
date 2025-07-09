@@ -1,20 +1,15 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { GlobalContext } from "./GlobalContext";
 import './../assets/scss/main.scss';
-import SafeBoxDial from './SafeBoxDial.jsx';
 import BoxButton from './BoxButton.jsx';
 import Remote from './Remote.jsx';
 import "video.js/dist/video-js.css";
 import "videojs-youtube";
 import { VideoJS } from './VideoJS.jsx'; // Importa el componente VideoJS
 import FuzzyOverlayExample from './FuzzyOverlay.jsx'; // Importa el componente FuzzyOverlayExample
-import { use } from 'react';
 
 const MainScreen = (props) => {
   const { escapp, appSettings, Utils, I18n, Storage, setStorage } = useContext(GlobalContext);
-  const [tries, setTries] = useState(0); // Contador de intentos
-  const [solutionArray, setSolutionArray] = useState([]); // Array para guardar la solución
-  const [currentSolution, setCurrentSolution] = useState([]);
   const [processingSolution, setProcessingSolution] = useState(false);
   const [light, setLight] = useState("off");
   const [containerWidth, setContainerWidth] = useState(0);//
@@ -23,16 +18,12 @@ const MainScreen = (props) => {
   const [containerMarginLeft, setContainerMarginLeft] = useState(0);//
   const [boxWidth, setBoxWidth] = useState(0);
   const [boxHeight, setBoxHeight] = useState(0);
-  const [lightWidth, setLightWidth] = useState(0); //
-  const [lightHeight, setLightHeight] = useState(0); //
-  const [lightLeft, setLightLeft] = useState(0);//
-  const [lightTop, setLightTop] = useState(0);//
 
   const [password, setPassword] = useState(""); // Estado para la contraseña
 
-  //
-  const [rotationAngle, setRotationAngle] = useState(0); // Estado para la rotación
-  const [isReseting, setIsReseting] = useState(false); // Estado para saber si se está reiniciando el lock
+  const [choosedChannel, setChoosedChannel] = useState(""); // Estado para el canal actual
+  const [blackScreen, setBlackScreen] = useState(true); // Estado
+
 
   const playerRef = useRef(null); // Referencia al reproductor de Video.js 
   const [volume, setVolume] = useState(0.5); // Estado para el volumen (1 = 100%)
@@ -41,18 +32,18 @@ const MainScreen = (props) => {
 
   const [timer, setTimer] = useState(null); // Temporizador para los 5 segundos
   const [showCursor, setShowCursor] = useState(false); // Controla si se muestra el guion bajo
+  const [isPoweredOn, setIsPoweredOn] = useState(false); // Estado para controlar si el TV está encendido
 
   const savedChannel = Storage.getSetting("channel") || appSettings.defaultVideo; // Recupera el canal guardado del almacenamiento
-  const [load, setLoad] = useState(false); // Estado para controlar la carga del video
 
-  const mp4VideoOptions = { 
-    autoplay: true,
+  const videoOptions = { 
+    autoplay: false, // Cambiado a false para que no se reproduzca automáticamente
     controls: false,
     responsive: true,
     fluid: true,
     //muted: false,
     loop: true,
-    muted: true,
+    muted: false,
     techOrder: ["html5", "youtube"],
     sources: [
       { src: savedChannel.src,//"video/WhiteNoise.mp4", // Reemplaza con la ruta de tu archivo MP4
@@ -60,15 +51,11 @@ const MainScreen = (props) => {
     ],
     userActions: { click: false }
   };
-  const [playerOptions, setPlayerOptions] = useState(mp4VideoOptions); // Estado para las opciones del reproductor
-  //
+  const [playerOptions, setPlayerOptions] = useState(videoOptions); // Estado para las opciones del reproductor
 
-
-//
 
   useEffect(() => {
     handleResize();
-    //console.log(savedChannel.sources.src, savedChannel.sources.type);
   }, [props.appWidth, props.appHeight]);
 
   function handleResize(){
@@ -93,45 +80,20 @@ const MainScreen = (props) => {
     let _boxWidth = _lockWidth * 0.7;
     let _boxHeight = _lockHeight * 0.7;
 
-    let _lightWidth;
-    let _lightHeight;
-    let _lightLeft;
-    let _lightTop;
-
-
 
     switch(appSettings.skin){
       case "RETRO":
         _containerMarginTop = 0;
-       // _containerMarginLeft = 0;
-        //_containerWidth = _lockWidth *0.45;
-       // _containerHeight = _lockHeight *0.55;
-        _lightWidth = _lockWidth * 0.18;
-        _lightHeight = _lockHeight *0.18;
-        _lightLeft = _lockWidth * 0;
-        _lightTop =  _lockHeight * -0.14;
         break;
       case "FUTURISTIC":
-        _containerMarginTop = 0;//_lockHeight*0;
-        //_containerMarginLeft = _lockWidth * -0.065;
-       // _containerWidth = _lockWidth *0.;
+        _containerMarginTop = 0;
         _containerHeight = _lockHeight *1;
-         //_lightWidth = _lockWidth*1;
-        //_lightHeight = _lockHeight*0.6;
-        //_lightLeft = props.appWidth / 2 + _lockWidth / 2 * 0;
-        //_lightTop = props.appHeight / 2 - _lockHeight / 2 * 0.9;
         _boxHeight = _lockHeight * 0.9;
         _boxWidth = _lockWidth * 0.9;
 
         break;
       default:
         //Standard skin
-       // _containerMarginTop = 0;
-        //_containerMarginLeft = _keypadWidth * 0;
-        _lightWidth = _lockWidth * 0.08;
-        _lightHeight = _lockHeight * 0.08;
-        _lightLeft =  _lockWidth  * 0.7;
-        _lightTop =  _lockHeight  * 0.1
     }
 
     setContainerWidth(_containerWidth);
@@ -141,51 +103,12 @@ const MainScreen = (props) => {
 
     setBoxWidth(_boxWidth);
     setBoxHeight(_boxHeight);
-
-    setLightWidth(_lightWidth);
-    setLightHeight(_lightHeight);
-    setLightLeft(_lightLeft);
-    setLightTop(_lightTop);
   }
 
-  /*const onClickButton = (value) => {
-    if (processingSolution) {
-      return;
-    }
-    Utils.log("onClickButton", value);
-    setProcessingSolution(true);
-
-    const shortBeep = document.getElementById("audio_beep");
-    shortBeep.pause();
-    shortBeep.currentTime = 0;
-    shortBeep.play();
-
-    setTimeout(() => {
-      currentSolution.push(value);
-      if (currentSolution.length < appSettings.solutionLength) {
-        setCurrentSolution(currentSolution);
-        setProcessingSolution(false);
-      } else {
-        const solution = currentSolution.join((["COLORS","SYMBOLS"].indexOf(appSettings.keysType) !== -1) ? ";" : "");
-        setCurrentSolution([]);
-        Utils.log("Check solution", solution);
-        escapp.checkNextPuzzle(solution, {}, (success, erState) => {
-          Utils.log("Check solution Escapp response", success, erState);
-          try {
-            setTimeout(() => {
-              changeBoxLight(success, solution);
-            }, 700);
-          } catch(e){
-            Utils.log("Error in checkNextPuzzle",e);
-          }
-        });
-      }
-    }, 300);
-  }*/
 
   const onClickButton = (value) => {
     //console.log("Button clicked: ", value);
-    if(processingSolution) return; // Si ya se está comprobando, no hace nada
+    if(processingSolution || !isPoweredOn) return; // No permite interacción si el TV está apagado o procesando
     setPassword(prev => prev + value); // Agrega el valor del botón a la solución
     const shortBeep = document.getElementById("audio_beep");
     shortBeep.pause();
@@ -194,64 +117,15 @@ const MainScreen = (props) => {
 
     // Activa el cursor y reinicia el temporizador de 5 segundos
     setShowCursor(true);
-    //setShowSolution(true); // Muestra el <p> con la solución
     if (timer) {
       clearTimeout(timer); // Limpia el temporizador anterior
     }
-    const newTimer = setTimeout(() => {
-      //checkSolution(); // Comprueba la solución después de 5 segundos      
+    const newTimer = setTimeout(() => {    
       handleTimerExpire(); // Maneja la expiración del temporizador
-      //console.log("checking solution...", solution);
     }, 5000);
     setTimer(newTimer);
   
   }
-
-  /*const checkSolution = () => {
-    setProcessingSolution(true);
-    Utils.log("Check solution", solutionArray);
-    /const solution = password;//solutionArray.join(';');
-    //const solution="12315"
-    reset(); // Reinicia el lock
-    console.log("Check solution", solution);
-    escapp.checkNextPuzzle(solution, {}, (success, erState) => {
-          Utils.log("Check solution Escapp response", success, erState);
-          try {
-            setTimeout(() => {
-              changeBoxLight(success, solution);
-            }, 700);
-          } catch(e){
-            Utils.log("Error in checkNextPuzzle",e);
-          }
-        });
-  }*/
-
- /* const changeBoxLight = (success, solution) => {
-    let audio;
-    let afterChangeBoxLightDelay = 1000;
-    appSettings.skin === "RETRO" ? afterChangeBoxLightDelay = 4500 : afterChangeBoxLightDelay = 1500;
-
-    if (success) {
-      audio = document.getElementById("audio_success");
-      setLight("ok");
-      afterChangeBoxLightDelay = (appSettings.skin === "RETRO" ? 4500 : 1500);
-    } else {
-      audio = document.getElementById("audio_failure");
-      setLight("nok");
-      reset(); //
-    }
-
-    setTimeout(() => {
-      if(!success){
-        setLight("off");
-        setProcessingSolution(false);
-      }else{
-        //props.onKeypadSolved(solution); //Cambiar
-      }
-    }, afterChangeBoxLightDelay);
-
-    audio.play();
-  }*/
 
   //Pone la imagen del fondo
   //let backgroundImage = 'url("' + appSettings.backgroundKeypad + '")';
@@ -261,41 +135,35 @@ const MainScreen = (props) => {
   }
 
   const handleTimerExpire = () => {
-    //setChecking(true); // Activa el estado de checking
     setProcessingSolution(true); // Activa el estado de processingSolution
     setShowCursor(false); // Desactiva el cursor
-    //console.log("Checking solution...", solution);
     setTimeout(() => {
-      //setShowSolution(false); // Oculta el <p> después de 3 segundos
-      //setSolution(""); // Reinicia la solución
       setPassword(""); // Reinicia la contraseña
-      //setChecking(false); // Reinicia el estado de checking //CAMBIARLO A CUANDO HAGA EL CHEQUEO CON LA API
       setProcessingSolution(false); // Reinicia el estado de processingSolution
-      setLight("off");
+      //setLight("off");
       
     }, 3000); // Espera 3 segundos antes de ocultar el <p>
     
   };
 
-  const checkChannels = () => {
-    const channel = appSettings.channels.find((channel) => channel.id === parseInt(password));
+  const checkChannels = (channelInput) => {
+    const channel = appSettings.channels.find((channel) => channel.id === parseInt(channelInput));
+    setChoosedChannel(channelInput); // Guarda el canal elegido en el estado
+
     if (channel) {
+      //savedChannel.src = channel.src; // Actualiza la fuente del canal guardado
+      //savedChannel.type = channel.type; // Actualiza el tipo del canal guardado
       rightChannel(channel); // Cambia a video de éxito
-      //setSolution(channel.name); // Actualiza la solución con el nombre del canal
-      //setPlayerOptions({...playerOptions, sources: [{src: channel.source, type: channel.type,},]});
     } else {
-      //setSolution(""); // Reinicia la solución si no se encuentra el canal
       wrongChannel(); // Cambia a video de error
     }
   }
 
   useEffect(() => {
     if (password.length >= appSettings.minLength) {
-      console.log("Checking solution...", password);
-      //Number(solution)===PASSWORD_API ? rightChannel() : wrongChannel(); 
-      checkChannels(); // Comprueba si la solución es un canal válido
+      //console.log("Checking solution...", password);
+      checkChannels(password); // Comprueba si la solución es un canal válido
     }else if(password.length != 0 && password.length < appSettings.minLength){
-    //  console.log("Solution too short", solution);
       wrongChannel();
     }
     
@@ -310,8 +178,6 @@ const MainScreen = (props) => {
         playerRef.current.src(appSettings.defaultVideo); // Cambia la fuente del reproductor
         playerRef.current.load(); // Carga el nuevo video
         handleVolume(); // Establece el volumen
-        //playerRef.current.volume(volume)
-        //playerRef.current.play(); // Reproduce el nuevo video
         playerRef.current.oncanplay = () => {
           playerRef.current.play();
         }; // Asegura que el video se reproduzca cuando esté listo
@@ -332,9 +198,6 @@ const MainScreen = (props) => {
         playerRef.current.src(source); // Cambia la fuente del reproductor
         playerRef.current.load(); // Carga el nuevo video
         handleVolume(); // Establece el volumen
-        //playerRef.current.play(); // Reproduce el nuevo video
-        //setStorage("savedChannel", channel.id); // Guarda el canal actual en el almacenamiento
-        //console.log(Storage.getSetting("state")); // Guarda el canal actual en el almacenamiento
         Storage.saveSetting("channel", channel); // Guarda el canal actual en el almacenamiento
       }catch(e){
         console.error("Error al cambiar la fuente del reproductor:", e);
@@ -342,22 +205,8 @@ const MainScreen = (props) => {
     }
   }
 
-
-  /*const  reset = () =>{
-    //console.log("Solution: ", solutionArray);
-    setIsReseting(true);
-    //setRotationAngle(0); // Reinicia el ángulo de rotación
-    //setSolutionArray([]);
-    //setTries(0);
-    setTimeout(() => {      
-      setIsReseting(false);
-    }, 2500);
-    //setChecking(false);
-  }*/
-
   const increaseVolume = () => {
-    if (playerRef.current) {
-      //const currentVolume = playerRef.current.volume();
+    if (playerRef.current && isPoweredOn) {
       volumeAppear(); // Muestra el volumen
       if (playerRef.current.muted){
         playerRef.current.muted(false); // Asegúrate de que no esté silenciado
@@ -372,8 +221,7 @@ const MainScreen = (props) => {
 
   // Función para bajar el volumen
   const decreaseVolume = () => {
-    if (playerRef.current) {
-      //const currentVolume = playerRef.current.volume();
+    if (playerRef.current && isPoweredOn) {
       volumeAppear(); // Muestra el volumen
       if (volume > 0) {
         volume <= 0.1 && playerRef.current.muted(true); // Silencia el video si el volumen es 0.1
@@ -408,16 +256,7 @@ const MainScreen = (props) => {
       setShowVolume(false); // Oculta el volumen después de 3 segundos
       volumeTimeoutRef.current = null; // Limpia la referencia
     }, 4000);
-    //console.log("Volume: ", volume);
   }
-
-  
-
-  /*useEffect(() => { // Comprueba si se ha alcanzado el número máximo de intentos (En local y en API)           
-    //console.log("Tries: ", tries, "Solution: ", solutionArray);
-      solutionArray.length >= appSettings.solutionLength && checkSolution();
-      console.log("Solution: ", solutionArray);
-  }, [solutionArray]);*/
 
   useEffect(() => {
     if (playerRef.current) {
@@ -426,14 +265,49 @@ const MainScreen = (props) => {
   }, [volume]); // Se ejecuta cada vez que cambia el volumen
 
   useEffect(() => {
-
-
     return () => {
       if (volumeTimeoutRef.current) {
         clearTimeout(volumeTimeoutRef.current);
       }
     };
   }, []);
+
+  const powerButtonOnClick = () => {
+    setIsPoweredOn(prev => {
+      const newPowerState = !prev;
+      if (newPowerState) {
+        // TV encendido - reproducir video
+        if (playerRef.current) {
+          //playerRef.current.load(); // Carga el nuevo video
+          //playerRef.current.play();
+          //checkChannels(choosedChannel); // Reproduce el canal actual
+          playerRef.current.play();
+          setBlackScreen(false); // Oculta la pantalla negra
+        }
+      } else {
+        // TV apagado - pausar video y resetear estado
+        setShowVolume(false); // Ocultar el volumen
+        setShowCursor(false); // Ocultar el cursor
+        if (playerRef.current) {
+          playerRef.current.pause();
+        }
+        setBlackScreen(true); // Muestra la pantalla negra
+        /*
+        //setPassword(""); // Limpiar el canal mostrado
+        //setLight("off"); // Apagar la luz
+
+        if (timer) {
+          clearTimeout(timer); // Limpiar el temporizador
+          setTimer(null);
+        }
+        if (volumeTimeoutRef.current) {
+          clearTimeout(volumeTimeoutRef.current);
+          volumeTimeoutRef.current = null;
+        }*/
+      }
+      return newPowerState;
+    });
+  }
 
 
 
@@ -481,11 +355,18 @@ const MainScreen = (props) => {
           display: "flex", alignItems: "center", zIndex:2,
           justifyContent: "center", flexDirection: "column"
         }}>
-      {appSettings.blackScreen && <div className='empty_black' style={{top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>}
+      <div className='empty_black' style={{top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>
+      
+      {/* Video  */}
+      
       <div className='video_container' style={{position: "absolute", width: boxWidth*appSettings.videoPlayerWidth, left: appSettings.videoPlayerLeft, top: appSettings.videoPlayerTop, zIndex: 1}}>
-        <VideoJS  options={playerOptions} onReady={(player) => {playerRef.current = player;}} setLoad={setLoad}/>  
+        <VideoJS  options={playerOptions} onReady={(player) => {playerRef.current = player;}} />  
       </div>
-      {appSettings.fuzzyScreen  && <div style={{overflow:"hidden", position:"absolute", width:appSettings.fuzzyScreenWidth, height:appSettings.fuzzyScreenHeight, left:appSettings.fuzzyScreenLeft, top:appSettings.fuzzyScreenTop, zIndex:2}}><FuzzyOverlayExample/></div>}
+      
+      {blackScreen && <div className='empty_black' style={{zIndex: 2,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>}
+
+      
+      {appSettings.fuzzyScreen && isPoweredOn && <div style={{overflow:"hidden", position:"absolute", width:appSettings.fuzzyScreenWidth, height:appSettings.fuzzyScreenHeight, left:appSettings.fuzzyScreenLeft, top:appSettings.fuzzyScreenTop, zIndex:2}}><FuzzyOverlayExample/></div>}
       <div id="lockContainer" className="lockContainer" 
         style={{backgroundImage: 'url('+appSettings.backgroundTV+')', width: containerWidth, 
           height: containerHeight, marginTop: containerMarginTop, marginLeft: containerMarginLeft ,
@@ -493,57 +374,25 @@ const MainScreen = (props) => {
 
 
       {/** CANAL */}
-      {password && (<p className={`channel ${showCursor ? "show-cursor" : ""}`} style={{top:appSettings.channelNumberTop, left:appSettings.channelNumberLeft, fontSize: appSettings.channelFontSize}}>{password}</p>)}
+      {password && isPoweredOn && (<p className={`channel ${showCursor ? "show-cursor" : ""}`} style={{top:appSettings.channelNumberTop, left:appSettings.channelNumberLeft, fontSize: appSettings.channelFontSize}}>{password}</p>)}
       
-      {showVolume && (
+      {showVolume && isPoweredOn && (
             <div className='volume_div' style={{left:appSettings.volumeLeft, top:appSettings.volumeTop, zIndex:10, width: containerWidth*appSettings.volumeContainerWidth}}>
               <p className='volume' style={{fontSize:containerWidth*appSettings.volumeFontSize, color:appSettings.volumeColor}}>vol</p>
               <div className='volumeBar' style={{width: "100%", height: appSettings.volumeHeight, marginLeft: containerWidth*appSettings.volumeBarLeft, }}>
                 <div className='volumeBarFilled' style={{width: `${volume * 100}%`, backgroundColor:appSettings.volumeBarColor}}></div>
               </div>
             </div>
-            )}
-      {/*<div id="keypad" style={{ width: containerWidth, height: containerHeight, marginTop: containerMarginTop, marginLeft: containerMarginLeft }}>
-        <audio id="audio_beep" src={appSettings.soundBeep} autostart="false" preload="auto" />
-        <audio id="audio_failure" src={appSettings.soundNok} autostart="false" preload="auto" />
-        <audio id="audio_success" src={appSettings.soundOk} autostart="false" preload="auto" />
-        <div id="row1" className="row">
-          <BoxButton value={appSettings.keys[0]} position={1} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
-          <BoxButton value={appSettings.keys[1]} position={2} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
-          <BoxButton value={appSettings.keys[2]} position={3} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
-        </div>
-        <div id="row2" className="row">
-          <BoxButton value={appSettings.keys[3]} position={4} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
-          <BoxButton value={appSettings.keys[4]} position={5} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
-          <BoxButton value={appSettings.keys[5]} position={6} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
-        </div>
-        <div id="row3" className="row">
-          <BoxButton value={appSettings.keys[6]} position={7} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
-          <BoxButton value={appSettings.keys[7]} position={8} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
-          <BoxButton value={appSettings.keys[8]} position={9} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
-        </div>
-        <div id="row4" className="row">
-          <BoxButton value={appSettings.keys[9]} position={10} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
-          <BoxButton value={appSettings.keys[10]} position={11} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
-          <BoxButton value={appSettings.keys[11]} position={12} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
-        </div>
-        <div className="boxLight boxLight_off" style={{ visibility: light === "off" ? "visible" : "hidden", opacity: light === "off" ? "1" : "0", width: lightWidth, height: lightHeight, backgroundImage: 'url("' + appSettings.imageLightOff + '")', left: lightLeft, top: lightTop }} ></div> 
-        <div className="boxLight boxLight_nok" style={{ visibility: light === "nok" ? "visible" : "hidden", opacity: light === "nok" ? "1" : "0", width: lightWidth, height: lightHeight, backgroundImage: 'url("' + appSettings.imageLightNok + '")', left: lightLeft, top: lightTop }} ></div> 
-        <div className="boxLight boxLight_ok" style={{ visibility: light === "ok" ? "visible" : "hidden", opacity: light === "ok" ? "1" : "0", width: lightWidth, height: lightHeight, backgroundImage: 'url("' + appSettings.imageLightOk + '")', left: lightLeft, top: lightTop }} ></div> 
-      </div>*/}
-
-              
+            )}              
       
-      {/*<div className="boxLight boxLight_off" style={{ visibility: light === "off" ? "visible" : "hidden", opacity: light === "off" ? "1" : "0", width: lightWidth, height: lightHeight, backgroundImage: 'url("' + appSettings.imageLightOff + '")', left: lightLeft, top: lightTop }} ></div> 
-      <div className="boxLight boxLight_nok" style={{ visibility: light === "nok" ? "visible" : "hidden", opacity: light === "nok" ? "1" : "0", width: lightWidth, height: lightHeight, backgroundImage: 'url("' + appSettings.imageLightNok + '")', left: lightLeft, top: lightTop }} ></div> 
-      <div className="boxLight boxLight_ok" style={{ visibility: light === "ok" ? "visible" : "hidden", opacity: light === "ok" ? "1" : "0", width: lightWidth, height: lightHeight, backgroundImage: 'url("' + appSettings.imageLightOk + '")', left: lightLeft, top: lightTop }} ></div>*/}
+     
       <audio id="audio_beep" src={appSettings.soundBeep} autostart="false" preload="auto" />
       <audio id="audio_failure" src={appSettings.soundNok} autostart="false" preload="auto" />
       <audio id="audio_success" src={appSettings.soundOk} autostart="false" preload="auto" />
       </div>
       {appSettings.showRemote ?
       <div style={{overflow: "visible", width: containerWidth, height:containerHeight, position:"absolute"}}>
-        <Remote boxWidth={containerWidth} boxHeight={containerHeight} onClickButton={onClickButton} decreaseVolume={decreaseVolume} increaseVolume={increaseVolume} />
+        <Remote boxWidth={containerWidth} boxHeight={containerHeight} onClickButton={onClickButton} decreaseVolume={decreaseVolume} increaseVolume={increaseVolume} powerButtonOnClick={powerButtonOnClick} />
       </div> :
         TV_Buttons
       }

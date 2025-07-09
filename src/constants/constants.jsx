@@ -6,10 +6,8 @@ export const DEFAULT_APP_SETTINGS = {
   background: "images/standard/background.png",
   backgroundTV : "images/standard/background_TV.png",
   backgroundRemote : "images/standard/background_remote.png",
-  //backgroundDial: "images/standard/dial_classic.png",
   backgroundButton: "images/standard/background_button.png",
-  //backgroundKeypad: "images/standard/lock.png",
-  //backgroundKey: "images/background_key.png",
+  backgroundPowerButton: "images/standard/background_power_button.png",
   numbers: ["1","2","3","4","5","6","7","8","9","✱","0","#"],
   letters: ["A","B","C","D","E","F","G","H","I","J","K","L"],
   colors : [
@@ -26,20 +24,6 @@ export const DEFAULT_APP_SETTINGS = {
     "Gray", //#808080
     "White", //#FFFFFF
   ],
- /* coloredBackgroundKeys: [
-    "images/background_key_red.png",
-    "images/background_key_green.png",
-    "images/background_key_blue.png",
-    "images/background_key_yellow.png",
-    "images/background_key_orange.png",
-    "images/background_key_pink.png",
-    "images/background_key_cyan.png",
-    "images/background_key_purple.png",
-    "images/background_key_brown.png",
-    "images/background_key.png",
-    "images/background_key_gray.png",
-    "images/background_key_white.png",
-  ],*/
   symbols: [
     "Triangle",
     "Square",
@@ -54,33 +38,10 @@ export const DEFAULT_APP_SETTINGS = {
     "Sun",
     "Puzzle",
   ],
-  /*symbolsBackgroundKeys: [
-    "images/symbol_triangle.png",
-    "images/symbol_square.png",
-    "images/symbol_circle.png",
-    "images/symbol_rhombus.png",
-    "images/symbol_ace_spades.png",
-    "images/symbol_ace_hearts.png",
-    "images/symbol_ace_clubs.png",
-    "images/symbol_ace_diamonds.png",
-    "images/symbol_star.png",
-    "images/symbol_moon.png",
-    "images/symbol_sun.png",
-    "images/symbol_puzzle.png",
-  ],*/
   backgroundMessage: "images/background_message.png",
-  //imageLightOff: "images/standard/light_off.png",
-  //imageLightNok: "images/standard/light_nok.png",
-  //imageLightOk: "images/standard/light_ok.png",
   soundBeep: "sounds/beep.mp3",
   soundNok: "sounds/solution_nok.mp3",
   soundOk: "sounds/solution_ok.mp3",
-  //soundDial: "sounds/spin.wav",
-
-  //dialWidth: 0.7, // Relative size of the dial compared to the box width
-  //dialHeight: 0.7, // Relative size of the dial compared to the box height
-  //dialTextSize: "9vmin", // Font size for the dial text
-  //dialTextColor: "#000000", // Color for the dial text
 
   buttonFontSize: "5vmin", // Font size for the text in the keypad
   soundIconSize: "5vmin", // Size of the sound icon in the keypad
@@ -89,7 +50,6 @@ export const DEFAULT_APP_SETTINGS = {
   buttonWidth: 0.09, // Relative width of the buttons in the keypad
   buttonHeight: 0.07, // Relative height of the buttons in the keypad
 
-  //lightBack: "false", // Controls whether to show the image behind the dial frame
 
   minLength: 4, // Minimum length of the solution
 
@@ -113,7 +73,7 @@ export const DEFAULT_APP_SETTINGS = {
   remoteWidth: 0.4,
   showRemote: true, // Whether to show the remote control
 
-  buttonsTop: ["22%", "32%", "42%", "52%", "62%", "72%"], // Top positions for the rows of buttons in the remote
+  buttonsTop: ["12%", "22%", "32%", "42%", "52%", "62%", "72%"], // Top positions for the rows of buttons in the remote
   buttonsLeft: "50%", // Left position for the remote buttons
 
   volumeIconTop: "0.5vmin", // Top position of the volume icon in the remote
@@ -158,36 +118,9 @@ export const SKIN_SETTINGS_RETRO = {
   backgroundTV : "images/retro/background_TV.png",
   backgroundButton: "images/retro/background_button.png",
   showRemote: false,
-  //backgroundKeypad: "images/background_keypad_retro.png",
-  //backgroundKey: "images/background_key_retro.png",
-  
-  //backgroundLock : "images/retro/background_lock_retro.png",
-  //backgroundDial: "images/retro/dial_retro.png",
-  /*coloredBackgroundKeys: [
-    "images/background_key_retro_red.png",
-    "images/background_key_retro_green.png",
-    "images/background_key_retro_blue.png",
-    "images/background_key_retro_yellow.png",
-    "images/background_key_retro_orange.png",
-    "images/background_key_retro_pink.png",
-    "images/background_key_retro_cyan.png",
-    "images/background_key_retro_purple.png",
-    "images/background_key_retro_brown.png",
-    "images/background_key_retro_black.png",
-    "images/background_key_retro_gray.png",
-    "images/background_key_retro_white.png",
-  ],*/
-  backgroundMessage: "images/background_message_retro.png",
-  //imageLightOff: "images/retro/light_off_retro.png",
-  //imageLightNok: "images/retro/light_nok_retro.png",
-  //imageLightOk: "images/retro/light_ok_retro.png",
-  //soundBeep: "sounds/beep_retro.wav",
-  //soundNok: "sounds/solution_nok_retro.wav",
-  //soundOk: "sounds/solution_ok_retro.wav",
 
-  //dialTextSize: "9vmin", // Font size for the dial text
-  //dialTextColor: "#FFFFFF", // Color for the dial text
-  //lightBack: "false",
+  backgroundMessage: "images/background_message_retro.png",
+
 
   buttonWidth: 0.06, // Relative width of the buttons in the keypad
   buttonHeight: 0.05, // Relative height of the buttons in the keypad
@@ -229,14 +162,10 @@ export const SKIN_SETTINGS_RETRO = {
 
 export const SKIN_SETTINGS_FUTURISTIC = {
   background: "images/futuristic/background3.png",
-  //backgroundKeypad: "images/background_keypad_futuristic.png",
-  //backgroundKey: "images/background_key_futuristic.png",
   backgroundTV : "images/futuristic/background_TV.png",
   backgroundRemote : "images/futuristic/background_remote.png",
-  //backgroundDial: "images/standard/dial_classic.png",
   backgroundButton: "images/futuristic/background_button.png",
-  //backgroundLock : "images/futuristic/background_lock_futuristic.png",
-  //backgroundDial: "images/futuristic/dial_futuristic.png",
+  backgroundPowerButton: "images/futuristic/background_power_button.png",
 
   backgroundMessage: "images/background_message_futuristic.png",
 
@@ -253,7 +182,11 @@ export const SKIN_SETTINGS_FUTURISTIC = {
   channelNumberTop: "20%", // Top position of the channel number in the TV
   channelNumberLeft: "10%", // Left position of the channel number in the TV
 
-  blackScreen: false,
+  blackScreen: true,
+  blackScreenWidth: "93%", // Width of the black screen in the TV
+  blackScreenHeight: "60%", // Height of the black screen in the TV
+  blackScreenLeft: "3%", // Left position of the black screen in the TV
+  blackScreenTop: "15%", // Top position of the black screen
 
   buttonFontSize: "5vmin", // Font size for the text in the keypad
   soundIconSize: "5vmin", // Size of the sound icon in the keypad
@@ -263,7 +196,7 @@ export const SKIN_SETTINGS_FUTURISTIC = {
 
   buttonWidth: 0.08, // Relative width of the buttons in the keypad
   buttonHeight: 0.08, // Relative height of the buttons in the keypad
-  buttonsTop: ["25%", "35%", "45%", "55%", "65%", "75%"], // Top positions for the rows of buttons in the remote
+  buttonsTop: ["15%","25%", "35%", "45%", "55%", "65%", "75%"], // Top positions for the rows of buttons in the remote
   buttonsLeft: "50%", // Left position for the remote buttons
   soundIconColor: "#FFFFFF", // Color for the sound icon in the remote
 
