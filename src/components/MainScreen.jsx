@@ -278,10 +278,8 @@ const MainScreen = (props) => {
       if (newPowerState) {
         // TV encendido - reproducir video
         if (playerRef.current) {
-          //playerRef.current.load(); // Carga el nuevo video
-          //playerRef.current.play();
-          //checkChannels(choosedChannel); // Reproduce el canal actual
           playerRef.current.play();
+          playerRef.current.volume(volume);
           setBlackScreen(false); // Oculta la pantalla negra
         }
       } else {
@@ -311,9 +309,12 @@ const MainScreen = (props) => {
 
 
 
-  const TV_Buttons = (
-    <div style={{ position: "absolute", zIndex: 4, height:containerHeight,  width: containerWidth}}>
-      <div style={{position: "absolute", left: appSettings.buttonsLeft,  height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+  const TV_Buttons = (<>
+    <div style={{position:"relative", width: containerWidth, height: containerHeight }}>
+      <div className='boxButton' style={{zIndex: 5,position: "absolute", top:appSettings.powerButtonTop, left:appSettings.powerButtonLeft, width:boxWidth*appSettings.powerButtonWidth, height:boxHeight*appSettings.powerButtonHeight, backgroundImage: 'url("' + appSettings.backgroundPowerButton + '")', cursor:"pointer"}} onClick={powerButtonOnClick}/>
+    </div>
+    <div style={{ position: "absolute", zIndex: 4, height:containerHeight,  width: containerWidth, }}>    
+      <div style={{position: "absolute", left: appSettings.buttonsLeft,  height: "100%", display: "flex",flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
         <div id="row1" className="row" style={{ top: appSettings.buttonsTop[0]}}>
           <BoxButton value={"1"} position={1} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
           <BoxButton value={"2"} position={2} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
@@ -345,7 +346,7 @@ const MainScreen = (props) => {
         </div>
       </div>
     </div>
-  );
+  </>);
 
   return (
     <div id="screen_main" className={"screen_content"} style={{ backgroundImage: backgroundImage }}>

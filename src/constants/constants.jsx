@@ -56,15 +56,15 @@ export const DEFAULT_APP_SETTINGS = {
   displayVHS: true,
 
   blackScreen: true,
-  blackScreenWidth: "70%", // Width of the black screen in the TV
+  blackScreenWidth: "75%", // Width of the black screen in the TV
   blackScreenHeight: "65%", // Height of the black screen in the TV
-  blackScreenLeft: "10%", // Left position of the black screen in the TV
+  blackScreenLeft: "12%", // Left position of the black screen in the TV
   blackScreenTop: "5%", // Top position of the black screen
 
   fuzzyScreen: true, // Whether to apply a fuzzy effect to the TV screen
 
   videoPlayerWidth: 0.9, // Width of the video player
-  videoPlayerLeft: "13.5%", // Left position of the video player
+  videoPlayerLeft: "13%", // Left position of the video player
   videoPlayerTop: "10%", // Top position of the video player
 
   channelNumberTop: "15%", // Top position of the channel number in the TV
@@ -100,16 +100,12 @@ export const DEFAULT_APP_SETTINGS = {
   defaultVideo:{src: "video/WhiteNoise.mp4", type: "video/mp4"},
 
   channels : [
-    { id: 12345, name: "Never Gonna Give you up", src:"https://youtu.be/dQw4w9WgXcQ?si=ReWN7oDLo1kUD1zR&t=42", type: "video/youtube" },
+    { id: 11111, name: "Choriflan", src:"https://www.youtube.com/watch?v=0AItHevNDbU", type: "video/youtube" },
+    { id: 12345, name: "Anuncios de los 90", src:"https://www.youtube.com/watch?v=G1dGb_i3ZU8", type: "video/youtube" },
     { id: 54321, name: "Major Tom", src:"https://www.youtube.com/watch?v=iYYRH4apXDo", type: "video/youtube" },
     { id: 21465, name: "Mr Roboto", src:"https://youtu.be/uc6f_2nPSX8?si=0Qeg3ImkfDbcQWcm", type: "video/youtube" },
-    { id: 22228, name: "I Ran", src:"https://youtu.be/iIpfWORQWhU?si=2bwXOMzyy0unAD-1", type: "video/youtube" },
-    { id: 23545, name: "This Fire", src:"https://www.youtube.com/watch?v=haW_ruZ_Be8", type: "video/youtube" },
-    { id: 23985, name: "Running up that hill", src:"https://youtu.be/wp43OdtAAkM?si=uCBahW4wsL6MUpxB", type: "video/youtube" },
-    { id: 23845, name: "The Cigarette", src:"https://youtu.be/4TV_128Fz2g?si=OlZpJOoKEaIHSoMB", type: "video/youtube" },
-    { id: 23445, name: "Documental Titanic", src:"https://youtu.be/8d_FxY-8D1I?si=yaiPkrPONcrUi6fM", type: "video/youtube" },
-    { id: 1792, name: "Documental Rev Francesa", src:"https://youtu.be/hqVdCMpmzfo?si=TR8yfpLxxxrMsKwF", type: "video/youtube" },
-    { id: 1111, name: "Twenty one Pilots Ride", src:"https://www.youtube.com/watch?v=Pw-0pbY9JeU", type: "video/youtube" },
+    { id: 22228, name: "I Ran", src:"https://youtu.be/iIpfWORQWhU?si=2bwXOMzyy0unAD-1", type: "video/youtube" },   
+    { id: 1792, name: "Documental Rev Francesa", src:"https://youtu.be/hqVdCMpmzfo?si=TR8yfpLxxxrMsKwF", type: "video/youtube" },   
   ]
 };
 
@@ -117,13 +113,20 @@ export const SKIN_SETTINGS_RETRO = {
   background: "images/retro/background.png",
   backgroundTV : "images/retro/background_TV.png",
   backgroundButton: "images/retro/background_button.png",
+  backgroundPowerButton: "images/retro/background_power_button.png",
+
   showRemote: false,
+  powerButtonLeft: "77%", // Left position of the power button in the remote
+  powerButtonTop: "23%", // Top position of the power button
 
   backgroundMessage: "images/background_message_retro.png",
 
 
   buttonWidth: 0.06, // Relative width of the buttons in the keypad
   buttonHeight: 0.05, // Relative height of the buttons in the keypad
+
+  powerButtonWidth: 0.07, // Relative width of the power button
+  powerButtonHeight: 0.06, // Relative height of the power button
 
   buttonFontSize: "3.5vmin", // Font size for the text in the keypad
   soundIconSize: "3.5vmin", // Size of the sound icon in the keypad
@@ -157,6 +160,8 @@ export const SKIN_SETTINGS_RETRO = {
   volumeContainerWidth: 0.35, // Width of the volume control container in the remote
   volumeBarLeft: 0.21,
   volumeFontSize: 0.07, // Font size for the volume control text in the remote
+
+
 
 };
 

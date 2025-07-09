@@ -15,7 +15,14 @@ const Remote = (props) => {
         <div id="row0" className="row" style={{ top: appSettings.buttonsTop[0], left: appSettings.buttonsLeft}}>
             <div className="boxButton" style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight, backgroundImage: 'url("' + appSettings.backgroundPowerButton + '")',}} onClick={props.powerButtonOnClick}></div>
             <div style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight,}}/>
+            {appSettings.displayVHS ? 
+            <div className="boxButton" style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
+                <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>               
+                    <svg width={appSettings.buttonFontSize}  height={appSettings.buttonFontSize}  viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg"  fill={appSettings.buttonTextColor} stroke={appSettings.buttonTextColor}><path d="M160-160q-33 0-56.5-23.5T80-240v-120h80v120h640v-480H160v120H80v-120q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm300-140-56-58 83-82H80v-80h407l-83-82 56-58 180 180-180 180Z"/></svg>
+                </div>
+            </div> :
             <div style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight,}}/>
+            }
         </div>
         <div id="row1" className="row" style={{ top: appSettings.buttonsTop[1], left: appSettings.buttonsLeft}}>
             <BoxButton value={"1"} position={1} onClick={props.onClickButton} boxHeight={props.boxHeight} boxWidth={props.boxWidth} button={props.button}/>
