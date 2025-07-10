@@ -40,8 +40,11 @@ export const DEFAULT_APP_SETTINGS = {
   ],
   backgroundMessage: "images/background_message.png",
   soundBeep: "sounds/beep.mp3",
-  soundNok: "sounds/solution_nok.mp3",
-  soundOk: "sounds/solution_ok.mp3",
+  //soundNok: "sounds/solution_nok.mp3",
+  //soundOk: "sounds/solution_ok.mp3",
+  soundVHS: "sounds/vhs_tape_in.wav", // Sound for VHS insertion/removal
+  soundTvOn: "sounds/tv_on.wav", // Sound for TV on
+  soundTvOff: "sounds/tv_off.wav", // Sound for TV off
 
   buttonFontSize: "5vmin", // Font size for the text in the keypad
   soundIconSize: "5vmin", // Size of the sound icon in the keypad
@@ -103,7 +106,7 @@ export const DEFAULT_APP_SETTINGS = {
     { id: 11111, name: "Choriflan", src:"https://www.youtube.com/watch?v=0AItHevNDbU", type: "video/youtube" },
     { id: 12345, name: "Anuncios de los 90", src:"https://www.youtube.com/watch?v=G1dGb_i3ZU8", type: "video/youtube" },
     { id: 54321, name: "Major Tom", src:"https://www.youtube.com/watch?v=iYYRH4apXDo", type: "video/youtube" },
-    { id: 21465, name: "Mr Roboto", src:"https://youtu.be/uc6f_2nPSX8?si=0Qeg3ImkfDbcQWcm", type: "video/youtube" },
+    { id: 21465, name: "Mr Roboto", src:"https://www.youtube.com/watch?v=M8TwkL11PFU", type: "video/youtube" },
     { id: 22228, name: "I Ran", src:"https://youtu.be/iIpfWORQWhU?si=2bwXOMzyy0unAD-1", type: "video/youtube" },   
     { id: 1792, name: "Documental Rev Francesa", src:"https://youtu.be/hqVdCMpmzfo?si=TR8yfpLxxxrMsKwF", type: "video/youtube" },   
   ]
@@ -115,9 +118,18 @@ export const SKIN_SETTINGS_RETRO = {
   backgroundButton: "images/retro/background_button.png",
   backgroundPowerButton: "images/retro/background_power_button.png",
 
+  vhsOut: "images/retro/vhs_out.png",
+  vhsIn: "images/retro/vhs_in.png", // Background image for the VHS in the TV
+  vhsLeft: "18%", // Left position of the VHS in the TV
+  vhsTop: "6.5%", // Top position of the VHS in the TV
+  vhsWidth: 0.37, // Width of the VHS in the TV
+  vhsHeight: 0.09, // Height of the VHS in the TV
+
+  VHSButton: "images/retro/old_VHS_button.png",
+
   showRemote: false,
-  powerButtonLeft: "77%", // Left position of the power button in the remote
-  powerButtonTop: "23%", // Top position of the power button
+  powerButtonLeft: "75%", // Left position of the power button in the remote
+  powerButtonTop: "29%", // Top position of the power button
 
   backgroundMessage: "images/background_message_retro.png",
 
@@ -125,16 +137,16 @@ export const SKIN_SETTINGS_RETRO = {
   buttonWidth: 0.06, // Relative width of the buttons in the keypad
   buttonHeight: 0.05, // Relative height of the buttons in the keypad
 
-  powerButtonWidth: 0.07, // Relative width of the power button
-  powerButtonHeight: 0.06, // Relative height of the power button
+  powerButtonWidth: 0.08, // Relative width of the power button
+  powerButtonHeight: 0.07, // Relative height of the power button
 
   buttonFontSize: "3.5vmin", // Font size for the text in the keypad
   soundIconSize: "3.5vmin", // Size of the sound icon in the keypad
   volumeIconTop: "0vmin", // Top position of the volume icon in the remote
   buttonTextColor: "#FFFFFF", // Color for the text in the keypad
 
-  buttonsTop: ["42%", "47%", "52%", "57%", "62%", "0%"], // Top positions for the rows of buttons in the remote
-  buttonsLeft: "94%", // Left position for the remote buttons
+  buttonsTop: ["47%", "52%", "57%", "62%", "67%", "82%"], // Top positions for the rows of buttons in the remote
+  buttonsLeft: "91%", // Left position for the remote buttons
   
   blackScreen: true,
   blackScreenWidth: "70%", // Width of the black screen in the TV
@@ -147,19 +159,19 @@ export const SKIN_SETTINGS_RETRO = {
   fuzzyScreenLeft: "5%", // Left position of the fuzzy screen effect
   fuzzyScreenTop: "25%", // Top position of the fuzzy screen effect
 
-  videoPlayerWidth: 0.7, // Width of the video player
-  videoPlayerLeft: "8.5%", // Left position of the video player
-  videoPlayerTop: "30%", // Top position of the video player
+  videoPlayerWidth: 0.75, // Width of the video player
+  videoPlayerLeft: "10.5%", // Left position of the video player
+  videoPlayerTop: "36%", // Top position of the video player
 
-  channelNumberTop: "32%", // Top position of the channel number in the TV
-  channelNumberLeft: "10%", // Left position of the channel number in the TV
+  channelNumberTop: "35%", // Top position of the channel number in the TV
+  channelNumberLeft: "14%", // Left position of the channel number in the TV
 
-  volumeTop: "70%",
-  volumeLeft: "10%", // Left position of the volume control in the remote
+  volumeTop: "72%",
+  volumeLeft: "12%", // Left position of the volume control in the remote
   volumeHeight: "4.5vmin", // Height of the volume control in the remote
   volumeContainerWidth: 0.35, // Width of the volume control container in the remote
   volumeBarLeft: 0.21,
-  volumeFontSize: 0.07, // Font size for the volume control text in the remote
+  volumeFontSize: 0.06, // Font size for the volume control text in the remote
 
 
 
@@ -174,6 +186,7 @@ export const SKIN_SETTINGS_FUTURISTIC = {
 
   backgroundMessage: "images/background_message_futuristic.png",
 
+ 
 
 
 

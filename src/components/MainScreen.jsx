@@ -24,6 +24,8 @@ const MainScreen = (props) => {
   const [choosedChannel, setChoosedChannel] = useState(""); // Estado para el canal actual
   const [blackScreen, setBlackScreen] = useState(true); // Estado
 
+  const [vhsState, setVhsState] = useState("out"); // Estado para el VHS
+
 
   const playerRef = useRef(null); // Referencia al reproductor de Video.js 
   const [volume, setVolume] = useState(0.5); // Estado para el volumen (1 = 100%)
@@ -83,7 +85,9 @@ const MainScreen = (props) => {
 
     switch(appSettings.skin){
       case "RETRO":
-        _containerMarginTop = 0;
+        _containerMarginTop = _lockHeight * 0.1;
+        _containerWidth = _lockWidth *0.9;
+        _containerHeight = _lockHeight *0.9;
         break;
       case "FUTURISTIC":
         _containerMarginTop = 0;
@@ -273,16 +277,26 @@ const MainScreen = (props) => {
   }, []);
 
   const powerButtonOnClick = () => {
+    let audio = null;
+    //const tvOffSound = document.getElementById("audio_tv_off");
     setIsPoweredOn(prev => {
       const newPowerState = !prev;
       if (newPowerState) {
         // TV encendido - reproducir video
+        audio = document.getElementById("audio_tv_on");
+        //audio.pause();
+        audio.currentTime = 0; // Reinicia el sonido
+        audio.play(); // Reproduce el sonido de encendido
         if (playerRef.current) {
           playerRef.current.play();
           playerRef.current.volume(volume);
           setBlackScreen(false); // Oculta la pantalla negra
         }
       } else {
+        audio = document.getElementById("audio_tv_off");
+        //audio.pause();
+        audio.currentTime = 0; // Reinicia el sonido
+        audio.play(); // Reproduce el sonido de apagado
         // TV apagado - pausar video y resetear estado
         setShowVolume(false); // Ocultar el volumen
         setShowCursor(false); // Ocultar el cursor
@@ -307,10 +321,37 @@ const MainScreen = (props) => {
     });
   }
 
+  const handleVhsClick = () => {
+    const vhsSound = document.getElementById("audio_vhs_tape");
+    //vhsSound.pause();
+    vhsSound.currentTime = 0;
+    vhsSound.play(); // Reproduce el sonido de VHS
+    if (vhsState === "out") {      
+
+      setVhsState("in"); // Cambia el estado a "out"
+    }else{
+      setVhsState("out"); // Cambia el estado a "in"
+    }
+  }
+
 
 
   const TV_Buttons = (<>
     <div style={{position:"relative", width: containerWidth, height: containerHeight }}>
+      {vhsState === "out" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsOut + '")', backgroundSize:"cover", zIndex: 16, cursor:"pointer"}} onClick={handleVhsClick}/>   }
+      {vhsState === "in" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")', backgroundSize:"cover", zIndex: 16,}} onClick={handleVhsClick} />   }
+      
+      <div className='boxButton' style={{zIndex: 5,position: "absolute", top:"9%", left:"55%", width:boxWidth*appSettings.powerButtonWidth, height:boxHeight*appSettings.powerButtonHeight, backgroundImage: 'url("' + appSettings.VHSButton + '")', cursor:"pointer"}} onClick={powerButtonOnClick}>
+        <div style={{ justifyContent:"center", alignItems:"center", display:"flex",}}>
+          <svg style={{marginTop:appSettings.volumeIconTop}} width={appSettings.soundIconSize} height={appSettings.soundIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M200-312v-336l240 168-240 168Zm320-8v-320h80v320h-80Zm160 0v-320h80v320h-80Z"/></svg>
+        </div>
+      </div>
+      <div className='boxButton' style={{zIndex: 5,position: "absolute", top:"9%", left:"64%", width:boxWidth*appSettings.powerButtonWidth, height:boxHeight*appSettings.powerButtonHeight, backgroundImage: 'url("' + appSettings.VHSButton + '")', cursor:"pointer"}} onClick={powerButtonOnClick}>
+        <div style={{ justifyContent:"center", alignItems:"center", display:"flex",}}>
+          <svg style={{marginTop:appSettings.volumeIconTop}} width={appSettings.soundIconSize} height={appSettings.soundIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M200-200v-80h560v80H200Zm14-160 266-400 266 400H214Zm266-80Zm-118 0h236L480-616 362-440Z"/></svg>
+        </div>
+      
+      </div>
       <div className='boxButton' style={{zIndex: 5,position: "absolute", top:appSettings.powerButtonTop, left:appSettings.powerButtonLeft, width:boxWidth*appSettings.powerButtonWidth, height:boxHeight*appSettings.powerButtonHeight, backgroundImage: 'url("' + appSettings.backgroundPowerButton + '")', cursor:"pointer"}} onClick={powerButtonOnClick}/>
     </div>
     <div style={{ position: "absolute", zIndex: 4, height:containerHeight,  width: containerWidth, }}>    
@@ -352,8 +393,8 @@ const MainScreen = (props) => {
     <div id="screen_main" className={"screen_content"} style={{ backgroundImage: backgroundImage }}>
       <div id="lockContainer" className="lockContainer" 
         style={{backgroundImage: 'url('+appSettings.backgroundTV+')', width: containerWidth, 
-          height: containerHeight, marginTop: containerMarginTop, marginLeft: containerMarginLeft ,
-          display: "flex", alignItems: "center", zIndex:2,
+          height: containerHeight,  marginLeft: containerMarginLeft ,
+          display: "flex", alignItems: "center", zIndex:2, pointerEvents:"none",
           justifyContent: "center", flexDirection: "column"
         }}>
       <div className='empty_black' style={{top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>
@@ -370,8 +411,9 @@ const MainScreen = (props) => {
       {appSettings.fuzzyScreen && isPoweredOn && <div style={{overflow:"hidden", position:"absolute", width:appSettings.fuzzyScreenWidth, height:appSettings.fuzzyScreenHeight, left:appSettings.fuzzyScreenLeft, top:appSettings.fuzzyScreenTop, zIndex:2}}><FuzzyOverlayExample/></div>}
       <div id="lockContainer" className="lockContainer" 
         style={{backgroundImage: 'url('+appSettings.backgroundTV+')', width: containerWidth, 
-          height: containerHeight, marginTop: containerMarginTop, marginLeft: containerMarginLeft ,
-          zIndex:2}}></div>
+          height: containerHeight,  marginLeft: containerMarginLeft , pointerEvents:"none",
+          zIndex:2}}/>
+
 
 
       {/** CANAL */}
@@ -386,16 +428,21 @@ const MainScreen = (props) => {
             </div>
             )}              
       
+      
      
-      <audio id="audio_beep" src={appSettings.soundBeep} autostart="false" preload="auto" />
+      {/*
       <audio id="audio_failure" src={appSettings.soundNok} autostart="false" preload="auto" />
-      <audio id="audio_success" src={appSettings.soundOk} autostart="false" preload="auto" />
+      <audio id="audio_success" src={appSettings.soundOk} autostart="false" preload="auto" />*/}
+      <audio id="audio_beep" src={appSettings.soundBeep} autostart="false" preload="auto" />
+      <audio id="audio_vhs_tape" src={appSettings.soundVHS} autostart="false" preload="auto" />
+      <audio id="audio_tv_on" src={appSettings.soundTvOn} autostart="false" preload="auto" />
+      <audio id="audio_tv_off" src={appSettings.soundTvOff} autostart="false" preload="auto" />
       </div>
       {appSettings.showRemote ?
-      <div style={{overflow: "visible", width: containerWidth, height:containerHeight, position:"absolute"}}>
-        <Remote boxWidth={containerWidth} boxHeight={containerHeight} onClickButton={onClickButton} decreaseVolume={decreaseVolume} increaseVolume={increaseVolume} powerButtonOnClick={powerButtonOnClick} />
-      </div> :
-        TV_Buttons
+        <div style={{overflow: "visible", width: containerWidth, height:containerHeight, position:"absolute"}}>
+          <Remote boxWidth={containerWidth} boxHeight={containerHeight} onClickButton={onClickButton} decreaseVolume={decreaseVolume} increaseVolume={increaseVolume} powerButtonOnClick={powerButtonOnClick} />
+        </div> :
+          TV_Buttons
       }
 
  
