@@ -20,11 +20,13 @@ const MainScreen = (props) => {
   const [boxHeight, setBoxHeight] = useState(0);
 
   const [password, setPassword] = useState(""); // Estado para la contraseña
+  const [savedPassword, setSavedPassword] = useState(Storage.getSetting("channel").id || ""); // Estado para la contraseña guardada, lo utilizare para guardar el canal al cambiar de vhs a tv y viceversa
 
-  const [choosedChannel, setChoosedChannel] = useState(""); // Estado para el canal actual
+  //const [choosedChannel, setChoosedChannel] = useState(""); // Estado para el canal actual
   const [blackScreen, setBlackScreen] = useState(true); // Estado
 
   const [vhsState, setVhsState] = useState("out"); // Estado para el VHS
+  const [inputMode, setInputMode] = useState("tv"); // Estado para el modo de entrada
 
 
   const playerRef = useRef(null); // Referencia al reproductor de Video.js 
@@ -37,6 +39,7 @@ const MainScreen = (props) => {
   const [isPoweredOn, setIsPoweredOn] = useState(false); // Estado para controlar si el TV está encendido
 
   const savedChannel = Storage.getSetting("channel") || appSettings.defaultVideo; // Recupera el canal guardado del almacenamiento
+
 
   const videoOptions = { 
     autoplay: false, // Cambiado a false para que no se reproduzca automáticamente
@@ -112,7 +115,7 @@ const MainScreen = (props) => {
 
   const onClickButton = (value) => {
     //console.log("Button clicked: ", value);
-    if(processingSolution || !isPoweredOn) return; // No permite interacción si el TV está apagado o procesando
+    if(processingSolution || !isPoweredOn || inputMode!=="tv" || password==="tv") return; // No permite interacción si el TV está apagado o procesando
     setPassword(prev => prev + value); // Agrega el valor del botón a la solución
     const shortBeep = document.getElementById("audio_beep");
     shortBeep.pause();
@@ -143,17 +146,16 @@ const MainScreen = (props) => {
     setShowCursor(false); // Desactiva el cursor
     setTimeout(() => {
       setPassword(""); // Reinicia la contraseña
-      setProcessingSolution(false); // Reinicia el estado de processingSolution
-      //setLight("off");
-      
+      setProcessingSolution(false); // Reinicia el estado de processingSolution      
     }, 3000); // Espera 3 segundos antes de ocultar el <p>
     
   };
 
   const checkChannels = (channelInput) => {
-    const channel = appSettings.channels.find((channel) => channel.id === parseInt(channelInput));
-    setChoosedChannel(channelInput); // Guarda el canal elegido en el estado
-
+    const channel = appSettings.channels.find((channel) => channel.id === channelInput);
+    //setChoosedChannel(channelInput); // Guarda el canal elegido en el estado
+    if( channelInput !== "vhs") 
+      setSavedPassword(channelInput); // Guarda la contraseña del canal elegido
     if (channel) {
       //savedChannel.src = channel.src; // Actualiza la fuente del canal guardado
       //savedChannel.type = channel.type; // Actualiza el tipo del canal guardado
@@ -164,10 +166,11 @@ const MainScreen = (props) => {
   }
 
   useEffect(() => {
-    if (password.length >= appSettings.minLength) {
+    if (!processingSolution) return;
+    if (password.length >= 1){//appSettings.minLength) {
       //console.log("Checking solution...", password);
       checkChannels(password); // Comprueba si la solución es un canal válido
-    }else if(password.length != 0 && password.length < appSettings.minLength){
+    }else{//else if(password.length != 0 && password.length < appSettings.minLength){
       wrongChannel();
     }
     
@@ -277,71 +280,129 @@ const MainScreen = (props) => {
   }, []);
 
   const powerButtonOnClick = () => {
+    const shortBeep = document.getElementById("audio_beep");
+    //shortBeep.pause();
+    shortBeep.currentTime = 0;
+    shortBeep.play();
     let audio = null;
     //const tvOffSound = document.getElementById("audio_tv_off");
-    setIsPoweredOn(prev => {
-      const newPowerState = !prev;
-      if (newPowerState) {
-        // TV encendido - reproducir video
-        audio = document.getElementById("audio_tv_on");
-        //audio.pause();
-        audio.currentTime = 0; // Reinicia el sonido
-        audio.play(); // Reproduce el sonido de encendido
-        if (playerRef.current) {
-          playerRef.current.play();
-          playerRef.current.volume(volume);
-          setBlackScreen(false); // Oculta la pantalla negra
-        }
-      } else {
-        audio = document.getElementById("audio_tv_off");
-        //audio.pause();
-        audio.currentTime = 0; // Reinicia el sonido
-        audio.play(); // Reproduce el sonido de apagado
-        // TV apagado - pausar video y resetear estado
-        setShowVolume(false); // Ocultar el volumen
-        setShowCursor(false); // Ocultar el cursor
-        if (playerRef.current) {
-          playerRef.current.pause();
-        }
-        setBlackScreen(true); // Muestra la pantalla negra
-        if (timer) {
-          clearTimeout(timer); // Limpiar el temporizador
-          setTimer(null);
-        }
-        setPassword(""); // Limpiar el canal mostrado
-        /*
-        //setPassword(""); // Limpiar el canal mostrado
-        //setLight("off"); // Apagar la luz
+    setTimeout(() => {
+      setIsPoweredOn(prev => {
+        const newPowerState = !prev;
+        if (newPowerState) {
+          // TV encendido - reproducir video
+          audio = document.getElementById("audio_tv_on");
+          //audio.pause();
+          audio.currentTime = 0; // Reinicia el sonido
+          audio.play(); // Reproduce el sonido de encendido
+          if (playerRef.current) {
+            playerRef.current.play();
+            playerRef.current.volume(volume);
+            setBlackScreen(false); // Oculta la pantalla negra
+          }
+        } else {
+          audio = document.getElementById("audio_tv_off");
+          //audio.pause();
+          audio.currentTime = 0; // Reinicia el sonido
+          audio.play(); // Reproduce el sonido de apagado
+          // TV apagado - pausar video y resetear estado
+          setShowVolume(false); // Ocultar el volumen
+          setShowCursor(false); // Ocultar el cursor
+          if (playerRef.current) {
+            playerRef.current.pause();
+          }
+          setBlackScreen(true); // Muestra la pantalla negra
+          if (timer) {
+            clearTimeout(timer); // Limpiar el temporizador
+            setTimer(null);
+          }
+          setPassword(""); // Limpiar el canal mostrado
+          /*
+          //setPassword(""); // Limpiar el canal mostrado
+          //setLight("off"); // Apagar la luz
 
-        if (timer) {
-          clearTimeout(timer); // Limpiar el temporizador
-          setTimer(null);
+          if (timer) {
+            clearTimeout(timer); // Limpiar el temporizador
+            setTimer(null);
+          }
+          if (volumeTimeoutRef.current) {
+            clearTimeout(volumeTimeoutRef.current);
+            volumeTimeoutRef.current = null;
+          }*/
         }
-        if (volumeTimeoutRef.current) {
-          clearTimeout(volumeTimeoutRef.current);
-          volumeTimeoutRef.current = null;
-        }*/
-      }
-      return newPowerState;
-    });
+        return newPowerState;
+      });
+    }, 700); // Espera 100ms para que el sonido se reproduzca correctamente
   }
 
   const handleVhsClick = () => {
     const vhsSound = document.getElementById("audio_vhs_tape");
     //vhsSound.pause();
-    vhsSound.currentTime = 0;
-    vhsSound.play(); // Reproduce el sonido de VHS
-    if (vhsState === "out") {      
 
+    if (vhsState === "out") {      
+      vhsSound.currentTime = 0;
+      vhsSound.play(); // Reproduce el sonido de VHS
       setVhsState("in"); // Cambia el estado a "out"
-    }else{
-      setVhsState("out"); // Cambia el estado a "in"
+    }//else{
+      //setVhsState("out"); // Cambia el estado a "in"
+    //}
+  }
+
+  const ejectTapeOnClick = () => {
+    if (vhsState === "in") {
+      const vhsSound = document.getElementById("audio_vhs_tape");
+      //vhsSound.pause();
+      vhsSound.currentTime = 0;
+      vhsSound.play(); // Reproduce el sonido de VHS
+      setVhsState("out"); // Cambia el estado a "out"
     }
   }
 
   const inputOnClick = () => {
-    if(!isPoweredOn) return; // No permite interacción si el TV está apagado
-    console.log("Input button clicked");
+    if(!isPoweredOn || processingSolution || !appSettings.displayVHS) return; // No permite interacción si el TV está apagado
+    console.log("old input " + inputMode);
+    if( inputMode === "tv") {
+      if (timer) {
+        clearTimeout(timer); // Limpiar el temporizador
+        setTimer(null);
+      }
+      setInputMode("vhs"); // Cambia al modo VHS
+      setPassword("vhs"); // Limpia la contraseña
+      setTimeout(() => {       
+          setPassword(""); // Reinicia la contraseña       
+      }, 1500);
+      setPlayerOptions(appSettings.inputChannel); // Guarda las opciones en el estado `playerOptions`
+      let source= {src: appSettings.inputChannel.src, type: appSettings.inputChannel.type}; // Crea un objeto de fuente
+      setLight("green");
+      if (playerRef.current) {
+        try{
+          playerRef.current.pause(); // Pausa el video actual
+          playerRef.current.src(source); // Cambia la fuente del reproductor
+          playerRef.current.load(); // Carga el nuevo video
+          handleVolume(); // Establece el volumen          
+        }catch(e){
+          console.error("Error al cambiar la fuente del reproductor:", e);
+        }
+      }
+      //setVhsState("out"); // Asegura que el VHS esté fuera
+    }else if(inputMode === "vhs") {
+      if (timer) {
+        clearTimeout(timer); // Limpiar el temporizador
+        setTimer(null);
+      }
+      setInputMode("tv"); // Cambia al modo TV
+      setPassword("tv"); // Limpia la contraseña
+      setTimeout(() => {
+        setPassword(savedPassword); // Limpia la contraseña
+        setProcessingSolution(true); // Activa el estado de processingSolution
+        setShowCursor(false); // Desactiva el cursor
+        setTimeout(() => {
+          setPassword(""); // Reinicia la contraseña
+          setProcessingSolution(false); // Reinicia el estado de processingSolution      
+        }, 1000);
+      }, 1000); // Espera un breve momento para que el reproductor inicialice la nueva fuente
+      //setVhsState("out"); // Asegura que el VHS esté fuera
+    }
   }
 
 
@@ -356,7 +417,7 @@ const MainScreen = (props) => {
           <svg style={{marginTop:appSettings.volumeIconTop}} width={appSettings.soundIconSize} height={appSettings.soundIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M200-312v-336l240 168-240 168Zm320-8v-320h80v320h-80Zm160 0v-320h80v320h-80Z"/></svg>
         </div>
       </div>
-      <div className='boxButton' style={{zIndex: 5,position: "absolute", top:"9%", left:"64%", width:boxWidth*appSettings.powerButtonWidth, height:boxHeight*appSettings.powerButtonHeight, backgroundImage: 'url("' + appSettings.VHSButton + '")', cursor:"pointer"}} onClick={powerButtonOnClick}>
+      <div className='boxButton' style={{zIndex: 5,position: "absolute", top:"9%", left:"64%", width:boxWidth*appSettings.powerButtonWidth, height:boxHeight*appSettings.powerButtonHeight, backgroundImage: 'url("' + appSettings.VHSButton + '")', cursor:"pointer"}} onClick={ejectTapeOnClick}>
         <div style={{ justifyContent:"center", alignItems:"center", display:"flex",}}>
           <svg style={{marginTop:appSettings.volumeIconTop}} width={appSettings.soundIconSize} height={appSettings.soundIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M200-200v-80h560v80H200Zm14-160 266-400 266 400H214Zm266-80Zm-118 0h236L480-616 362-440Z"/></svg>
         </div>      
