@@ -23,7 +23,7 @@ const MainScreen = (props) => {
   const [savedPassword, setSavedPassword] = useState(Storage.getSetting("channel").id || ""); // Estado para la contraseña guardada, lo utilizare para guardar el canal al cambiar de vhs a tv y viceversa
 
   //const [choosedChannel, setChoosedChannel] = useState(""); // Estado para el canal actual
-  const [blackScreen, setBlackScreen] = useState(true); // Estado
+  const [blackScreen, setBlackScreen] = useState(false); // Estado
 
   const [vhsState, setVhsState] = useState("out"); // Estado para el VHS
   const [inputMode, setInputMode] = useState("tv"); // Estado para el modo de entrada
@@ -329,6 +329,9 @@ const MainScreen = (props) => {
             clearTimeout(volumeTimeoutRef.current);
             volumeTimeoutRef.current = null;
           }*/
+          setTimeout(() => {
+            setBlackScreen(false); // Quitar animación después de 600ms
+          }, 800);
         }
         return newPowerState;
       });
@@ -361,6 +364,10 @@ const MainScreen = (props) => {
   const inputOnClick = () => {
     if(!isPoweredOn || processingSolution || !appSettings.displayVHS) return; // No permite interacción si el TV está apagado
     console.log("old input " + inputMode);
+    const shortBeep = document.getElementById("audio_beep");
+    //shortBeep.pause();
+    shortBeep.currentTime = 0;
+    shortBeep.play();
     if( inputMode === "tv") {
       if (timer) {
         clearTimeout(timer); // Limpiar el temporizador
@@ -480,8 +487,9 @@ const MainScreen = (props) => {
       <div className='video_container' style={{position: "absolute", width: boxWidth*appSettings.videoPlayerWidth, left: appSettings.videoPlayerLeft, top: appSettings.videoPlayerTop, zIndex: 1}}>
         <VideoJS  options={playerOptions} onReady={(player) => {playerRef.current = player;}} />  
       </div>
+      {/*blackScreen && <div className='empty_black' style={{zIndex: 2,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>*/}
+      <div className={`screen-content ${!isPoweredOn ? 'tv-off' : ''} ${blackScreen ? 'shutdown' : ''}`}    style={{zIndex: (!isPoweredOn || blackScreen) ? 2 : -1,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>
       
-      {blackScreen && <div className='empty_black' style={{zIndex: 2,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>}
 
       
       {appSettings.fuzzyScreen && isPoweredOn && <div style={{overflow:"hidden", position:"absolute", width:appSettings.fuzzyScreenWidth, height:appSettings.fuzzyScreenHeight, left:appSettings.fuzzyScreenLeft, top:appSettings.fuzzyScreenTop, zIndex:2}}><FuzzyOverlayExample/></div>}

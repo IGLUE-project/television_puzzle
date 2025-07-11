@@ -104,16 +104,11 @@ export const DEFAULT_APP_SETTINGS = {
 
   channels : [
     { id: "11111", name: "Choriflan", src:"https://www.youtube.com/watch?v=0AItHevNDbU", type: "video/youtube" },
-    { id: "12345", name: "Anuncios de los 90", src:"https://www.youtube.com/watch?v=G1dGb_i3ZU8", type: "video/youtube" },
-    { id: "54321", name: "Major Tom", src:"https://www.youtube.com/watch?v=iYYRH4apXDo", type: "video/youtube" },
-    { id: "21465", name: "Mr Roboto", src:"https://www.youtube.com/watch?v=M8TwkL11PFU", type: "video/youtube" },
-    { id: "22228", name: "I Ran", src:"https://youtu.be/iIpfWORQWhU?si=2bwXOMzyy0unAD-1", type: "video/youtube" },   
-    { id: "1792", name: "Documental Rev Francesa", src:"https://youtu.be/hqVdCMpmzfo?si=TR8yfpLxxxrMsKwF", type: "video/youtube" },  
-    { id: "vhs", name: "Documental sobre la Guerra Fría", src:"https://youtu.be/iIpfWORQWhU?si=2bwXOMzyy0unAD-1", type: "video/youtube" }, 
+    { id: "12345", name: "Anuncios de los 90", src:"https://www.youtube.com/watch?v=G1dGb_i3ZU8", type: "video/youtube" }, 
   ],
 
   // input name, can be "dvd" or "vhs"
-  inputChannel: {name: "vhs", type:"video/youtube", src:"https://www.youtube.com/watch?v=iIpfWORQWhU"}, // Default input channel for the VHS
+  inputChannel: {name: "vhs", type:"video/youtube", src:"https://www.youtube.com/watch?v=EYZUikg-NXE"}, // Default input channel for the VHS
 };
 
 export const SKIN_SETTINGS_RETRO = {
