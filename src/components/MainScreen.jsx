@@ -54,7 +54,17 @@ const MainScreen = (props) => {
       { src: savedChannel.src,//"video/WhiteNoise.mp4", // Reemplaza con la ruta de tu archivo MP4
         type: savedChannel.type}//"video/mp4"},   //https://pixabay.com/videos/digital-t-v-noise-old-analog-27519/
     ],
-    userActions: { click: false }
+    userActions: { click: false },
+    // Configuración específica para YouTube
+    youtube: {
+      iv_load_policy: 3,
+      modestbranding: 1,
+      rel: 0,
+      showinfo: 0,
+      controls: 0,
+      // Permitir autoplay
+      autoplay: 1
+    }
   };
   const [playerOptions, setPlayerOptions] = useState(videoOptions); // Estado para las opciones del reproductor
 

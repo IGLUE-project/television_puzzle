@@ -108,7 +108,7 @@ export const DEFAULT_APP_SETTINGS = {
   ],
 
   // input name, can be "dvd" or "vhs"
-  inputChannel: {name: "vhs", type:"video/youtube", src:"https://www.youtube.com/watch?v=EYZUikg-NXE"}, // Default input channel for the VHS
+  inputChannel: {id: "-1", name: "vhs", type:"video/youtube", src:"https://www.youtube.com/watch?v=EYZUikg-NXE"}, // Default input channel for the VHS
 };
 
 export const SKIN_SETTINGS_RETRO = {
