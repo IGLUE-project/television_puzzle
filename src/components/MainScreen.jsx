@@ -304,6 +304,11 @@ const MainScreen = (props) => {
           playerRef.current.pause();
         }
         setBlackScreen(true); // Muestra la pantalla negra
+        if (timer) {
+          clearTimeout(timer); // Limpiar el temporizador
+          setTimer(null);
+        }
+        setPassword(""); // Limpiar el canal mostrado
         /*
         //setPassword(""); // Limpiar el canal mostrado
         //setLight("off"); // Apagar la luz
@@ -334,6 +339,11 @@ const MainScreen = (props) => {
     }
   }
 
+  const inputOnClick = () => {
+    if(!isPoweredOn) return; // No permite interacción si el TV está apagado
+    console.log("Input button clicked");
+  }
+
 
 
   const TV_Buttons = (<>
@@ -349,8 +359,7 @@ const MainScreen = (props) => {
       <div className='boxButton' style={{zIndex: 5,position: "absolute", top:"9%", left:"64%", width:boxWidth*appSettings.powerButtonWidth, height:boxHeight*appSettings.powerButtonHeight, backgroundImage: 'url("' + appSettings.VHSButton + '")', cursor:"pointer"}} onClick={powerButtonOnClick}>
         <div style={{ justifyContent:"center", alignItems:"center", display:"flex",}}>
           <svg style={{marginTop:appSettings.volumeIconTop}} width={appSettings.soundIconSize} height={appSettings.soundIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M200-200v-80h560v80H200Zm14-160 266-400 266 400H214Zm266-80Zm-118 0h236L480-616 362-440Z"/></svg>
-        </div>
-      
+        </div>      
       </div>
       <div className='boxButton' style={{zIndex: 5,position: "absolute", top:appSettings.powerButtonTop, left:appSettings.powerButtonLeft, width:boxWidth*appSettings.powerButtonWidth, height:boxHeight*appSettings.powerButtonHeight, backgroundImage: 'url("' + appSettings.backgroundPowerButton + '")', cursor:"pointer"}} onClick={powerButtonOnClick}/>
     </div>
@@ -374,7 +383,13 @@ const MainScreen = (props) => {
         <div id="row4" className="row" style={{top: appSettings.buttonsTop[3]}}>
           <div style={{width:boxWidth*appSettings.buttonWidth, height:boxHeight*appSettings.buttonHeight,}}/>
           <BoxButton value={"0"} position={10} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
-          <div style={{width:boxWidth*appSettings.buttonWidth, height:boxHeight*appSettings.buttonHeight,}}/>
+          {appSettings.displayVHS ?
+            <div className="boxButton" style={{width:boxWidth*appSettings.buttonWidth, height:boxHeight*appSettings.buttonHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}} onClick={inputOnClick}>
+                  <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>               
+                      <svg width={appSettings.buttonFontSize}  height={appSettings.buttonFontSize}  viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg"  fill={appSettings.buttonTextColor} stroke={appSettings.buttonTextColor}><path d="M160-160q-33 0-56.5-23.5T80-240v-120h80v120h640v-480H160v120H80v-120q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm300-140-56-58 83-82H80v-80h407l-83-82 56-58 180 180-180 180Z"/></svg>
+                  </div>
+            </div>
+            :<div style={{width:boxWidth*appSettings.buttonWidth, height:boxHeight*appSettings.buttonHeight,}}/>}
         </div>
         <div id="row4" className="row" style={{top: appSettings.buttonsTop[4]}}>
           <BoxButton value={"-"} position={11} onClick={decreaseVolume} boxHeight={boxHeight} boxWidth={boxWidth}/>

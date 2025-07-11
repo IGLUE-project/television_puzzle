@@ -108,7 +108,8 @@ export const DEFAULT_APP_SETTINGS = {
     { id: 54321, name: "Major Tom", src:"https://www.youtube.com/watch?v=iYYRH4apXDo", type: "video/youtube" },
     { id: 21465, name: "Mr Roboto", src:"https://www.youtube.com/watch?v=M8TwkL11PFU", type: "video/youtube" },
     { id: 22228, name: "I Ran", src:"https://youtu.be/iIpfWORQWhU?si=2bwXOMzyy0unAD-1", type: "video/youtube" },   
-    { id: 1792, name: "Documental Rev Francesa", src:"https://youtu.be/hqVdCMpmzfo?si=TR8yfpLxxxrMsKwF", type: "video/youtube" },   
+    { id: 1792, name: "Documental Rev Francesa", src:"https://youtu.be/hqVdCMpmzfo?si=TR8yfpLxxxrMsKwF", type: "video/youtube" },  
+    { id: -1, name: "Documental sobre la Guerra Fría", src:"https://youtu.be/0AItHevNDbU?si=0AItHevNDbU", type: "video/youtube" }, 
   ]
 };
 
@@ -117,6 +118,8 @@ export const SKIN_SETTINGS_RETRO = {
   backgroundTV : "images/retro/background_TV.png",
   backgroundButton: "images/retro/background_button.png",
   backgroundPowerButton: "images/retro/background_power_button.png",
+
+  soundBeep: "sounds/beep_retro.mp3",
 
   vhsOut: "images/retro/vhs_out.png",
   vhsIn: "images/retro/vhs_in.png", // Background image for the VHS in the TV
@@ -140,7 +143,7 @@ export const SKIN_SETTINGS_RETRO = {
   powerButtonWidth: 0.08, // Relative width of the power button
   powerButtonHeight: 0.07, // Relative height of the power button
 
-  buttonFontSize: "3.5vmin", // Font size for the text in the keypad
+  buttonFontSize: "3.3vmin", // Font size for the text in the keypad
   soundIconSize: "3.5vmin", // Size of the sound icon in the keypad
   volumeIconTop: "0vmin", // Top position of the volume icon in the remote
   buttonTextColor: "#FFFFFF", // Color for the text in the keypad
