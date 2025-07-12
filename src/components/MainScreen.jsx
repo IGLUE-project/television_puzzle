@@ -20,7 +20,7 @@ const MainScreen = (props) => {
   const [boxHeight, setBoxHeight] = useState(0);
 
   const [password, setPassword] = useState(""); // Estado para la contraseña
-  const [savedPassword, setSavedPassword] = useState(Storage.getSetting("channel").id || ""); // Estado para la contraseña guardada, lo utilizare para guardar el canal al cambiar de vhs a tv y viceversa
+  const [savedPassword, setSavedPassword] = useState(Storage.getSetting("channel")?.id || ""); // Estado para la contraseña guardada, lo utilizare para guardar el canal al cambiar de vhs a tv y viceversa
 
   //const [choosedChannel, setChoosedChannel] = useState(""); // Estado para el canal actual
   const [blackScreen, setBlackScreen] = useState(false); // Estado
