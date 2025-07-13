@@ -8,6 +8,9 @@ export const DEFAULT_APP_SETTINGS = {
   backgroundRemote : "images/standard/background_remote.png",
   backgroundButton: "images/standard/background_button.png",
   backgroundPowerButton: "images/standard/background_power_button.png",
+  vhsOut: "images/standard/vhs_out.png",
+  vhsIn: "images/standard/vhs_in.png",
+
   numbers: ["1","2","3","4","5","6","7","8","9","✱","0","#"],
   letters: ["A","B","C","D","E","F","G","H","I","J","K","L"],
   colors : [
@@ -53,6 +56,12 @@ export const DEFAULT_APP_SETTINGS = {
   buttonWidth: 0.09, // Relative width of the buttons in the keypad
   buttonHeight: 0.07, // Relative height of the buttons in the keypad
 
+
+
+  vhsLeft: "21.5%", // Left position of the VHS in the TV
+  vhsTop: "75%", // Top position of the VHS in the TV
+  vhsWidth: 0.57, // Width of the VHS tape in the TV
+  vhsHeight: 0.15, // Height of the VHS tape in the TV
 
   minLength: 4, // Minimum length of the solution
 
@@ -100,6 +109,8 @@ export const DEFAULT_APP_SETTINGS = {
 
   pausedIconSize: "25vmin", // Size of the paused icon in the remote
   pausedIconColor: "rgb(15, 167, 15)", // Color of the paused icon in the remote
+
+  noTapeFontSize: "0.06", // Font size for the no tape message
 
   //
   defaultVideo:{src: "video/WhiteNoise.mp4", type: "video/mp4"},

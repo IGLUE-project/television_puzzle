@@ -10,6 +10,7 @@ const Remote = (props) => {
         width: props.boxWidth*appSettings.remoteWidth,
         left:"50%",
         bottom: "-80%",
+        zIndex: 100,
        // top: "80%",
       }}>
         <div id="row0" className="row" style={{ top: appSettings.buttonsTop[0], left: appSettings.buttonsLeft}}>
@@ -17,7 +18,7 @@ const Remote = (props) => {
             <div style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight,}}/>
             {appSettings.displayVHS ? 
             <div className="boxButton" style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
-                <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>               
+                <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }} onClick={props.inputOnClick}>               
                     <svg width={appSettings.buttonFontSize}  height={appSettings.buttonFontSize}  viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg"  fill={appSettings.buttonTextColor} stroke={appSettings.buttonTextColor}><path d="M160-160q-33 0-56.5-23.5T80-240v-120h80v120h640v-480H160v120H80v-120q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm300-140-56-58 83-82H80v-80h407l-83-82 56-58 180 180-180 180Z"/></svg>
                 </div>
             </div> :
@@ -55,13 +56,13 @@ const Remote = (props) => {
         </div>
         {appSettings.displayVHS &&
         <div id="row6" className="row" style={{top: appSettings.buttonsTop[6], left: appSettings.buttonsLeft}}>
-            <div className="boxButton" style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
+            <div className="boxButton" onClick={props.handlePlayPause} style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
                 <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>                    
                     <svg width={appSettings.buttonFontSize}  height={appSettings.buttonFontSize}  viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg"  fill={appSettings.buttonTextColor} stroke={appSettings.buttonTextColor}> <path d="M200-312v-336l240 168-240 168Zm320-8v-320h80v320h-80Zm160 0v-320h80v320h-80Z"/></svg>
                 </div>
             </div>
             
-            <div className="boxButton" style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
+            <div className="boxButton" onClick={props.ejectTapeOnClick} style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
                 <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>                    
                     <svg width={appSettings.buttonFontSize} height={appSettings.buttonFontSize}  viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg"  fill={appSettings.buttonTextColor} stroke={appSettings.buttonTextColor}> <path d="M320-640v320-320Zm-80 400v-480h480v480H240Zm80-80h320v-320H320v320Z"/></svg>
                 </div>

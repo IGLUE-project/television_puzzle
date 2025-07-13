@@ -417,6 +417,7 @@ const MainScreen = (props) => {
     if (vhsState === "out") {      
       vhsSound.currentTime = 0;
       vhsSound.play(); // Reproduce el sonido de VHS
+      setVhsPaused(true);
       setVhsState("in"); // Cambia el estado a "out"
     }//else{
       //setVhsState("out"); // Cambia el estado a "in"
@@ -430,6 +431,7 @@ const MainScreen = (props) => {
       vhsSound.currentTime = 0;
       vhsSound.play(); // Reproduce el sonido de VHS
       setVhsState("out"); // Cambia el estado a "out"
+      (appSettings.displayVHS && playerVhsRef.current) && playerVhsRef.current.pause(); // Pausa el video de VHS si está habilitado
     }
   }
 
@@ -454,7 +456,7 @@ const MainScreen = (props) => {
       setTimeout(() => {       
           setPassword(""); // Reinicia la contraseña       
       }, 1500);
-      vhsPaused ? playerVhsRef.current.pause() : playerVhsRef.current.play(); // Pausa el video actual
+      (vhsPaused || vhsState!=="in") ? playerVhsRef.current.pause() : playerVhsRef.current.play(); // Pausa el video actual
       playerRef.current.pause(); // Pausa el video actual
       //setPlayerOptions(appSettings.inputChannel); // Guarda las opciones en el estado `playerOptions`
       //let source= {src: appSettings.inputChannel.src, type: appSettings.inputChannel.type}; // Crea un objeto de fuente
@@ -501,7 +503,7 @@ const MainScreen = (props) => {
     //shortBeep.pause();
     shortBeep.currentTime = 0;
     shortBeep.play();
-    if(!isPoweredOn || processingSolution || !appSettings.displayVHS || inputMode==="tv") return; // No permite interacción si el TV está apagado
+    if(!isPoweredOn || processingSolution || !appSettings.displayVHS || inputMode==="tv" || vhsState!=="in") return; // No permite interacción si el TV está apagado
     if(!vhsPaused){
       playerVhsRef.current.pause(); // Pausa el video de VHS
       setVhsPaused(true); // Actualiza el estado de pausa
@@ -524,7 +526,7 @@ const MainScreen = (props) => {
   const TV_Buttons = (<>
     <div style={{position:"relative", width: containerWidth, height: containerHeight }}>
       {vhsState === "out" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsOut + '")', backgroundSize:"cover", zIndex: 16, cursor:"pointer"}} onClick={handleVhsClick}/>   }
-      {vhsState === "in" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")', backgroundSize:"cover", zIndex: 16,}} onClick={handleVhsClick} />   }
+      {vhsState === "in" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")', backgroundSize:"cover", zIndex: 16,}}  />   }
       
       <div className='boxButton' style={{zIndex: 5,position: "absolute", top:"9%", left:"55%", width:boxWidth*appSettings.powerButtonWidth, height:boxHeight*appSettings.powerButtonHeight, backgroundImage: 'url("' + appSettings.VHSButton + '")', cursor:"pointer"}} onClick={handlePlayPause}>
         <div style={{ justifyContent:"center", alignItems:"center", display:"flex",}}>
@@ -604,6 +606,11 @@ const MainScreen = (props) => {
           <svg xmlns="http://www.w3.org/2000/svg" height={appSettings.pausedIconSize} viewBox="0 -960 960 960" width={appSettings.pausedIconSize} fill={appSettings.pausedIconColor}><path d="M360-320h80v-320h-80v320Zm160 0h80v-320h-80v320ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>          
         </div>
       }
+      {(appSettings.displayVHS && inputMode==="vhs" && vhsState!=="in") && 
+        <div className='novhs_screen' style={{zIndex: 2,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}>
+          <p className='noTapeText' style={{fontSize:containerWidth*appSettings.noTapeFontSize}}>{I18n.getTrans("i.noVideoTape")}</p>
+        </div>
+      }
 
 
       <div className={`screen-content ${!isPoweredOn ? 'tv-off' : ''} ${blackScreen ? 'shutdown' : ''}`}    style={{zIndex: (!isPoweredOn || blackScreen) ? 2 : -1,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>
@@ -642,10 +649,15 @@ const MainScreen = (props) => {
       </div>
       {appSettings.showRemote ?
         <div style={{overflow: "visible", width: containerWidth, height:containerHeight, position:"absolute"}}>
-          <Remote boxWidth={containerWidth} boxHeight={containerHeight} onClickButton={onClickButton} decreaseVolume={decreaseVolume} increaseVolume={increaseVolume} powerButtonOnClick={powerButtonOnClick} />
+          {appSettings.displayVHS && <>
+            {vhsState === "out" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsOut + '")', backgroundSize:"cover", zIndex: 16, cursor:"pointer"}} onClick={handleVhsClick}/>   }
+            {vhsState === "in" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")', backgroundSize:"cover", zIndex: 16,}}  />   }</>}
+          <Remote boxWidth={containerWidth} boxHeight={containerHeight} onClickButton={onClickButton} decreaseVolume={decreaseVolume} increaseVolume={increaseVolume} powerButtonOnClick={powerButtonOnClick} handlePlayPause={handlePlayPause} ejectTapeOnClick={ejectTapeOnClick} inputOnClick={inputOnClick}/>
+
         </div> :
           TV_Buttons
       }
+
 
  
     </div>);

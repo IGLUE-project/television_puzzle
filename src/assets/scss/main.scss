@@ -246,6 +246,32 @@ div.volumeBarFilled{
 	height: 65%;
 }
 
+.novhs_screen {
+	background-color: rgb(0, 0, 0);
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	
+	width: 90%;
+	height: 65%;
+}
+
+.noTapeText {
+	color: rgb(15, 167, 15);
+	font-family: "Sixtyfour", sans-serif;
+	font-optical-sizing: auto;
+	text-align: center;
+	
+	margin: 4vmin;
+	//padding: 2vmin;
+	//padding-top: 1vmin;
+	font-style: normal;
+	font-variation-settings:
+		"BLED" 10,
+		"SCAN" 5;
+}
+
 ///
 *,
 *::before,
