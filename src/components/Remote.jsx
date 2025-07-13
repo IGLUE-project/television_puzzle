@@ -14,7 +14,7 @@ const Remote = (props) => {
        // top: "80%",
       }}>
         <div id="row0" className="row" style={{ top: appSettings.buttonsTop[0], left: appSettings.buttonsLeft}}>
-            <div className="boxButton" style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight, backgroundImage: 'url("' + appSettings.backgroundPowerButton + '")',}} onClick={props.powerButtonOnClick}></div>
+            <div className="boxButton" style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight, backgroundImage: 'url("' + appSettings.backgroundPowerButton + '")', cursor:"pointer"}} onClick={props.powerButtonOnClick}></div>
             <div style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight,}}/>
             {appSettings.displayVHS ? 
             <div className="boxButton" style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
