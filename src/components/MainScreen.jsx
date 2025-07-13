@@ -24,12 +24,15 @@ const MainScreen = (props) => {
 
   //const [choosedChannel, setChoosedChannel] = useState(""); // Estado para el canal actual
   const [blackScreen, setBlackScreen] = useState(false); // Estado
+  const [blackScreenChannels, setBlackScreenChannels] = useState(false); // Estado para los canales de pantalla negra
 
   const [vhsState, setVhsState] = useState("out"); // Estado para el VHS
   const [inputMode, setInputMode] = useState("tv"); // Estado para el modo de entrada
+  const [vhsPaused, setVhsPaused] = useState(true); // Estado para saber si el VHS está pausado
 
 
   const playerRef = useRef(null); // Referencia al reproductor de Video.js 
+  const playerVhsRef = useRef(null); // Referencia al reproductor de Video.js 
   const [volume, setVolume] = useState(0.5); // Estado para el volumen (1 = 100%)
   const [showVolume, setShowVolume] = useState(false); // Estado para mostrar/ocultar el volumen
   const volumeTimeoutRef = useRef(null); // Referencia para almacenar el temporizador del volumen
@@ -66,7 +69,35 @@ const MainScreen = (props) => {
       autoplay: 1
     }
   };
+
+  const vhsOptions = { 
+    autoplay: false, // Cambiado a false para que no se reproduzca automáticamente
+    controls: false,
+    responsive: true,
+    fluid: true,
+    //muted: false,
+    loop: true,
+    muted: false,
+    techOrder: ["html5", "youtube"],
+    sources: [
+      { src: appSettings.displayVHS ? appSettings.inputChannel.src : savedChannel.src,//"video/WhiteNoise.mp4", // Reemplaza con la ruta de tu archivo MP4
+        type: appSettings.displayVHS ? appSettings.inputChannel.type : savedChannel.type}//"video/mp4"},   //https://pixabay.com/videos/digital-t-v-noise-old-analog-27519/
+    ],
+    userActions: { click: false },
+    // Configuración específica para YouTube
+    youtube: {
+      iv_load_policy: 3,
+      modestbranding: 1,
+      rel: 0,
+      showinfo: 0,
+      controls: 0,
+      // Permitir autoplay
+      autoplay: 1
+    }
+  };
   const [playerOptions, setPlayerOptions] = useState(videoOptions); // Estado para las opciones del reproductor
+  const [playerVhsOptions, setPlayerVhsOptions] = useState(vhsOptions);
+
 
 
   useEffect(() => {
@@ -164,8 +195,12 @@ const MainScreen = (props) => {
   const checkChannels = (channelInput) => {
     const channel = appSettings.channels.find((channel) => channel.id === channelInput);
     //setChoosedChannel(channelInput); // Guarda el canal elegido en el estado
-    if( channelInput !== "vhs") 
-      setSavedPassword(channelInput); // Guarda la contraseña del canal elegido
+    setBlackScreenChannels(true); // Oculta la pantalla negra de canales
+      setTimeout(() => {
+        setBlackScreenChannels(false); // Muestra la pantalla negra
+      }, 900); 
+    /*if( channelInput !== "vhs") 
+      setSavedPassword(channelInput); // Guarda la contraseña del canal elegido*/
     if (channel) {
       //savedChannel.src = channel.src; // Actualiza la fuente del canal guardado
       //savedChannel.type = channel.type; // Actualiza el tipo del canal guardado
@@ -233,6 +268,14 @@ const MainScreen = (props) => {
         const newVolume = Math.min(volume + 0.1, 1); // Asegura que no exceda 1
         setVolume(parseFloat(newVolume.toFixed(1))); // Redondea a 1 decimal
       }
+      if (appSettings.displayVHS) {
+        if (playerVhsRef.current.muted) {
+          playerVhsRef.current.muted(false); // Asegúrate de que no esté silenciado
+          playerVhsRef.current.volume(volume); // Establece el volumen del VHS
+        } else if (volume < 1) {
+          playerVhsRef.current.volume(volume); // Establece el volumen del VHS
+        }
+      }
     }
   };
 
@@ -242,6 +285,8 @@ const MainScreen = (props) => {
       volumeAppear(); // Muestra el volumen
       if (volume > 0) {
         volume <= 0.1 && playerRef.current.muted(true); // Silencia el video si el volumen es 0.1
+        if(volume <= 0.1 && appSettings.displayVHS)
+          playerVhsRef.current.muted(true); // Silencia el video si el volumen es 0.1
         const newVolume = Math.min(volume - 0.1, 1); // Asegura que no exceda 1
         setVolume(parseFloat(newVolume.toFixed(1))); // Redondea a 1 decimal
       }
@@ -253,11 +298,15 @@ const MainScreen = (props) => {
     setTimeout(() => {
       if (volume <= 0) {
         playerRef.current.muted(true); // Silencia el video si el volumen es 0
+        appSettings.displayVHS && playerVhsRef.current.muted(true); // Silencia el video si el volumen es 0
       } else {
         playerRef.current.muted(false); // Asegúrate de que no esté silenciado
+        appSettings.displayVHS && playerVhsRef.current.muted(false); // Asegúrate de que no esté silenciado
         playerRef.current.volume(volume); // Establece el volumen al valor actual
+        appSettings.displayVHS && playerVhsRef.current.volume(volume); // Establece el volumen al valor actual del VHS
       }
-      playerRef.current.play(); // Reproduce el nuevo video
+      if(inputMode==="tv") playerRef.current.play(); // Reproduce el nuevo video
+      else if(inputMode==="vhs") playerVhsRef.current.play(); // Reproduce el nuevo video de VHS
     }, 100); // Espera un breve momento para que el reproductor inicialice la nueva fuente
 
   }
@@ -279,6 +328,9 @@ const MainScreen = (props) => {
     if (playerRef.current) {
       playerRef.current.volume(volume); // Establece el volumen del reproductor
     }
+    if (appSettings.displayVHS && playerVhsRef.current) {
+      playerVhsRef.current.volume(volume); // Establece el volumen del reproductor VHS
+    }
   }, [volume]); // Se ejecuta cada vez que cambia el volumen
 
   useEffect(() => {
@@ -288,6 +340,8 @@ const MainScreen = (props) => {
       }
     };
   }, []);
+
+
 
   const powerButtonOnClick = () => {
     const shortBeep = document.getElementById("audio_beep");
@@ -305,11 +359,15 @@ const MainScreen = (props) => {
           //audio.pause();
           audio.currentTime = 0; // Reinicia el sonido
           audio.play(); // Reproduce el sonido de encendido
-          if (playerRef.current) {
+          if (playerRef.current && inputMode === "tv") {
             playerRef.current.play();
-            playerRef.current.volume(volume);
-            setBlackScreen(false); // Oculta la pantalla negra
+            playerRef.current.volume(volume);            
           }
+          if( appSettings.displayVHS && playerVhsRef.current && inputMode === "vhs" && vhsState === "in") {
+            vhsPaused ? playerVhsRef.current.pause() : playerVhsRef.current.play(); // Reproduce el video de VHS si está habilitado
+            playerVhsRef.current.volume(volume); // Establece el volumen del VHS
+          }
+          setBlackScreen(false); // Oculta la pantalla negra
         } else {
           audio = document.getElementById("audio_tv_off");
           //audio.pause();
@@ -320,6 +378,10 @@ const MainScreen = (props) => {
           setShowCursor(false); // Ocultar el cursor
           if (playerRef.current) {
             playerRef.current.pause();
+          }
+          if( appSettings.displayVHS && playerVhsRef.current) {
+            playerVhsRef.current.pause(); // Pausa el video de VHS si está habilitado
+            setVhsPaused(true); // Asegura que el VHS esté pausado
           }
           setBlackScreen(true); // Muestra la pantalla negra
           if (timer) {
@@ -373,7 +435,7 @@ const MainScreen = (props) => {
 
   const inputOnClick = () => {
     if(!isPoweredOn || processingSolution || !appSettings.displayVHS) return; // No permite interacción si el TV está apagado
-    console.log("old input " + inputMode);
+    //console.log("old input " + inputMode);
     const shortBeep = document.getElementById("audio_beep");
     //shortBeep.pause();
     shortBeep.currentTime = 0;
@@ -383,15 +445,21 @@ const MainScreen = (props) => {
         clearTimeout(timer); // Limpiar el temporizador
         setTimer(null);
       }
+      setBlackScreenChannels(true); // Oculta la pantalla negra de canales
+      setTimeout(() => {
+        setBlackScreenChannels(false); // Muestra la pantalla negra
+      }, 900); 
       setInputMode("vhs"); // Cambia al modo VHS
-      setPassword("vhs"); // Limpia la contraseña
+      setPassword(appSettings.inputChannel.name); // Limpia la contraseña
       setTimeout(() => {       
           setPassword(""); // Reinicia la contraseña       
       }, 1500);
-      setPlayerOptions(appSettings.inputChannel); // Guarda las opciones en el estado `playerOptions`
-      let source= {src: appSettings.inputChannel.src, type: appSettings.inputChannel.type}; // Crea un objeto de fuente
+      vhsPaused ? playerVhsRef.current.pause() : playerVhsRef.current.play(); // Pausa el video actual
+      playerRef.current.pause(); // Pausa el video actual
+      //setPlayerOptions(appSettings.inputChannel); // Guarda las opciones en el estado `playerOptions`
+      //let source= {src: appSettings.inputChannel.src, type: appSettings.inputChannel.type}; // Crea un objeto de fuente
       setLight("green");
-      if (playerRef.current) {
+      /*if (playerRef.current) {
         try{
           playerRef.current.pause(); // Pausa el video actual
           playerRef.current.src(source); // Cambia la fuente del reproductor
@@ -400,25 +468,54 @@ const MainScreen = (props) => {
         }catch(e){
           console.error("Error al cambiar la fuente del reproductor:", e);
         }
-      }
+      }*/
       //setVhsState("out"); // Asegura que el VHS esté fuera
     }else if(inputMode === "vhs") {
       if (timer) {
         clearTimeout(timer); // Limpiar el temporizador
         setTimer(null);
       }
+      setBlackScreenChannels(true); // Oculta la pantalla negra de canales
+      setTimeout(() => {
+        setBlackScreenChannels(false); // Muestra la pantalla negra
+      }, 900); 
       setInputMode("tv"); // Cambia al modo TV
       setPassword("tv"); // Limpia la contraseña
+      playerVhsRef.current.pause(); // Pausa el video actual
+      playerRef.current.play(); // Pausa el video actual
       setTimeout(() => {
-        setPassword(savedPassword); // Limpia la contraseña
-        setProcessingSolution(true); // Activa el estado de processingSolution
-        setShowCursor(false); // Desactiva el cursor
+        //setPassword(savedPassword); // Limpia la contraseña
+        //setProcessingSolution(true); // Activa el estado de processingSolution
+        //setShowCursor(false); // Desactiva el cursor
         setTimeout(() => {
           setPassword(""); // Reinicia la contraseña
-          setProcessingSolution(false); // Reinicia el estado de processingSolution      
+          //setProcessingSolution(false); // Reinicia el estado de processingSolution      
         }, 1000);
       }, 1000); // Espera un breve momento para que el reproductor inicialice la nueva fuente
       //setVhsState("out"); // Asegura que el VHS esté fuera
+    }
+  }
+
+  const handlePlayPause = () => {
+    const shortBeep = document.getElementById("audio_beep");
+    //shortBeep.pause();
+    shortBeep.currentTime = 0;
+    shortBeep.play();
+    if(!isPoweredOn || processingSolution || !appSettings.displayVHS || inputMode==="tv") return; // No permite interacción si el TV está apagado
+    if(!vhsPaused){
+      playerVhsRef.current.pause(); // Pausa el video de VHS
+      setVhsPaused(true); // Actualiza el estado de pausa
+      setPassword("Pause ❚❚");
+      setTimeout(() => {
+        setPassword(""); // Limpia la contraseña
+      }, 1000); // Limpia la contraseña después de 1 segundo
+    }else{
+      playerVhsRef.current.play(); // Reproduce el video de VHS
+      setPassword("Play ▶");
+      setTimeout(() => {
+        setPassword(""); // Limpia la contraseña
+      }, 1000); // Limpia la contraseña después de 1 segundo
+      setVhsPaused(false); // Actualiza el estado de pausa
     }
   }
 
@@ -429,7 +526,7 @@ const MainScreen = (props) => {
       {vhsState === "out" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsOut + '")', backgroundSize:"cover", zIndex: 16, cursor:"pointer"}} onClick={handleVhsClick}/>   }
       {vhsState === "in" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")', backgroundSize:"cover", zIndex: 16,}} onClick={handleVhsClick} />   }
       
-      <div className='boxButton' style={{zIndex: 5,position: "absolute", top:"9%", left:"55%", width:boxWidth*appSettings.powerButtonWidth, height:boxHeight*appSettings.powerButtonHeight, backgroundImage: 'url("' + appSettings.VHSButton + '")', cursor:"pointer"}} onClick={powerButtonOnClick}>
+      <div className='boxButton' style={{zIndex: 5,position: "absolute", top:"9%", left:"55%", width:boxWidth*appSettings.powerButtonWidth, height:boxHeight*appSettings.powerButtonHeight, backgroundImage: 'url("' + appSettings.VHSButton + '")', cursor:"pointer"}} onClick={handlePlayPause}>
         <div style={{ justifyContent:"center", alignItems:"center", display:"flex",}}>
           <svg style={{marginTop:appSettings.volumeIconTop}} width={appSettings.soundIconSize} height={appSettings.soundIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M200-312v-336l240 168-240 168Zm320-8v-320h80v320h-80Zm160 0v-320h80v320h-80Z"/></svg>
         </div>
@@ -494,10 +591,21 @@ const MainScreen = (props) => {
       
       {/* Video  */}
       
-      <div className='video_container' style={{position: "absolute", width: boxWidth*appSettings.videoPlayerWidth, left: appSettings.videoPlayerLeft, top: appSettings.videoPlayerTop, zIndex: 1}}>
+      <div className='video_container' style={{position: "absolute", width: boxWidth*appSettings.videoPlayerWidth, left: appSettings.videoPlayerLeft, top: appSettings.videoPlayerTop, zIndex: inputMode==="tv" ? 1 : -1}}>
         <VideoJS  options={playerOptions} onReady={(player) => {playerRef.current = player;}} />  
       </div>
-      {/*blackScreen && <div className='empty_black' style={{zIndex: 2,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>*/}
+      {appSettings.displayVHS && <div className='video_container' style={{position: "absolute", width: boxWidth*appSettings.videoPlayerWidth, left: appSettings.videoPlayerLeft, top: appSettings.videoPlayerTop, zIndex: inputMode==="vhs" ? 1 : -1}}>
+        <VideoJS  options={playerVhsOptions} onReady={(player) => {playerVhsRef.current = player;}} />  
+      </div>}
+
+      {blackScreenChannels && <div className='empty_black' style={{zIndex: 2,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>}
+      {(vhsPaused && appSettings.displayVHS && inputMode==="vhs") && 
+        <div className='paused_screen' style={{zIndex: 2,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}>
+          <svg xmlns="http://www.w3.org/2000/svg" height={appSettings.pausedIconSize} viewBox="0 -960 960 960" width={appSettings.pausedIconSize} fill={appSettings.pausedIconColor}><path d="M360-320h80v-320h-80v320Zm160 0h80v-320h-80v320ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>          
+        </div>
+      }
+
+
       <div className={`screen-content ${!isPoweredOn ? 'tv-off' : ''} ${blackScreen ? 'shutdown' : ''}`}    style={{zIndex: (!isPoweredOn || blackScreen) ? 2 : -1,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>
       
 

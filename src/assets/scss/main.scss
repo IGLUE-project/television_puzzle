@@ -235,6 +235,17 @@ div.volumeBarFilled{
 	height: 65%;
 }
 
+.paused_screen {
+	background-color: rgba(0, 0, 0, 0.774);
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	
+	width: 90%;
+	height: 65%;
+}
+
 ///
 *,
 *::before,

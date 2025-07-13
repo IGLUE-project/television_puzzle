@@ -98,6 +98,8 @@ export const DEFAULT_APP_SETTINGS = {
   volumeBarColor: "rgba(15, 167, 15, 0.76)", // Color of the volume bar
   volumeColor: "rgb(15, 167, 15)", // Color of the volume text
 
+  pausedIconSize: "25vmin", // Size of the paused icon in the remote
+  pausedIconColor: "rgb(15, 167, 15)", // Color of the paused icon in the remote
 
   //
   defaultVideo:{src: "video/WhiteNoise.mp4", type: "video/mp4"},
@@ -123,8 +125,8 @@ export const SKIN_SETTINGS_RETRO = {
   vhsIn: "images/retro/vhs_in.png", // Background image for the VHS in the TV
   vhsLeft: "18%", // Left position of the VHS in the TV
   vhsTop: "6.5%", // Top position of the VHS in the TV
-  vhsWidth: 0.37, // Width of the VHS in the TV
-  vhsHeight: 0.09, // Height of the VHS in the TV
+  vhsWidth: 0.37, // Width of the VHS tape in the TV
+  vhsHeight: 0.09, // Height of the VHS tape in the TV
 
   VHSButton: "images/retro/old_VHS_button.png",
 
