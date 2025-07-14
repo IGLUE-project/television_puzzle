@@ -83,7 +83,7 @@ const MainScreen = (props) => {
       { src: appSettings.displayVHS ? appSettings.inputChannel.src : savedChannel.src,//"video/WhiteNoise.mp4", // Reemplaza con la ruta de tu archivo MP4
         type: appSettings.displayVHS ? appSettings.inputChannel.type : savedChannel.type}//"video/mp4"},   //https://pixabay.com/videos/digital-t-v-noise-old-analog-27519/
     ],
-    userActions: { click: false },
+    userActions: { click: false }, 
     // Configuración específica para YouTube
     youtube: {
       iv_load_policy: 3,
@@ -92,7 +92,7 @@ const MainScreen = (props) => {
       showinfo: 0,
       controls: 0,
       // Permitir autoplay
-      autoplay: 1
+      autoplay: 0
     }
   };
   const [playerOptions, setPlayerOptions] = useState(videoOptions); // Estado para las opciones del reproductor
