@@ -187,6 +187,12 @@ export const SKIN_SETTINGS_RETRO = {
   volumeBarLeft: 0.21,
   volumeFontSize: 0.06, // Font size for the volume control text in the remote
 
+  playPauseButtonTop: "9%", // Top position of the play/pause button in the remote
+  playPauseButtonLeft: "55%", // Left position of the play/pause button in
+
+  ejectButtonTop: "9%", // Top position of the eject button in the remote
+  ejectButtonLeft: "64%", // Left position of the eject button in the remote
+
 
 
 };
