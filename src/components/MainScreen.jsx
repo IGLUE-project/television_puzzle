@@ -65,7 +65,6 @@ const MainScreen = (props) => {
       rel: 0,
       showinfo: 0,
       controls: 0,
-      // Permitir autoplay
       autoplay: 1
     }
   };
@@ -91,7 +90,6 @@ const MainScreen = (props) => {
       rel: 0,
       showinfo: 0,
       controls: 0,
-      // Permitir autoplay
       autoplay: 0
     }
   };
@@ -217,7 +215,7 @@ const MainScreen = (props) => {
 
   const wrongChannel = () => {
     setPlayerOptions(appSettings.defaultVideo); // Guarda las opciones en el estado `playerOptions`  
-    //setLight("red");
+
     if (playerRef.current) {
       try{
         playerRef.current.pause(); // Pausa el video actual
@@ -414,15 +412,15 @@ const MainScreen = (props) => {
     const shortBeep = document.getElementById("audio_beep");
     shortBeep.currentTime = 0;
     shortBeep.play();
-    if( inputMode === "tv") {
-      if (timer) {
+    if (timer) {
         clearTimeout(timer); // Limpiar el temporizador
         setTimer(null);
-      }
-      setBlackScreenChannels(true); // Oculta la pantalla negra de canales
-      setTimeout(() => {
-        setBlackScreenChannels(false); // Muestra la pantalla negra
-      }, 900); 
+    }
+    setBlackScreenChannels(true); // Oculta la pantalla negra de canales
+    setTimeout(() => {
+      setBlackScreenChannels(false); // Muestra la pantalla negra
+    }, 900); 
+    if( inputMode === "tv") {
       setInputMode("vhs"); // Cambia al modo VHS
       setPassword(appSettings.inputChannel.name); // Limpia la contraseña
       setTimeout(() => {       
@@ -431,23 +429,13 @@ const MainScreen = (props) => {
       (vhsPaused || vhsState!=="in") ? playerVhsRef.current.pause() : playerVhsRef.current.play(); // Pausa el video actual
       playerRef.current.pause(); 
     }else if(inputMode === "vhs") {
-      if (timer) {
-        clearTimeout(timer); // Limpiar el temporizador
-        setTimer(null);
-      }
-      setBlackScreenChannels(true); // Oculta la pantalla negra de canales
-      setTimeout(() => {
-        setBlackScreenChannels(false); // Muestra la pantalla negra
-      }, 900); 
       setInputMode("tv"); // Cambia al modo TV
       setPassword("tv"); // Limpia la contraseña
       playerVhsRef.current.pause(); // Pausa el video actual
       playerRef.current.play(); // Pausa el video actual
       setTimeout(() => {
-        setTimeout(() => {
-          setPassword(""); // Reinicia la contraseña    
-        }, 1000);
-      }, 1000); 
+          setPassword(""); // Reinicia la contraseña   
+      }, 1500); 
     }
   }
 
