@@ -5,7 +5,7 @@ import 'video.js/dist/video-js.css';
 export const VideoJS = (props) => {
   const videoRef = React.useRef(null);
   const playerRef = React.useRef(null);
-  const {options, onReady} = props;
+  const {options, onReady, powerOn} = props;
 
   React.useEffect(() => {
 
@@ -21,6 +21,10 @@ export const VideoJS = (props) => {
         videojs.log('player is ready');
         onReady && onReady(player);
       });
+      if (!powerOn) {
+          player.pause();
+          //player.muted(true);
+        }
       
     // You could update an existing player in the `else` block here
     // on prop change, for example:

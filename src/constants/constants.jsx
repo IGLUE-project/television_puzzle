@@ -75,9 +75,9 @@ export const DEFAULT_APP_SETTINGS = {
 
   fuzzyScreen: true, // Whether to apply a fuzzy effect to the TV screen
 
-  videoPlayerWidth: 0.8, // Width of the video player
-  videoPlayerLeft: "14.5%", // Left position of the video player
-  videoPlayerTop: "14%", // Top position of the video player
+  videoPlayerWidth: 0.78, // Width of the video player
+  videoPlayerLeft: "16%", // Left position of the video player
+  videoPlayerTop: "13.6%", // Top position of the video player
 
   channelNumberTop: "15%", // Top position of the channel number in the TV
   channelNumberLeft: "18%", // Left position of the channel number in the TV
