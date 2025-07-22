@@ -11,18 +11,14 @@ import FuzzyOverlayExample from './FuzzyOverlay.jsx'; // Importa el componente F
 const MainScreen = (props) => {
   const { escapp, appSettings, Utils, I18n, Storage } = useContext(GlobalContext);
   const [processingSolution, setProcessingSolution] = useState(false);
-  //const [light, setLight] = useState("off");
-  const [containerWidth, setContainerWidth] = useState(0);//
-  const [containerHeight, setContainerHeight] = useState(0);//
-  const [containerMarginTop, setContainerMarginTop] = useState(0);//
-  const [containerMarginLeft, setContainerMarginLeft] = useState(0);//
+  const [containerWidth, setContainerWidth] = useState(0);
+  const [containerHeight, setContainerHeight] = useState(0);
+  const [containerMarginTop, setContainerMarginTop] = useState(0);
+  const [containerMarginLeft, setContainerMarginLeft] = useState(0);
   const [boxWidth, setBoxWidth] = useState(0);
   const [boxHeight, setBoxHeight] = useState(0);
 
-  const [password, setPassword] = useState(""); // Estado para la contraseña
-  //const [savedPassword, setSavedPassword] = useState(Storage.getSetting("channel")?.id || ""); // Estado para la contraseña guardada, lo utilizare para guardar el canal al cambiar de vhs a tv y viceversa
-
-  //const [choosedChannel, setChoosedChannel] = useState(""); // Estado para el canal actual
+  const [password, setPassword] = useState(""); // Estado para la contraseña  
   const [blackScreen, setBlackScreen] = useState(false); // Estado
   const [blackScreenChannels, setBlackScreenChannels] = useState(false); // Estado para los canales de pantalla negra
 
@@ -37,7 +33,7 @@ const MainScreen = (props) => {
   const [showVolume, setShowVolume] = useState(false); // Estado para mostrar/ocultar el volumen
   const volumeTimeoutRef = useRef(null); // Referencia para almacenar el temporizador del volumen
 
-  const [timer, setTimer] = useState(null); // Temporizador para los 5 segundos
+  const [timer, setTimer] = useState(null); 
   const [showCursor, setShowCursor] = useState(false); // Controla si se muestra el guion bajo
   const [isPoweredOn, setIsPoweredOn] = useState(false); // Estado para controlar si el TV está encendido
 
@@ -49,13 +45,12 @@ const MainScreen = (props) => {
     controls: false,
     responsive: true,
     fluid: true,
-    //muted: false,
     loop: true,
     muted: false,
     techOrder: ["html5", "youtube"],
     sources: [
-      { src: savedChannel.src,//"video/WhiteNoise.mp4", // Reemplaza con la ruta de tu archivo MP4
-        type: savedChannel.type}//"video/mp4"},   //https://pixabay.com/videos/digital-t-v-noise-old-analog-27519/
+      { src: savedChannel.src,
+        type: savedChannel.type}
     ],
     userActions: { click: false },
     // Configuración específica para YouTube
@@ -70,17 +65,16 @@ const MainScreen = (props) => {
   };
 
   const vhsOptions = { 
-    autoplay: false, // Cambiado a false para que no se reproduzca automáticamente
+    autoplay: false, 
     controls: false,
     responsive: true,
     fluid: true,
-    //muted: false,
     loop: true,
     muted: false,
     techOrder: ["html5", "youtube"],
     sources: [
       { src: appSettings.displayVHS ? appSettings.inputChannel.src : savedChannel.src,
-        type: appSettings.displayVHS ? appSettings.inputChannel.type : savedChannel.type} //https://pixabay.com/videos/digital-t-v-noise-old-analog-27519/
+        type: appSettings.displayVHS ? appSettings.inputChannel.type : savedChannel.type} 
     ],
     userActions: { click: false }, 
     // Configuración específica para YouTube
@@ -117,7 +111,6 @@ const MainScreen = (props) => {
     let _containerWidth = _lockWidth *0.8;
     let _containerHeight = _lockHeight *0.8;
 
-
     let _containerMarginLeft=0;
     let _containerMarginTop=0;
 
@@ -139,7 +132,6 @@ const MainScreen = (props) => {
 
         break;
       default:
-        //Standard skin
     }
 
     setContainerWidth(_containerWidth);
@@ -153,21 +145,16 @@ const MainScreen = (props) => {
 
 
   const onClickButton = (value) => {
-    //console.log("Button clicked: ", value);
-    if(processingSolution || !isPoweredOn || inputMode!=="tv" || password==="tv") return; // No permite interacción si el TV está apagado o procesando
-    setPassword(prev => prev + value); // Agrega el valor del botón a la solución
+    if(processingSolution || !isPoweredOn || inputMode!=="tv" || password==="tv") return; 
+    setPassword(prev => prev + value); 
     const shortBeep = document.getElementById("audio_beep");
     shortBeep.pause();
     shortBeep.currentTime = 0;
     shortBeep.play();
-
-    // Activa el cursor y reinicia el temporizador de 5 segundos
     setShowCursor(true);
-    if (timer) {
-      clearTimeout(timer); // Limpia el temporizador anterior
-    }
+    if (timer) {clearTimeout(timer);  }
     const newTimer = setTimeout(() => {    
-      handleTimerExpire(); // Maneja la expiración del temporizador
+      handleTimerExpire(); 
     }, 5000);
     setTimer(newTimer);
   
@@ -180,52 +167,44 @@ const MainScreen = (props) => {
   }
 
   const handleTimerExpire = () => {
-    setProcessingSolution(true); // Activa el estado de processingSolution
-    setShowCursor(false); // Desactiva el cursor
+    setProcessingSolution(true); 
+    setShowCursor(false); 
     setTimeout(() => {
-      setPassword(""); // Reinicia la contraseña
-      setProcessingSolution(false); // Reinicia el estado de processingSolution      
+      setPassword(""); 
+      setProcessingSolution(false);    
     }, 3000); // Espera 3 segundos antes de ocultar el <p>
     
   };
 
   const checkChannels = (channelInput) => {
     const channel = appSettings.channels.find((channel) => channel.id === channelInput);
-    setBlackScreenChannels(true); // Oculta la pantalla negra de canales
-      setTimeout(() => {
-        setBlackScreenChannels(false); // Muestra la pantalla negra
-      }, 900); 
-    if (channel) {
-      rightChannel(channel); // Cambia a video de éxito
-    } else {
-      wrongChannel(); // Cambia a video de error
-    }
+    setBlackScreenChannels(true); 
+      setTimeout(() => {setBlackScreenChannels(false); }, 900); 
+    if (channel) {rightChannel(channel); 
+    } else {wrongChannel(); }
   }
 
   useEffect(() => {
     if (!processingSolution) return;
-    if (password.length >= 1){//appSettings.minLength) {
-      //console.log("Checking solution...", password);
-      checkChannels(password); // Comprueba si la solución es un canal válido
+    if (password.length >= 1){
+      checkChannels(password); 
     }else{
       wrongChannel();
     }
     
-  }, [processingSolution]); // Se ejecuta cada vez que cambia la solución*/
+  }, [processingSolution]); 
 
   const wrongChannel = () => {
-    setPlayerOptions(appSettings.defaultVideo); // Guarda las opciones en el estado `playerOptions`  
-
+    setPlayerOptions(appSettings.defaultVideo);
     if (playerRef.current) {
       try{
-        playerRef.current.pause(); // Pausa el video actual
-        playerRef.current.src(appSettings.defaultVideo); // Cambia la fuente del reproductor
-        playerRef.current.load(); // Carga el nuevo video
-        handleVolume(); // Establece el volumen
+        playerRef.current.pause(); 
+        playerRef.current.src(appSettings.defaultVideo); 
+        playerRef.current.load(); 
+        handleVolume(); 
         playerRef.current.oncanplay = () => {
           playerRef.current.play();
-        }; // Asegura que el video se reproduzca cuando esté listo
-      
+        };       
       }catch(e){
         console.error("Error al cambiar la fuente del reproductor:", e);
       }
@@ -234,15 +213,14 @@ const MainScreen = (props) => {
 
   const rightChannel = (channel) => {
     setPlayerOptions(channel); 
-    let source= {src: channel.src, type: channel.type}; // Crea un objeto de fuente
-    //setLight("green");
+    let source= {src: channel.src, type: channel.type}; 
     if (playerRef.current) {
       try{
-        playerRef.current.pause(); // Pausa el video actual
-        playerRef.current.src(source); // Cambia la fuente del reproductor
-        playerRef.current.load(); // Carga el nuevo video
-        handleVolume(); // Establece el volumen
-        Storage.saveSetting("channel", channel); // Guarda el canal actual en el almacenamiento
+        playerRef.current.pause(); 
+        playerRef.current.src(source); 
+        playerRef.current.load(); 
+        handleVolume();
+        Storage.saveSetting("channel", channel); 
       }catch(e){
         console.error("Error al cambiar la fuente del reproductor:", e);
       }
@@ -251,21 +229,21 @@ const MainScreen = (props) => {
 
   const increaseVolume = () => {
     if (playerRef.current && isPoweredOn) {
-      volumeAppear(); // Muestra el volumen
+      volumeAppear(); 
       if (playerRef.current.muted){
-        playerRef.current.muted(false); // Asegúrate de que no esté silenciado
-        const newVolume = Math.min(volume + 0.1, 1); // Asegura que no exceda 1
-        setVolume(parseFloat(newVolume.toFixed(1))); // Redondea a 1 decimal
+        playerRef.current.muted(false); 
+        const newVolume = Math.min(volume + 0.1, 1); 
+        setVolume(parseFloat(newVolume.toFixed(1))); 
       }else if (volume < 1) {
-        const newVolume = Math.min(volume + 0.1, 1); // Asegura que no exceda 1
-        setVolume(parseFloat(newVolume.toFixed(1))); // Redondea a 1 decimal
+        const newVolume = Math.min(volume + 0.1, 1); 
+        setVolume(parseFloat(newVolume.toFixed(1))); 
       }
       if (appSettings.displayVHS) {
         if (playerVhsRef.current.muted) {
-          playerVhsRef.current.muted(false); // Asegúrate de que no esté silenciado
-          playerVhsRef.current.volume(volume); // Establece el volumen del VHS
+          playerVhsRef.current.muted(false); 
+          playerVhsRef.current.volume(volume); 
         } else if (volume < 1) {
-          playerVhsRef.current.volume(volume); // Establece el volumen del VHS
+          playerVhsRef.current.volume(volume); 
         }
       }
     }
@@ -274,13 +252,13 @@ const MainScreen = (props) => {
   // Función para bajar el volumen
   const decreaseVolume = () => {
     if (playerRef.current && isPoweredOn) {
-      volumeAppear(); // Muestra el volumen
+      volumeAppear(); 
       if (volume > 0) {
-        volume <= 0.1 && playerRef.current.muted(true); // Silencia el video si el volumen es 0.1
+        volume <= 0.1 && playerRef.current.muted(true); 
         if(volume <= 0.1 && appSettings.displayVHS)
-          playerVhsRef.current.muted(true); // Silencia el video si el volumen es 0.1
-        const newVolume = Math.min(volume - 0.1, 1); // Asegura que no exceda 1
-        setVolume(parseFloat(newVolume.toFixed(1))); // Redondea a 1 decimal
+          playerVhsRef.current.muted(true); 
+        const newVolume = Math.min(volume - 0.1, 1); 
+        setVolume(parseFloat(newVolume.toFixed(1))); 
       }
     }
   };
@@ -289,41 +267,39 @@ const MainScreen = (props) => {
   const handleVolume = () =>{
     setTimeout(() => {
       if (volume <= 0) {
-        playerRef.current.muted(true); // Silencia el video si el volumen es 0
-        appSettings.displayVHS && playerVhsRef.current.muted(true); // Silencia el video si el volumen es 0
+        playerRef.current.muted(true); 
+        appSettings.displayVHS && playerVhsRef.current.muted(true); 
       } else {
-        playerRef.current.muted(false); // Asegúrate de que no esté silenciado
-        appSettings.displayVHS && playerVhsRef.current.muted(false); // Asegúrate de que no esté silenciado
-        playerRef.current.volume(volume); // Establece el volumen al valor actual
-        appSettings.displayVHS && playerVhsRef.current.volume(volume); // Establece el volumen al valor actual del VHS
+        playerRef.current.muted(false); 
+        appSettings.displayVHS && playerVhsRef.current.muted(false); 
+        playerRef.current.volume(volume); 
+        appSettings.displayVHS && playerVhsRef.current.volume(volume); 
       }
-      if(inputMode==="tv") playerRef.current.play(); // Reproduce el nuevo video
-      else if(inputMode==="vhs") playerVhsRef.current.play(); // Reproduce el nuevo video de VHS
-    }, 100); // Espera un breve momento para que el reproductor inicialice la nueva fuente
+      if(inputMode==="tv") playerRef.current.play(); 
+      else if(inputMode==="vhs") playerVhsRef.current.play(); 
+    }, 100);
 
   }
 
   const volumeAppear = () => {
-      // Cancela el temporizador anterior si existe
     if (volumeTimeoutRef.current) {
       clearTimeout(volumeTimeoutRef.current);
     }  
     setShowVolume(true);
-    // Inicia un nuevo temporizador y almacena su identificador
     volumeTimeoutRef.current = setTimeout(() => {
-      setShowVolume(false); // Oculta el volumen después de 3 segundos
-      volumeTimeoutRef.current = null; // Limpia la referencia
+      setShowVolume(false); 
+      volumeTimeoutRef.current = null; 
     }, 4000);
   }
 
   useEffect(() => {
     if (playerRef.current) {
-      playerRef.current.volume(volume); // Establece el volumen del reproductor
+      playerRef.current.volume(volume); 
     }
     if (appSettings.displayVHS && playerVhsRef.current) {
-      playerVhsRef.current.volume(volume); // Establece el volumen del reproductor VHS
+      playerVhsRef.current.volume(volume); 
     }
-  }, [volume]); // Se ejecuta cada vez que cambia el volumen
+  }, [volume]); 
 
   useEffect(() => {
     return () => {
@@ -337,7 +313,6 @@ const MainScreen = (props) => {
 
   const powerButtonOnClick = () => {
     const shortBeep = document.getElementById("audio_beep");
-    //shortBeep.pause();
     shortBeep.currentTime = 0;
     shortBeep.play();
     let audio = null;
@@ -347,38 +322,38 @@ const MainScreen = (props) => {
         if (newPowerState) {
           // TV encendido - reproducir video
           audio = document.getElementById("audio_tv_on");
-          audio.currentTime = 0; // Reinicia el sonido
-          audio.play(); // Reproduce el sonido de encendido
+          audio.currentTime = 0; 
+          audio.play(); 
           if (playerRef.current && inputMode === "tv") {
             playerRef.current.play();
             playerRef.current.volume(volume);            
           }
           if( appSettings.displayVHS && playerVhsRef.current && inputMode === "vhs" && vhsState === "in") {
-            vhsPaused ? playerVhsRef.current.pause() : playerVhsRef.current.play(); // Reproduce el video de VHS si está habilitado
-            playerVhsRef.current.volume(volume); // Establece el volumen del VHS
+            vhsPaused ? playerVhsRef.current.pause() : playerVhsRef.current.play(); 
+            playerVhsRef.current.volume(volume); 
           }
-          setBlackScreen(false); // Oculta la pantalla negra
+          setBlackScreen(false); 
         } else {
           audio = document.getElementById("audio_tv_off");
-          audio.currentTime = 0; // Reinicia el sonido
-          audio.play(); // Reproduce el sonido de apagado
-          setShowVolume(false); // Ocultar el volumen
-          setShowCursor(false); // Ocultar el cursor
+          audio.currentTime = 0; 
+          audio.play(); 
+          setShowVolume(false); 
+          setShowCursor(false); 
           if (playerRef.current) {
             playerRef.current.pause();
           }
           if( appSettings.displayVHS && playerVhsRef.current) {
-            playerVhsRef.current.pause(); // Pausa el video de VHS si está habilitado
-            setVhsPaused(true); // Asegura que el VHS esté pausado
+            playerVhsRef.current.pause(); 
+            setVhsPaused(true); 
           }
-          setBlackScreen(true); // Muestra la pantalla negra
+          setBlackScreen(true); 
           if (timer) {
-            clearTimeout(timer); // Limpiar el temporizador
+            clearTimeout(timer); 
             setTimer(null);
           }
           setPassword(""); 
           setTimeout(() => {
-            setBlackScreen(false); // Quitar animación después de 600ms
+            setBlackScreen(false); 
           }, 800);
         }
         return newPowerState;
@@ -390,51 +365,50 @@ const MainScreen = (props) => {
     const vhsSound = document.getElementById("audio_vhs_tape");
     if (vhsState === "out") {      
       vhsSound.currentTime = 0;
-      vhsSound.play(); // Reproduce el sonido de VHS
+      vhsSound.play(); 
       setVhsPaused(true);
-      setVhsState("in"); // Cambia el estado a "out"
+      setVhsState("in"); 
     }
   }
 
   const ejectTapeOnClick = () => {
     if (vhsState === "in") {
       const vhsSound = document.getElementById("audio_vhs_tape");
-      //vhsSound.pause();
       vhsSound.currentTime = 0;
-      vhsSound.play(); // Reproduce el sonido de VHS
-      setVhsState("out"); // Cambia el estado a "out"
-      (appSettings.displayVHS && playerVhsRef.current) && playerVhsRef.current.pause(); // Pausa el video de VHS si está habilitado
+      vhsSound.play(); 
+      setVhsState("out"); 
+      (appSettings.displayVHS && playerVhsRef.current) && playerVhsRef.current.pause(); 
     }
   }
 
   const inputOnClick = () => {
-    if(!isPoweredOn || processingSolution || !appSettings.displayVHS) return; // No permite interacción si el TV está apagado
+    if(!isPoweredOn || processingSolution || !appSettings.displayVHS) return; 
     const shortBeep = document.getElementById("audio_beep");
     shortBeep.currentTime = 0;
     shortBeep.play();
     if (timer) {
-        clearTimeout(timer); // Limpiar el temporizador
+        clearTimeout(timer); 
         setTimer(null);
     }
-    setBlackScreenChannels(true); // Oculta la pantalla negra de canales
+    setBlackScreenChannels(true); 
     setTimeout(() => {
-      setBlackScreenChannels(false); // Muestra la pantalla negra
+      setBlackScreenChannels(false); 
     }, 900); 
     if( inputMode === "tv") {
-      setInputMode("vhs"); // Cambia al modo VHS
-      setPassword(appSettings.inputChannel.name); // Limpia la contraseña
+      setInputMode("vhs"); 
+      setPassword(appSettings.inputChannel.name); 
       setTimeout(() => {       
-          setPassword(""); // Reinicia la contraseña       
+          setPassword("");       
       }, 1500);
-      (vhsPaused || vhsState!=="in") ? playerVhsRef.current.pause() : playerVhsRef.current.play(); // Pausa el video actual
+      (vhsPaused || vhsState!=="in") ? playerVhsRef.current.pause() : playerVhsRef.current.play();
       playerRef.current.pause(); 
     }else if(inputMode === "vhs") {
-      setInputMode("tv"); // Cambia al modo TV
-      setPassword("tv"); // Limpia la contraseña
-      playerVhsRef.current.pause(); // Pausa el video actual
-      playerRef.current.play(); // Pausa el video actual
+      setInputMode("tv"); 
+      setPassword("tv"); 
+      playerVhsRef.current.pause(); 
+      playerRef.current.play();
       setTimeout(() => {
-          setPassword(""); // Reinicia la contraseña   
+          setPassword("");  
       }, 1500); 
     }
   }
@@ -445,24 +419,22 @@ const MainScreen = (props) => {
     shortBeep.play();
     if(!isPoweredOn || processingSolution || !appSettings.displayVHS || inputMode==="tv" || vhsState!=="in") return; // No permite interacción si el TV está apagado
     if(!vhsPaused){
-      playerVhsRef.current.pause(); // Pausa el video de VHS
-      setVhsPaused(true); // Actualiza el estado de pausa
+      playerVhsRef.current.pause(); 
+      setVhsPaused(true); 
       setPassword("Pause ❚❚");
       setTimeout(() => {
-        setPassword(""); // Limpia la contraseña
-      }, 1000); // Limpia la contraseña después de 1 segundo
+        setPassword(""); 
+      }, 1000); 
     }else{
-      playerVhsRef.current.play(); // Reproduce el video de VHS
+      playerVhsRef.current.play(); 
       setPassword("Play ▶");
       setTimeout(() => {
-        setPassword(""); // Limpia la contraseña
-      }, 1000); // Limpia la contraseña después de 1 segundo
-      setVhsPaused(false); // Actualiza el estado de pausa
+        setPassword(""); 
+      }, 1000); 
+      setVhsPaused(false); 
     }
   }
-
-
-
+  {/** TV Retro */}
   const TV_Buttons = (<>
     <div style={{position:"relative", width: containerWidth, height: containerHeight }}>
       {vhsState === "out" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsOut + '")', backgroundSize:"cover", zIndex: 16, cursor:"pointer"}} onClick={handleVhsClick}/>   }
@@ -531,8 +503,7 @@ const MainScreen = (props) => {
         }}>
       <div className='empty_black' style={{top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>
       
-      {/* Video  */}
-      
+      {/* Video  */}      
       <div className='video_container' style={{position: "absolute", width: boxWidth*appSettings.videoPlayerWidth, left: appSettings.videoPlayerLeft, top: appSettings.videoPlayerTop, zIndex: inputMode==="tv" ? 1 : -1}}>
         <VideoJS  options={playerOptions} onReady={(player) => {playerRef.current = player;}} powerOn={isPoweredOn}/>  
       </div>
@@ -551,11 +522,7 @@ const MainScreen = (props) => {
           <p className='noTapeText' style={{fontSize:containerWidth*appSettings.noTapeFontSize}}>{I18n.getTrans("i.noVideoTape")}</p>
         </div>
       }
-
-
-      <div className={`screen-content ${!isPoweredOn ? 'tv-off' : ''} ${blackScreen ? 'shutdown' : ''}`}    style={{zIndex: (!isPoweredOn || blackScreen) ? 2 : -1,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>
-      
-
+      <div className={`screen-content ${!isPoweredOn ? 'tv-off' : ''} ${blackScreen ? 'shutdown' : ''}`}    style={{zIndex: (!isPoweredOn || blackScreen) ? 2 : -1,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}/>     
       
       {appSettings.fuzzyScreen && isPoweredOn && <div style={{overflow:"hidden", position:"absolute", width:appSettings.fuzzyScreenWidth, height:appSettings.fuzzyScreenHeight, left:appSettings.fuzzyScreenLeft, top:appSettings.fuzzyScreenTop, zIndex:2}}><FuzzyOverlayExample/></div>}
       <div id="lockContainer" className="lockContainer" 
@@ -563,11 +530,8 @@ const MainScreen = (props) => {
           height: containerHeight,  marginLeft: containerMarginLeft , pointerEvents:"none",
           zIndex:2}}/>
 
-
-
       {/** CANAL */}
-      {password && isPoweredOn && (<p className={`channel ${showCursor ? "show-cursor" : ""}`} style={{top:appSettings.channelNumberTop, left:appSettings.channelNumberLeft, fontSize: appSettings.channelFontSize}}>{password}</p>)}
-      
+      {password && isPoweredOn && (<p className={`channel ${showCursor ? "show-cursor" : ""}`} style={{top:appSettings.channelNumberTop, left:appSettings.channelNumberLeft, fontSize: appSettings.channelFontSize}}>{password}</p>)}      
       {showVolume && isPoweredOn && (
             <div className='volume_div' style={{left:appSettings.volumeLeft, top:appSettings.volumeTop, zIndex:10, width: containerWidth*appSettings.volumeContainerWidth}}>
               <p className='volume' style={{fontSize:containerWidth*appSettings.volumeFontSize, color:appSettings.volumeColor}}>vol</p>
@@ -575,8 +539,7 @@ const MainScreen = (props) => {
                 <div className='volumeBarFilled' style={{width: `${volume * 100}%`, backgroundColor:appSettings.volumeBarColor}}></div>
               </div>
             </div>
-            )}              
-      
+      )}                    
       
       <audio id="audio_beep" src={appSettings.soundBeep} autostart="false" preload="auto" />
       <audio id="audio_vhs_tape" src={appSettings.soundVHS} autostart="false" preload="auto" />
@@ -589,7 +552,6 @@ const MainScreen = (props) => {
             {vhsState === "out" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsOut + '")', backgroundSize:"cover", zIndex: 16, cursor:"pointer"}} onClick={handleVhsClick}/>   }
             {vhsState === "in" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")', backgroundSize:"cover", zIndex: 16,}}  />   }</>}
           <Remote boxWidth={containerWidth} boxHeight={containerHeight} onClickButton={onClickButton} decreaseVolume={decreaseVolume} increaseVolume={increaseVolume} powerButtonOnClick={powerButtonOnClick} handlePlayPause={handlePlayPause} ejectTapeOnClick={ejectTapeOnClick} inputOnClick={inputOnClick}/>
-
         </div> :
           TV_Buttons
       }
