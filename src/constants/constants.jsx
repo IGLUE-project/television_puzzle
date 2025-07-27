@@ -38,6 +38,7 @@ export const DEFAULT_APP_SETTINGS = {
   channelNumberTop: "15%", // Top position of the channel number in the TV
   channelNumberLeft: "18%", // Left position of the channel number in the TV
   remoteWidth: 0.4,
+  remoteBottom:"-80%",
   showRemote: true, // Whether to show the remote control
   buttonsTop: ["12%", "22%", "32%", "42%", "52%", "62%", "72%"], // Top positions for the rows of buttons in the remote
   buttonsLeft: "50%", // Left position for the remote buttons
@@ -125,16 +126,23 @@ export const SKIN_SETTINGS_RETRO = {
 
 export const SKIN_SETTINGS_FUTURISTIC = {
   background: "images/futuristic/background.png",
-  backgroundTV : "images/futuristic/background_TV.png",
+  backgroundTV : "images/futuristic/background_TV2.png",
   backgroundRemote : "images/futuristic/background_remote.png",
   backgroundButton: "images/futuristic/background_button.png",
   backgroundPowerButton: "images/futuristic/background_power_button.png",
   backgroundMessage: "images/futuristic/background_message_futuristic.png",
-  displayVHS: false,
+  vhsOut: "images/futuristic/dvd_out.png",
+  vhsIn: "images/futuristic/dvd_in.png", 
+  vhsLeft: "37%", // Left position of the VHS in the TV
+  vhsTop: "72.5%", // Top position of the VHS in the TV
+  vhsWidth: 0.25, // Width of the VHS tape in the TV
+  vhsHeight: 0.15, // Height of the VHS tape in the TV
+  displayVHS: true,
   fuzzyScreen: false,
-  videoPlayerWidth: 0.82, // Width of the video player
-  videoPlayerLeft: "4%", // Left position of the video player
-  videoPlayerTop: "18%", // Top position of the video player
+  remoteBottom: "-85%",
+  videoPlayerWidth: 0.68, // Width of the video player
+  videoPlayerLeft: "12%", // Left position of the video player
+  videoPlayerTop: "19.5%", // Top position of the video player
   channelNumberTop: "20%", // Top position of the channel number in the TV
   channelNumberLeft: "10%", // Left position of the channel number in the TV
   blackScreen: true,
@@ -148,7 +156,7 @@ export const SKIN_SETTINGS_FUTURISTIC = {
   volumeIconTop: "1vmin", // Top position of the volume icon in the remote
   buttonWidth: 0.08, // Relative width of the buttons in the keypad
   buttonHeight: 0.08, // Relative height of the buttons in the keypad
-  buttonsTop: ["15%","25%", "35%", "45%", "55%", "65%", "75%"], // Top positions for the rows of buttons in the remote
+  buttonsTop: ["10%","20%", "30%", "40%", "50%", "60%", "70%"], // Top positions for the rows of buttons in the remote
   buttonsLeft: "50%", // Left position for the remote buttons
   soundIconColor: "#FFFFFF", // Color for the sound icon in the remote
   volumeTop: "62%",
@@ -157,6 +165,8 @@ export const SKIN_SETTINGS_FUTURISTIC = {
   volumeContainerWidth: 0.6, // Width of the volume control container in the remote
   volumeBarLeft: 0.25,
   volumeFontSize: 0.08,
+  soundVHS: "sounds/dvd.wav",
+  inputChannel: {id: "-1", name: "DVD", type:"video/youtube", src:"https://www.youtube.com/watch?v=EYZUikg-NXE"},
 };
 
 export const ESCAPP_CLIENT_SETTINGS = {

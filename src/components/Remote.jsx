@@ -9,7 +9,7 @@ const Remote = (props) => {
         height: props.boxHeight, 
         width: props.boxWidth*appSettings.remoteWidth,
         left:"50%",
-        bottom: "-80%",
+        bottom: appSettings.remoteBottom,
         zIndex: 100,
        // top: "80%",
       }}>
