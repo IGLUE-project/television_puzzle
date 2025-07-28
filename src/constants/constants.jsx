@@ -60,7 +60,7 @@ export const DEFAULT_APP_SETTINGS = {
   pausedIconSize: "25vmin", // Size of the paused icon in the remote
   pausedIconColor: "rgb(15, 167, 15)", // Color of the paused icon in the remote
   noTapeFontSize: "0.06",
-  defaultVideo:{src: "video/WhiteNoise.mp4", type: "video/mp4"},
+  defaultVideo:{src: "videos/WhiteNoise.mp4", type: "video/mp4"},
   channels : [
     { id: "11111", name: "Never gonna give you up", src:"https://www.youtube.com/watch?v=dQw4w9WgXcQ", type: "video/youtube" },
     { id: "12345", name: "Anuncios de los 90", src:"https://www.youtube.com/watch?v=G1dGb_i3ZU8", type: "video/youtube" }, 

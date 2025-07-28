@@ -4,17 +4,6 @@ import { GlobalContext } from "./GlobalContext";
 const BoxButton = (props) => {
   const {  appSettings } = useContext(GlobalContext);
 
-  const renderContent = () => {
-    switch (appSettings.keysType) {
-      case "COLORS":
-        return "";
-      case "SYMBOLS":
-        return <img className="symbol" src={appSettings.symbolsBackgroundKeys[props.position-1]}></img>;
-      default:
-        return <p style={{color:appSettings.buttonTextColor, fontSize:appSettings.buttonFontSize}}>{props.value}</p>;
-    }
-  };
-
   return (
     <div
       className={"boxButton boxButton" + props.position}
@@ -26,7 +15,7 @@ const BoxButton = (props) => {
         backgroundImage: 'url("' + appSettings.backgroundButton + '")',
       }}
     >
-      <div>{renderContent()}</div>
+      <div><p style={{color:appSettings.buttonTextColor, fontSize:appSettings.buttonFontSize}}>{props.value}</p></div>
     </div>
   );
 };
