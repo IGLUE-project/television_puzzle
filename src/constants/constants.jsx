@@ -3,7 +3,7 @@ export const DEFAULT_APP_SETTINGS = {
   actionAfterSolve: "NONE",
   message: undefined,
   keysType: "NUMBERS",
-  background: "images/standard/background.png",
+  background: "images/standard/background2.png",
   backgroundTV : "images/standard/background_TV.png",
   backgroundRemote : "images/standard/background_remote.png",
   backgroundButton: "images/standard/background_button.png",
@@ -21,7 +21,7 @@ export const DEFAULT_APP_SETTINGS = {
   buttonWidth: 0.09, // Relative width of the buttons in the keypad
   buttonHeight: 0.07, // Relative height of the buttons in the keypad
   vhsLeft: "21.5%", // Left position of the VHS in the TV
-  vhsTop: "75%", // Top position of the VHS in the TV
+  vhsTop: "61.3%", // Top position of the VHS in the TV
   vhsWidth: 0.57, // Width of the VHS tape in the TV
   vhsHeight: 0.15, // Height of the VHS tape in the TV
   minLength: 4, // Minimum length of the solution
@@ -69,31 +69,33 @@ export const DEFAULT_APP_SETTINGS = {
 };
 
 export const SKIN_SETTINGS_RETRO = {
-  background: "images/retro/background.png",
+  background: "images/retro/background2.png",
   backgroundTV : "images/retro/background_TV.png",
   backgroundButton: "images/retro/background_button.png",
-  backgroundPowerButton: "images/retro/background_power_button.png",
+  backgroundPowerButton: "images/retro/retro_power_button.png",
   backgroundMessage: "images/retro/background_message_retro.png",
   soundBeep: "sounds/beep_retro.mp3",
   vhsOut: "images/retro/vhs_out.png",
   vhsIn: "images/retro/vhs_in.png", // Background image for the VHS in the TV
   VHSButton: "images/retro/old_VHS_button.png",
   vhsLeft: "18%", // Left position of the VHS in the TV
-  vhsTop: "6.5%", // Top position of the VHS in the TV
+  vhsTop: "0%", // Top position of the VHS in the TV
   vhsWidth: 0.37, // Width of the VHS tape in the TV
   vhsHeight: 0.09, // Height of the VHS tape in the TV
   showRemote: false,
-  powerButtonLeft: "75%", // Left position of the power button in the remote
-  powerButtonTop: "29%", // Top position of the power button
+  powerButtonLeft: "76%", // Left position of the power button in the remote
+  powerButtonTop: "22%", // Top position of the power button
   buttonWidth: 0.06, // Relative width of the buttons in the keypad
   buttonHeight: 0.05, // Relative height of the buttons in the keypad
-  powerButtonWidth: 0.08, // Relative width of the power button
-  powerButtonHeight: 0.07, // Relative height of the power button
+  powerButtonWidth: 0.06, // Relative width of the power button
+  powerButtonHeight: 0.05, // Relative height of the power button
+  vhsButtonWidth: 0.08, // Relative width of the VHS button
+  vhsButtonHeight: 0.07, // Relative height of the VHS button
   buttonFontSize: "3.3vmin", // Font size for the text in the keypad
   soundIconSize: "3.5vmin", // Size of the sound icon in the keypad
   volumeIconTop: "0vmin", // Top position of the volume icon in the remote
   buttonTextColor: "#FFFFFF", // Color for the text in the keypad
-  buttonsTop: ["47%", "52%", "57%", "62%", "67%", "82%"], // Top positions for the rows of buttons in the remote
+  buttonsTop: ["40%", "45%", "50%", "55%", "60%", "75%"], // Top positions for the rows of buttons in the remote
   buttonsLeft: "91%", // Left position for the remote buttons  
   blackScreen: true,
   blackScreenWidth: "70%", // Width of the black screen in the TV
@@ -115,9 +117,9 @@ export const SKIN_SETTINGS_RETRO = {
   volumeContainerWidth: 0.35, // Width of the volume control container in the remote
   volumeBarLeft: 0.21,
   volumeFontSize: 0.06, // Font size for the volume control text in the remote
-  playPauseButtonTop: "9%", // Top position of the play/pause button in the remote
+  playPauseButtonTop: "2%", // Top position of the play/pause button in the remote
   playPauseButtonLeft: "55%", // Left position of the play/pause button in
-  ejectButtonTop: "9%", // Top position of the eject button in the remote
+  ejectButtonTop: "2%", // Top position of the eject button in the remote
   ejectButtonLeft: "64%", // Left position of the eject button in the remote
 
 
@@ -125,7 +127,7 @@ export const SKIN_SETTINGS_RETRO = {
 };
 
 export const SKIN_SETTINGS_FUTURISTIC = {
-  background: "images/futuristic/background.png",
+  background: "images/futuristic/background2.png",
   backgroundTV : "images/futuristic/background_TV2.png",
   backgroundRemote : "images/futuristic/background_remote.png",
   backgroundButton: "images/futuristic/background_button.png",
@@ -134,7 +136,7 @@ export const SKIN_SETTINGS_FUTURISTIC = {
   vhsOut: "images/futuristic/dvd_out.png",
   vhsIn: "images/futuristic/dvd_in.png", 
   vhsLeft: "37%", // Left position of the VHS in the TV
-  vhsTop: "72.5%", // Top position of the VHS in the TV
+  vhsTop: "62.5%", // Top position of the VHS in the TV
   vhsWidth: 0.25, // Width of the VHS tape in the TV
   vhsHeight: 0.15, // Height of the VHS tape in the TV
   displayVHS: true,

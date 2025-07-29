@@ -112,7 +112,7 @@ const MainScreen = (props) => {
     let _containerHeight = _lockHeight *0.8;
 
     let _containerMarginLeft=0;
-    let _containerMarginTop=0;
+    let _containerMarginTop=_lockHeight * -0.21;
 
     let _boxWidth = _lockWidth * 0.7;
     let _boxHeight = _lockHeight * 0.7;
@@ -120,12 +120,12 @@ const MainScreen = (props) => {
 
     switch(appSettings.skin){
       case "RETRO":
-        _containerMarginTop = _lockHeight * 0.1;
+        _containerMarginTop = _lockHeight *-0.12;
         _containerWidth = _lockWidth *0.9;
         _containerHeight = _lockHeight *0.9;
         break;
       case "FUTURISTIC":
-        _containerMarginTop = 0;
+        _containerMarginTop = _lockHeight * -0.2;
         _containerHeight = _lockHeight *1;
         _boxHeight = _lockHeight * 0.9;
         _boxWidth = _lockWidth * 0.9;
@@ -437,15 +437,15 @@ const MainScreen = (props) => {
   {/** TV Retro */}
   const TV_Buttons = (<>
     <div style={{position:"relative", width: containerWidth, height: containerHeight }}>
-      {vhsState === "out" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsOut + '")', backgroundSize:"cover", zIndex: 16, cursor:"pointer"}} onClick={handleVhsClick}/>   }
-      {vhsState === "in" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")', backgroundSize:"cover", zIndex: 16,}}  />   }
-      
-      <div className='boxButton' style={{zIndex: 5,position: "absolute", top:appSettings.playPauseButtonTop, left:appSettings.playPauseButtonLeft, width:boxWidth*appSettings.powerButtonWidth, height:boxHeight*appSettings.powerButtonHeight, backgroundImage: 'url("' + appSettings.VHSButton + '")', cursor:"pointer"}} onClick={handlePlayPause}>
+      {vhsState === "out" && <div className='vhsTapeOut' style={{ top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsOut + '")',}} onClick={handleVhsClick}/>   }
+      {vhsState === "in" && <div className='vhsTapeIn' style={{top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")'}}  />   }
+
+      <div className='boxButton' style={{zIndex: 5,position: "absolute", top:appSettings.playPauseButtonTop, left:appSettings.playPauseButtonLeft, width:boxWidth*appSettings.vhsButtonWidth, height:boxHeight*appSettings.vhsButtonHeight, backgroundImage: 'url("' + appSettings.VHSButton + '")', cursor:"pointer"}} onClick={handlePlayPause}>
         <div style={{ justifyContent:"center", alignItems:"center", display:"flex",}}>
           <svg style={{marginTop:appSettings.volumeIconTop}} width={appSettings.soundIconSize} height={appSettings.soundIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M200-312v-336l240 168-240 168Zm320-8v-320h80v320h-80Zm160 0v-320h80v320h-80Z"/></svg>
         </div>
       </div>
-      <div className='boxButton' style={{zIndex: 5,position: "absolute", top:appSettings.ejectButtonTop, left:appSettings.ejectButtonLeft, width:boxWidth*appSettings.powerButtonWidth, height:boxHeight*appSettings.powerButtonHeight, backgroundImage: 'url("' + appSettings.VHSButton + '")', cursor:"pointer"}} onClick={ejectTapeOnClick}>
+      <div className='boxButton' style={{zIndex: 5,position: "absolute", top:appSettings.ejectButtonTop, left:appSettings.ejectButtonLeft, width:boxWidth*appSettings.vhsButtonWidth, height:boxHeight*appSettings.vhsButtonHeight, backgroundImage: 'url("' + appSettings.VHSButton + '")', cursor:"pointer"}} onClick={ejectTapeOnClick}>
         <div style={{ justifyContent:"center", alignItems:"center", display:"flex",}}>
           <svg style={{marginTop:appSettings.volumeIconTop}} width={appSettings.soundIconSize} height={appSettings.soundIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M200-200v-80h560v80H200Zm14-160 266-400 266 400H214Zm266-80Zm-118 0h236L480-616 362-440Z"/></svg>
         </div>      
@@ -497,7 +497,7 @@ const MainScreen = (props) => {
     <div id="screen_main" className={"screen_content"} style={{ backgroundImage: backgroundImage }}>
       <div id="lockContainer" className="lockContainer" 
         style={{backgroundImage: 'url('+appSettings.backgroundTV+')', width: containerWidth, 
-          height: containerHeight,  marginLeft: containerMarginLeft ,
+          height: containerHeight,  marginLeft: containerMarginLeft , marginTop: containerMarginTop,
           display: "flex", alignItems: "center", zIndex:2, pointerEvents:"none",
           justifyContent: "center", flexDirection: "column"
         }}>
@@ -549,8 +549,8 @@ const MainScreen = (props) => {
       {appSettings.showRemote ?
         <div style={{overflow: "visible", width: containerWidth, height:containerHeight, position:"absolute"}}>
           {appSettings.displayVHS && <>
-            {vhsState === "out" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsOut + '")', backgroundSize:"cover", zIndex: 16, cursor:"pointer"}} onClick={handleVhsClick}/>   }
-            {vhsState === "in" && <div style={{position:"absolute", top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")', backgroundSize:"cover", zIndex: 16,}}  />   }</>}
+            {vhsState === "out" && <div className='vhsTapeOut' style={{ top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsOut + '")', }} onClick={handleVhsClick}/>   }
+            {vhsState === "in" && <div className='vhsTapeIn' style={{ top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")', }}  />   }</>}
           <Remote boxWidth={containerWidth} boxHeight={containerHeight} onClickButton={onClickButton} decreaseVolume={decreaseVolume} increaseVolume={increaseVolume} powerButtonOnClick={powerButtonOnClick} handlePlayPause={handlePlayPause} ejectTapeOnClick={ejectTapeOnClick} inputOnClick={inputOnClick}/>
         </div> :
           TV_Buttons

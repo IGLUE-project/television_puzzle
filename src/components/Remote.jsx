@@ -63,8 +63,9 @@ const Remote = (props) => {
             </div>
             
             <div className="boxButton" onClick={props.ejectTapeOnClick} style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
-                <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>                    
-                    <svg width={appSettings.buttonFontSize} height={appSettings.buttonFontSize}  viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg"  fill={appSettings.buttonTextColor} stroke={appSettings.buttonTextColor}> <path d="M320-640v320-320Zm-80 400v-480h480v480H240Zm80-80h320v-320H320v320Z"/></svg>
+                <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>    
+                    <svg width={appSettings.soundIconSize} height={appSettings.soundIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M200-200v-80h560v80H200Zm14-160 266-400 266 400H214Zm266-80Zm-118 0h236L480-616 362-440Z"/></svg>                
+                    
                 </div>
             </div>
             <div style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight,}}/>
