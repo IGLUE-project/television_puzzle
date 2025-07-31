@@ -22,7 +22,7 @@ const MainScreen = (props) => {
   const [blackScreen, setBlackScreen] = useState(false); // Estado
   const [blackScreenChannels, setBlackScreenChannels] = useState(false); // Estado para los canales de pantalla negra
 
-  const [vhsState, setVhsState] = useState("out"); // Estado para el VHS
+  const [vhsState, setVhsState] = useState(Storage.getSetting("vhsState") || "out"); // Estado para el VHS
   const [inputMode, setInputMode] = useState("tv"); // Estado para el modo de entrada
   const [vhsPaused, setVhsPaused] = useState(true); // Estado para saber si el VHS está pausado
 
@@ -236,19 +236,18 @@ const MainScreen = (props) => {
       playerRef.current.src(source); 
       playerRef.current.load(); 
       handleVolume();
-      console.log("Video Saved in Storage", channel);
+      Utils.log("Video Saved in Storage", channel);
       Storage.saveSetting("channel", channel);      
       handleApiAnswer(channel);        
 
     }catch(e){
-      console.error("Error al cambiar la fuente del reproductor:", e);
+      Utils.error("Error al cambiar la fuente del reproductor:", e);
       Storage.removeSetting("channel");
     }
     
   }
 
-  const handleApiAnswer = (channel) => {    
-    console.log("Reproduciendo video", channel.id.length);
+  const handleApiAnswer = (channel) => {        
     if(appSettings.solutionLength === channel.id.length){
       escapp.checkNextPuzzle(parseInt(channel.id), {}, (success, erState) => {
         Utils.log("Check solution Escapp response", success, erState);
@@ -317,6 +316,7 @@ const MainScreen = (props) => {
 
   
   const handleVolume = () =>{
+    if(playerRef.current === null || playerVhsRef.current === null)return;
     setTimeout(() => {
       if (volume <= 0) {
         playerRef.current.muted(true); 
@@ -361,17 +361,17 @@ const MainScreen = (props) => {
     };
   }, []);
 
+ 
+
 
 
   const powerButtonOnClick = () => {
     setVideoError(false);
-    if(playerRef.current === null || playerVhsRef.current === null){ 
-      Utils.log("Error: El reproductor no está inicializado");
-      setVideoError(true);
-      //videoOptions.sources = [{ src: appSettings.defaultVideo.src, type: appSettings.defaultVideo.type }];
-      //setPlayerOptions(videoOptions);
-      wrongChannel();
-      return;
+    if(playerRef.current === null){
+      reinitializePlayer("tv");
+    }
+    if(playerVhsRef.current === null){ 
+      reinitializePlayer("vhs");
     } 
     const shortBeep = document.getElementById("audio_beep");
     shortBeep.currentTime = 0;
@@ -430,6 +430,7 @@ const MainScreen = (props) => {
       vhsSound.play(); 
       setVhsPaused(true);
       setVhsState("in"); 
+      Storage.saveSetting("vhsState", "in");
     }
   }
 
@@ -439,6 +440,7 @@ const MainScreen = (props) => {
       vhsSound.currentTime = 0;
       vhsSound.play(); 
       setVhsState("out"); 
+      Storage.saveSetting("vhsState", "out");
       (appSettings.displayVHS && playerVhsRef.current) && playerVhsRef.current.pause(); 
     }
   }
@@ -475,6 +477,7 @@ const MainScreen = (props) => {
     }else if(inputMode === "vhs") {
       if(playerRef.current === null){ 
         Utils.log("Error: El reproductor no está inicializado");
+        reinitializePlayer();
         return;
       } 
       setInputMode("tv"); 
@@ -484,6 +487,60 @@ const MainScreen = (props) => {
       setTimeout(() => {
           setPassword("");  
       }, 1500); 
+    }
+  }
+
+  const reinitializePlayer = (error) => { 
+    Storage.removeSetting("channel");
+    Utils.log("Reinicializando reproductor ",error," ...");    
+    const DefaultOptions = { 
+      autoplay: false, 
+      controls: false,
+      responsive: true,
+      fluid: true,
+      loop: true,
+      muted: false,
+      techOrder: ["html5", "youtube"],
+      sources: [
+        { 
+          src: appSettings.defaultVideo.src, // Usar video por defecto en lugar del inputChannel
+          type: appSettings.defaultVideo.type 
+        }
+      ],
+      userActions: { click: false }, 
+      youtube: {
+        iv_load_policy: 3,
+        modestbranding: 1,
+        rel: 0,
+        showinfo: 0,
+        controls: 0,
+        autoplay: error === "vhs" ? 0 : 1
+        }
+    };    
+    if(error=== "tv") {
+      setPlayerOptions(DefaultOptions);
+      setTimeout(() => {
+        if(playerRef.current) {        
+          setVideoError(false);
+          playerRef.current.play();
+          playerRef.current.volume(volume);
+        } else {
+          setVideoError(true);
+          Utils.log("Error: No se pudo reinicializar el reproductor TV");
+        }
+      }, 1000);
+    }else if(error=== "vhs") {
+      setPlayerVhsOptions(DefaultOptions);
+      setTimeout(() => {
+        if(playerVhsRef.current) {
+          setVideoError(false);
+          playerVhsRef.current.play();
+          playerVhsRef.current.volume(volume);
+        } else {
+          setVideoError(true);
+          Utils.log("Error: No se pudo reinicializar el reproductor VHS");
+        }
+      }, 1000);
     }
   }
 
@@ -526,7 +583,6 @@ const MainScreen = (props) => {
       return;
     }
     
-    //playerVhsRef.current.forward();
     const currentTime = playerVhsRef.current.currentTime();
     const duration = playerVhsRef.current.duration();
     const forwardTime = Math.min(currentTime + 5, duration); // Avanzar 5 segundos    
