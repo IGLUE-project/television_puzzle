@@ -10,6 +10,7 @@ export const DEFAULT_APP_SETTINGS = {
   backgroundPowerButton: "images/standard/background_power_button.png",
   vhsOut: "images/standard/vhs_out.png",
   vhsIn: "images/standard/vhs_in.png",
+  backgroundButtonTv: "images/standard/background_button_tv.png",
   backgroundMessage: "images/standard/background_message.png",
   soundBeep: "sounds/beep.mp3",
   soundVHS: "sounds/vhs_tape_in.wav", // Sound for VHS insertion/removal
@@ -38,7 +39,7 @@ export const DEFAULT_APP_SETTINGS = {
   channelNumberTop: "15%", // Top position of the channel number in the TV
   channelNumberLeft: "18%", // Left position of the channel number in the TV
   remoteWidth: 0.4,
-  remoteBottom:"-80%",
+  remoteBottom:"-87%",
   showRemote: true, // Whether to show the remote control
   buttonsTop: ["12%", "22%", "32%", "42%", "52%", "62%", "72%"], // Top positions for the rows of buttons in the remote
   buttonsLeft: "50%", // Left position for the remote buttons
@@ -60,9 +61,15 @@ export const DEFAULT_APP_SETTINGS = {
   pausedIconSize: "25vmin", // Size of the paused icon in the remote
   pausedIconColor: "rgb(15, 167, 15)", // Color of the paused icon in the remote
   noTapeFontSize: "0.06",
+  buttonTvWidth: 0.09, // Size of the button text in the TV
+  buttonTvHeight: 0.1, // Height of the button text in the TV
+  buttonTvMarginTop: "17%", // Margin top for the button text in the TV
+  buttonTvMarginLeft: "48%", // Margin left for the button text in the TV
+  buttonTvIconMarginTop: "-5%",
+  buttonTvIconSize: "4.5vmin", // Size of the icon in the TV button
   defaultVideo:{src: "videos/WhiteNoise.mp4", type: "video/mp4"},
   channels : [
-    { id: "11111", name: "Never gonna give you up", src:"https://www.youtube.com/watch?v=dQw4w9WgXcQ", type: "video/youtube" },
+    { id: "11", name: "Never gonna give you up", src:"https://www.youtube.com/watch?v=dQw4w9WgXcQ", type: "video/youtube" },
     { id: "12345", name: "Anuncios de los 90", src:"https://www.youtube.com/watch?v=G1dGb_i3ZU8", type: "video/youtube" }, 
   ],
   inputChannel: {id: "-1", name: "vhs", type:"video/youtube", src:"https://www.youtube.com/watch?v=EYZUikg-NXE"}, // Default input channel for the VHS
@@ -168,7 +175,13 @@ export const SKIN_SETTINGS_FUTURISTIC = {
   volumeBarLeft: 0.25,
   volumeFontSize: 0.08,
   soundVHS: "sounds/dvd.wav",
+  buttonTvWidth: 0.07, // Size of the button text in the TV
+  buttonTvHeight: 0.06, // Height of the button text in the TV
+  buttonTvMarginTop: "17.5%", // Margin top for the button text in the TV
+  buttonTvMarginLeft: "27%", // Margin left for the button text in the TV
+  buttonTvIconSize: "4vmin", // Size of the icon in the TV button
   inputChannel: {id: "-1", name: "DVD", type:"video/youtube", src:"https://www.youtube.com/watch?v=EYZUikg-NXE"},
+  
 };
 
 export const ESCAPP_CLIENT_SETTINGS = {

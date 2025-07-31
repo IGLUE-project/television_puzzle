@@ -37,6 +37,10 @@ const MainScreen = (props) => {
   const [showCursor, setShowCursor] = useState(false); // Controla si se muestra el guion bajo
   const [isPoweredOn, setIsPoweredOn] = useState(false); // Estado para controlar si el TV está encendido
 
+  const [videoError, setVideoError] = useState(false); // Estado para manejar errores de video
+
+  const correctAnswerRef = useRef('');
+
   const savedChannel = Storage.getSetting("channel") || appSettings.defaultVideo; // Recupera el canal guardado del almacenamiento
 
 
@@ -145,7 +149,7 @@ const MainScreen = (props) => {
 
 
   const onClickButton = (value) => {
-    if(processingSolution || !isPoweredOn || inputMode!=="tv" || password==="tv") return; 
+    if(processingSolution || !isPoweredOn || inputMode!=="tv" || password==="tv" || correctAnswerRef.current!=='') return; 
     setPassword(prev => prev + value); 
     const shortBeep = document.getElementById("audio_beep");
     shortBeep.pause();
@@ -195,36 +199,84 @@ const MainScreen = (props) => {
   }, [processingSolution]); 
 
   const wrongChannel = () => {
+    correctAnswerRef.current='';
     setPlayerOptions(appSettings.defaultVideo);
-    if (playerRef.current) {
-      try{
-        playerRef.current.pause(); 
-        playerRef.current.src(appSettings.defaultVideo); 
-        playerRef.current.load(); 
-        handleVolume(); 
-        playerRef.current.oncanplay = () => {
-          playerRef.current.play();
-        };       
-      }catch(e){
-        console.error("Error al cambiar la fuente del reproductor:", e);
-      }
+    setVideoError(false);
+    if(playerRef.current === null ){ 
+        Utils.log("Error: El reproductor no está inicializado");
+        setVideoError(true);
+        Storage.removeSetting("channel");
+        return;
+      } 
+    try{
+      playerRef.current.pause(); 
+      playerRef.current.src(appSettings.defaultVideo); 
+      playerRef.current.load(); 
+      handleVolume(); 
+      playerRef.current.oncanplay = () => {
+        playerRef.current.play();
+      };       
+    }catch(e){
+      console.error("Error al cambiar la fuente del reproductor:", e);
     }
   }
 
   const rightChannel = (channel) => {
     setPlayerOptions(channel); 
     let source= {src: channel.src, type: channel.type}; 
-    if (playerRef.current) {
-      try{
-        playerRef.current.pause(); 
-        playerRef.current.src(source); 
-        playerRef.current.load(); 
-        handleVolume();
-        Storage.saveSetting("channel", channel); 
-      }catch(e){
-        console.error("Error al cambiar la fuente del reproductor:", e);
-      }
+    setVideoError(false);
+    if(playerRef.current === null){ 
+      Utils.log("Error: El reproductor no está inicializado");
+      Storage.removeSetting("channel");
+      setVideoError(true);
+      return;
+    } 
+    try{        
+      playerRef.current.pause(); 
+      playerRef.current.src(source); 
+      playerRef.current.load(); 
+      handleVolume();
+      console.log("Video Saved in Storage", channel);
+      Storage.saveSetting("channel", channel);      
+      handleApiAnswer(channel);        
+
+    }catch(e){
+      console.error("Error al cambiar la fuente del reproductor:", e);
+      Storage.removeSetting("channel");
     }
+    
+  }
+
+  const handleApiAnswer = (channel) => {    
+    console.log("Reproduciendo video", channel.id.length);
+    if(appSettings.solutionLength === channel.id.length){
+      escapp.checkNextPuzzle(parseInt(channel.id), {}, (success, erState) => {
+        Utils.log("Check solution Escapp response", success, erState);
+          try {            
+              successChannel(channel,success);                        
+          } catch(e){
+            Utils.log("Error in checkNextPuzzle",e);
+          }              
+      });  
+    }  
+
+  };
+
+
+  const successChannel = (channel,success) => {
+      if (success) {      
+        if(appSettings.checkSolution === "AFTER_ENTER_CHANNEL"){
+          props.onKeypadSolved(channel);
+        }else if(appSettings.checkSolution === "AFTER_WATCH_VIDEO"){
+          correctAnswerRef.current = channel;
+          if(channel.id==="-1"){
+            playerVhsRef.current.loop(false);
+          }else{
+            playerRef.current.loop(false);
+          }
+        }      
+      } else {correctAnswerRef.current=''; } 
+    
   }
 
   const increaseVolume = () => {
@@ -312,10 +364,20 @@ const MainScreen = (props) => {
 
 
   const powerButtonOnClick = () => {
+    setVideoError(false);
+    if(playerRef.current === null || playerVhsRef.current === null){ 
+      Utils.log("Error: El reproductor no está inicializado");
+      setVideoError(true);
+      //videoOptions.sources = [{ src: appSettings.defaultVideo.src, type: appSettings.defaultVideo.type }];
+      //setPlayerOptions(videoOptions);
+      wrongChannel();
+      return;
+    } 
     const shortBeep = document.getElementById("audio_beep");
     shortBeep.currentTime = 0;
     shortBeep.play();
     let audio = null;
+
     setTimeout(() => {
       setIsPoweredOn(prev => {
         const newPowerState = !prev;
@@ -382,7 +444,7 @@ const MainScreen = (props) => {
   }
 
   const inputOnClick = () => {
-    if(!isPoweredOn || processingSolution || !appSettings.displayVHS) return; 
+    if(!isPoweredOn || processingSolution || !appSettings.displayVHS || correctAnswerRef.current!=='') return; 
     const shortBeep = document.getElementById("audio_beep");
     shortBeep.currentTime = 0;
     shortBeep.play();
@@ -395,14 +457,26 @@ const MainScreen = (props) => {
       setBlackScreenChannels(false); 
     }, 900); 
     if( inputMode === "tv") {
+      if(playerVhsRef.current === null){ 
+        Utils.log("Error: El reproductor VHS no está inicializado");
+        return;
+      } 
       setInputMode("vhs"); 
       setPassword(appSettings.inputChannel.name); 
       setTimeout(() => {       
           setPassword("");       
       }, 1500);
-      (vhsPaused || vhsState!=="in") ? playerVhsRef.current.pause() : playerVhsRef.current.play();
+      if(vhsPaused || vhsState!=="in") {
+        playerVhsRef.current.pause();
+      } else {
+        playerVhsRef.current.play();
+      }
       playerRef.current.pause(); 
     }else if(inputMode === "vhs") {
+      if(playerRef.current === null){ 
+        Utils.log("Error: El reproductor no está inicializado");
+        return;
+      } 
       setInputMode("tv"); 
       setPassword("tv"); 
       playerVhsRef.current.pause(); 
@@ -418,6 +492,12 @@ const MainScreen = (props) => {
     shortBeep.currentTime = 0;
     shortBeep.play();
     if(!isPoweredOn || processingSolution || !appSettings.displayVHS || inputMode==="tv" || vhsState!=="in") return; // No permite interacción si el TV está apagado
+    setVideoError(false);
+    if(playerVhsRef.current === null){ 
+      Utils.log("Error: El reproductor VHS no está inicializado");
+      setVideoError(true);
+      return;
+    } 
     if(!vhsPaused){
       playerVhsRef.current.pause(); 
       setVhsPaused(true); 
@@ -427,6 +507,7 @@ const MainScreen = (props) => {
       }, 1000); 
     }else{
       playerVhsRef.current.play(); 
+      correctAnswerRef.current === '' && handleApiAnswer(appSettings.inputChannel);
       setPassword("Play ▶");
       setTimeout(() => {
         setPassword(""); 
@@ -434,6 +515,53 @@ const MainScreen = (props) => {
       setVhsPaused(false); 
     }
   }
+
+  const handleVideoForward = () => {
+    if(!isPoweredOn || processingSolution || !appSettings.displayVHS || inputMode==="tv" || vhsState!=="in" || correctAnswerRef.current!=='') return; // No permite interacción si el TV está apagado
+    const shortBeep = document.getElementById("audio_beep");
+    shortBeep.currentTime = 0;
+    shortBeep.play();
+    if(playerVhsRef.current === null){ 
+      Utils.log("Error: El reproductor VHS no está inicializado");
+      return;
+    }
+    
+    //playerVhsRef.current.forward();
+    const currentTime = playerVhsRef.current.currentTime();
+    const duration = playerVhsRef.current.duration();
+    const forwardTime = Math.min(currentTime + 5, duration); // Avanzar 5 segundos    
+    playerVhsRef.current.currentTime(forwardTime);
+    setPassword("▶▶");
+    setTimeout(() => {
+      setPassword(""); 
+    }, 600); 
+
+  }
+
+  const handleVideoRewind = () => {
+    if(!isPoweredOn || processingSolution || !appSettings.displayVHS || inputMode==="tv" || vhsState!=="in" ) return; // No permite interacción si el TV está apagado
+    const shortBeep = document.getElementById("audio_beep");
+    shortBeep.currentTime = 0;
+    shortBeep.play();
+    if(playerVhsRef.current === null){ 
+      Utils.log("Error: El reproductor VHS no está inicializado");
+      return;
+    }
+    const currentTime = playerVhsRef.current.currentTime();
+    const rewindTime = Math.max(currentTime - 5, 0); // Retroceder 5 segundos
+    playerVhsRef.current.currentTime(rewindTime);
+    setPassword("◀◀");
+    setTimeout(() => {
+      setPassword(""); 
+    }, 600); 
+     
+  }
+  
+  const handleVideoEnded = () => {
+    if(correctAnswerRef.current==='')return;
+    props.onKeypadSolved(correctAnswerRef.current.id);
+  }
+
   {/** TV Retro */}
   const TV_Buttons = (<>
     <div style={{position:"relative", width: containerWidth, height: containerHeight }}>
@@ -505,10 +633,18 @@ const MainScreen = (props) => {
       
       {/* Video  */}      
       <div className='video_container' style={{position: "absolute", width: boxWidth*appSettings.videoPlayerWidth, left: appSettings.videoPlayerLeft, top: appSettings.videoPlayerTop, zIndex: inputMode==="tv" ? 1 : -1}}>
-        <VideoJS  options={playerOptions} onReady={(player) => {playerRef.current = player;}} powerOn={isPoweredOn}/>  
+        <VideoJS  options={playerOptions} powerOn={isPoweredOn} onReady={(player) => {playerRef.current = player;
+            player.on('ended', () => {handleVideoEnded();});            
+            player.on('error', () => { Storage.removeSetting("channel");Utils.log("Error en video TV", player.error()); setVideoError(true);});
+            player.on('techError',() => {Utils.log("Error en video TV", player.error());});}}
+        />  
       </div>
       {appSettings.displayVHS && <div className='video_container' style={{position: "absolute", width: boxWidth*appSettings.videoPlayerWidth, left: appSettings.videoPlayerLeft, top: appSettings.videoPlayerTop, zIndex: inputMode==="vhs" ? 1 : -1}}>
-        <VideoJS  options={playerVhsOptions} onReady={(player) => {playerVhsRef.current = player;}} powerOn={isPoweredOn}/>  
+        <VideoJS  options={playerVhsOptions} powerOn={isPoweredOn} onReady={(player) => {playerVhsRef.current = player;
+          player.on('ended', () => {handleVideoEnded();});        
+          player.on('error', () => { Storage.removeSetting("channel"); Utils.log("Error en video TV", player.error()); setVideoError(true);});
+          player.on('techError',() => {Utils.log("Error en video TV", player.error());});}}
+        />  
       </div>}
 
       {blackScreenChannels && <div className='empty_black' style={{zIndex: 2,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>}
@@ -520,6 +656,11 @@ const MainScreen = (props) => {
       {(appSettings.displayVHS && inputMode==="vhs" && vhsState!=="in") && 
         <div className='novhs_screen' style={{zIndex: 2,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}>
           <p className='noTapeText' style={{fontSize:containerWidth*appSettings.noTapeFontSize}}>{I18n.getTrans("i.noVideoTape")}</p>
+        </div>
+      }
+      {videoError &&
+        <div className='novhs_screen' style={{zIndex: 2,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}>
+          <p className='noTapeText' style={{fontSize:containerWidth*appSettings.noTapeFontSize}}>{I18n.getTrans("i.error")}</p>
         </div>
       }
       <div className={`screen-content ${!isPoweredOn ? 'tv-off' : ''} ${blackScreen ? 'shutdown' : ''}`}    style={{zIndex: (!isPoweredOn || blackScreen) ? 2 : -1,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}/>     
@@ -550,10 +691,18 @@ const MainScreen = (props) => {
         <div style={{overflow: "visible", width: containerWidth, height:containerHeight, position:"absolute"}}>
           {appSettings.displayVHS && <>
             {vhsState === "out" && <div className='vhsTapeOut' style={{ top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsOut + '")', }} onClick={handleVhsClick}/>   }
-            {vhsState === "in" && <div className='vhsTapeIn' style={{ top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")', }}  />   }</>}
-          <Remote boxWidth={containerWidth} boxHeight={containerHeight} onClickButton={onClickButton} decreaseVolume={decreaseVolume} increaseVolume={increaseVolume} powerButtonOnClick={powerButtonOnClick} handlePlayPause={handlePlayPause} ejectTapeOnClick={ejectTapeOnClick} inputOnClick={inputOnClick}/>
+            {vhsState === "in" && <div className='vhsTapeIn' style={{ top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")', }}  />   }</>} 
+
+          <Remote boxWidth={containerWidth} boxHeight={containerHeight} onClickButton={onClickButton} decreaseVolume={decreaseVolume} increaseVolume={increaseVolume} powerButtonOnClick={powerButtonOnClick} handlePlayPause={handlePlayPause} ejectTapeOnClick={ejectTapeOnClick} inputOnClick={inputOnClick} rewind={handleVideoRewind} forward={handleVideoForward}/>
         </div> :
           TV_Buttons
+      }
+      {(appSettings.displayVHS && appSettings.skin !== "RETRO")  &&
+        <div className="boxButton" style={{zIndex:20,width:containerWidth*appSettings.buttonTvWidth, height:containerHeight*appSettings.buttonTvHeight, marginLeft:appSettings.buttonTvMarginLeft, marginTop:appSettings.buttonTvMarginTop, backgroundImage: 'url("' + appSettings.backgroundButtonTv + '")',}} onClick={ejectTapeOnClick}>
+          <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>               
+              <svg style={{marginTop:appSettings.buttonTvIconMarginTop}} width={appSettings.buttonTvIconSize} height={appSettings.buttonTvIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M200-200v-80h560v80H200Zm14-160 266-400 266 400H214Zm266-80Zm-118 0h236L480-616 362-440Z"/></svg>
+          </div>
+        </div>
       }
 
 

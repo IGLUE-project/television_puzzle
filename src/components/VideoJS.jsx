@@ -23,7 +23,6 @@ export const VideoJS = (props) => {
       });
       if (!powerOn) {
           player.pause();
-          //player.muted(true);
         }
       
     // You could update an existing player in the `else` block here

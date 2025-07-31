@@ -54,21 +54,25 @@ const Remote = (props) => {
             </div>
             <BoxButton value={"+"} position={13} onClick={props.increaseVolume} boxHeight={props.boxHeight} boxWidth={props.boxWidth} button={props.button}/>
         </div>
-        {appSettings.displayVHS &&
+        {appSettings.displayVHS &&        
         <div id="row6" className="row" style={{top: appSettings.buttonsTop[6], left: appSettings.buttonsLeft}}>
+            <div className="boxButton" onClick={props.rewind} style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
+                <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>    
+                    <svg width={appSettings.soundIconSize} height={appSettings.soundIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M860-240 500-480l360-240v480Zm-400 0L100-480l360-240v480Zm-80-240Zm400 0Zm-400 90v-180l-136 90 136 90Zm400 0v-180l-136 90 136 90Z"/></svg>
+                </div>
+            </div>
             <div className="boxButton" onClick={props.handlePlayPause} style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
                 <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>                    
                     <svg width={appSettings.buttonFontSize}  height={appSettings.buttonFontSize}  viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg"  fill={appSettings.buttonTextColor} stroke={appSettings.buttonTextColor}> <path d="M200-312v-336l240 168-240 168Zm320-8v-320h80v320h-80Zm160 0v-320h80v320h-80Z"/></svg>
                 </div>
-            </div>
-            
-            <div className="boxButton" onClick={props.ejectTapeOnClick} style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
+            </div>            
+            <div className="boxButton" onClick={props.forward} style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
                 <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>    
-                    <svg width={appSettings.soundIconSize} height={appSettings.soundIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M200-200v-80h560v80H200Zm14-160 266-400 266 400H214Zm266-80Zm-118 0h236L480-616 362-440Z"/></svg>                
+                    <svg width={appSettings.soundIconSize} height={appSettings.soundIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M100-240v-480l360 240-360 240Zm400 0v-480l360 240-360 240ZM180-480Zm400 0Zm-400 90 136-90-136-90v180Zm400 0 136-90-136-90v180Z"/></svg>
                     
                 </div>
             </div>
-            <div style={{width:props.boxWidth*appSettings.buttonWidth, height:props.boxHeight*appSettings.buttonHeight,}}/>
+           
         </div>
     }
       </div>

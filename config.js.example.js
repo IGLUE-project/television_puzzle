@@ -6,6 +6,7 @@ export let ESCAPP_APP_SETTINGS = {
   //background: "NONE", //background can be "NONE" or a URL.
   actionAfterSolve: "SHOW_MESSAGE", //actionAfterSolve can be "NONE" or "SHOW_MESSAGE".
   //message: "Custom message",
+  checkSolution: "AFTER_WATCH_VIDEO", //checkSolution can be "AFTER_ENTER_CHANNEL" or "AFTER_WATCH_VIDEO".
 
   //Settings that will be automatically specified by the Escapp server
   solutionLength: 4,
