@@ -3,7 +3,7 @@ export const DEFAULT_APP_SETTINGS = {
   actionAfterSolve: "NONE",
   message: undefined,
   keysType: "NUMBERS",
-  background: "images/standard/background2.png",
+  background: "images/standard/background.png",
   backgroundTV : "images/standard/background_TV.png",
   backgroundRemote : "images/standard/background_remote.png",
   backgroundButton: "images/standard/background_button.png",
@@ -76,7 +76,7 @@ export const DEFAULT_APP_SETTINGS = {
 };
 
 export const SKIN_SETTINGS_RETRO = {
-  background: "images/retro/background2.png",
+  background: "images/retro/background.png",
   backgroundTV : "images/retro/background_TV.png",
   backgroundButton: "images/retro/background_button.png",
   backgroundPowerButton: "images/retro/retro_power_button.png",
@@ -134,7 +134,7 @@ export const SKIN_SETTINGS_RETRO = {
 };
 
 export const SKIN_SETTINGS_FUTURISTIC = {
-  background: "images/futuristic/background2.png",
+  background: "images/futuristic/background.png",
   backgroundTV : "images/futuristic/background_TV2.png",
   backgroundRemote : "images/futuristic/background_remote.png",
   backgroundButton: "images/futuristic/background_button.png",
