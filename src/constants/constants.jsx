@@ -63,8 +63,8 @@ export const DEFAULT_APP_SETTINGS = {
   noTapeFontSize: "0.06",
   buttonTvWidth: 0.09, // Size of the button text in the TV
   buttonTvHeight: 0.1, // Height of the button text in the TV
-  buttonTvMarginTop: "17%", // Margin top for the button text in the TV
-  buttonTvMarginLeft: "48%", // Margin left for the button text in the TV
+  buttonTvMarginTop: "45.5%", // Margin top for the button text in the TV
+  buttonTvMarginLeft: "79%", // Margin left for the button text in the TV
   buttonTvIconMarginTop: "-5%",
   buttonTvIconSize: "4.5vmin", // Size of the icon in the TV button
   defaultVideo:{src: "videos/WhiteNoise.mp4", type: "video/mp4"},
@@ -177,8 +177,8 @@ export const SKIN_SETTINGS_FUTURISTIC = {
   soundVHS: "sounds/dvd.wav",
   buttonTvWidth: 0.07, // Size of the button text in the TV
   buttonTvHeight: 0.06, // Height of the button text in the TV
-  buttonTvMarginTop: "17.5%", // Margin top for the button text in the TV
-  buttonTvMarginLeft: "27%", // Margin left for the button text in the TV
+  buttonTvMarginTop: "56.5%", // Margin top for the button text in the TV
+  buttonTvMarginLeft: "65%", // Margin left for the button text in the TV
   buttonTvIconSize: "4vmin", // Size of the icon in the TV button
   inputChannel: {id: "-1", name: "DVD", type:"video/youtube", src:"https://www.youtube.com/watch?v=EYZUikg-NXE"},
   

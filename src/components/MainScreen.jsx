@@ -688,21 +688,18 @@ const MainScreen = (props) => {
       <audio id="audio_tv_off" src={appSettings.soundTvOff} autostart="false" preload="auto" />
       </div>
       {appSettings.showRemote ?
-        <div style={{overflow: "visible", width: containerWidth, height:containerHeight, position:"absolute"}}>
+        <div style={{overflow: "visible", width: containerWidth, height:containerHeight, position:"absolute", zIndex: 10,}}>
           {appSettings.displayVHS && <>
             {vhsState === "out" && <div className='vhsTapeOut' style={{ top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsOut + '")', }} onClick={handleVhsClick}/>   }
             {vhsState === "in" && <div className='vhsTapeIn' style={{ top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")', }}  />   }</>} 
-
+          <div className="boxButton" style={{zIndex:20,width:containerWidth*appSettings.buttonTvWidth, height:containerHeight*appSettings.buttonTvHeight, marginLeft:appSettings.buttonTvMarginLeft, marginTop:appSettings.buttonTvMarginTop, backgroundImage: 'url("' + appSettings.backgroundButtonTv + '")',}} onClick={ejectTapeOnClick}>
+            <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>               
+                <svg style={{marginTop:appSettings.buttonTvIconMarginTop}} width={appSettings.buttonTvIconSize} height={appSettings.buttonTvIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M200-200v-80h560v80H200Zm14-160 266-400 266 400H214Zm266-80Zm-118 0h236L480-616 362-440Z"/></svg>
+            </div>
+          </div>
           <Remote boxWidth={containerWidth} boxHeight={containerHeight} onClickButton={onClickButton} decreaseVolume={decreaseVolume} increaseVolume={increaseVolume} powerButtonOnClick={powerButtonOnClick} handlePlayPause={handlePlayPause} ejectTapeOnClick={ejectTapeOnClick} inputOnClick={inputOnClick} rewind={handleVideoRewind} forward={handleVideoForward}/>
         </div> :
           TV_Buttons
-      }
-      {(appSettings.displayVHS && appSettings.skin !== "RETRO")  &&
-        <div className="boxButton" style={{zIndex:20,width:containerWidth*appSettings.buttonTvWidth, height:containerHeight*appSettings.buttonTvHeight, marginLeft:appSettings.buttonTvMarginLeft, marginTop:appSettings.buttonTvMarginTop, backgroundImage: 'url("' + appSettings.backgroundButtonTv + '")',}} onClick={ejectTapeOnClick}>
-          <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>               
-              <svg style={{marginTop:appSettings.buttonTvIconMarginTop}} width={appSettings.buttonTvIconSize} height={appSettings.buttonTvIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M200-200v-80h560v80H200Zm14-160 266-400 266 400H214Zm266-80Zm-118 0h236L480-616 362-440Z"/></svg>
-          </div>
-        </div>
       }
 
 
