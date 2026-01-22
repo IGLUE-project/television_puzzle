@@ -69,10 +69,10 @@ export const DEFAULT_APP_SETTINGS = {
   buttonTvIconSize: "4.5vmin", // Size of the icon in the TV button
   defaultVideo:{src: "videos/WhiteNoise.mp4", type: "video/mp4"},
   channels : [
-    { id: "11", name: "Never gonna give you up", src:"https://www.youtube.com/watch?v=dQw4w9WgXcQ", type: "video/youtube" },
-    { id: "12345", name: "Anuncios de los 90", src:"https://www.youtube.com/watch?v=G1dGb_i3ZU8", type: "video/youtube" }, 
+    { id: "11", src:"videos/lions.webm" },
+    { id: "12345", src:"videos/monkey.webm" }, 
   ],
-  inputChannel: {id: "-1", name: "vhs", type:"video/youtube", src:"https://www.youtube.com/watch?v=EYZUikg-NXE"}, // Default input channel for the VHS
+  inputChannel: {id: "-1", name: "vhs", src:"videos/spain_metro.webm"}, // Default input channel for the VHS
 };
 
 export const SKIN_SETTINGS_RETRO = {
@@ -180,7 +180,7 @@ export const SKIN_SETTINGS_FUTURISTIC = {
   buttonTvMarginTop: "56.5%", // Margin top for the button text in the TV
   buttonTvMarginLeft: "65%", // Margin left for the button text in the TV
   buttonTvIconSize: "4vmin", // Size of the icon in the TV button
-  inputChannel: {id: "-1", name: "DVD", type:"video/youtube", src:"https://www.youtube.com/watch?v=EYZUikg-NXE"},
+  inputChannel: {id: "-1", name: "DVD", src:"videos/spain_metro.webm"}, // Default input channel for the VHS
   
 };
 

@@ -4,7 +4,6 @@ import './../assets/scss/main.scss';
 import BoxButton from './BoxButton.jsx';
 import Remote from './Remote.jsx';
 import "video.js/dist/video-js.css";
-import "videojs-youtube";
 import { VideoJS } from './VideoJS.jsx'; // Importa el componente VideoJS
 import FuzzyOverlayExample from './FuzzyOverlay.jsx'; // Importa el componente FuzzyOverlayExample
 
@@ -43,6 +42,7 @@ const MainScreen = (props) => {
 
   const savedChannel = Storage.getSetting("channel") || appSettings.defaultVideo; // Recupera el canal guardado del almacenamiento
 
+  const skin = appSettings.skin;
 
   const videoOptions = { 
     autoplay: false, // Cambiado a false para que no se reproduzca automáticamente
@@ -51,21 +51,12 @@ const MainScreen = (props) => {
     fluid: true,
     loop: true,
     muted: false,
-    techOrder: ["html5", "youtube"],
+    techOrder: ["html5"],
     sources: [
       { src: savedChannel.src,
         type: savedChannel.type}
     ],
     userActions: { click: false },
-    // Configuración específica para YouTube
-    youtube: {
-      iv_load_policy: 3,
-      modestbranding: 1,
-      rel: 0,
-      showinfo: 0,
-      controls: 0,
-      autoplay: 1
-    }
   };
 
   const vhsOptions = { 
@@ -75,21 +66,12 @@ const MainScreen = (props) => {
     fluid: true,
     loop: true,
     muted: false,
-    techOrder: ["html5", "youtube"],
+    techOrder: ["html5"],
     sources: [
       { src: appSettings.displayVHS ? appSettings.inputChannel.src : savedChannel.src,
         type: appSettings.displayVHS ? appSettings.inputChannel.type : savedChannel.type} 
     ],
     userActions: { click: false }, 
-    // Configuración específica para YouTube
-    youtube: {
-      iv_load_policy: 3,
-      modestbranding: 1,
-      rel: 0,
-      showinfo: 0,
-      controls: 0,
-      autoplay: 0
-    }
   };
   const [playerOptions, setPlayerOptions] = useState(videoOptions); // Estado para las opciones del reproductor
   const [playerVhsOptions, setPlayerVhsOptions] = useState(vhsOptions);
@@ -241,34 +223,32 @@ const MainScreen = (props) => {
       handleApiAnswer(channel);        
 
     }catch(e){
-      Utils.error("Error al cambiar la fuente del reproductor:", e);
+      Utils.log("Error al cambiar la fuente del reproductor:", e);
       Storage.removeSetting("channel");
     }
     
   }
 
-  const handleApiAnswer = (channel) => {        
-    if(appSettings.solutionLength === channel.id.length){
-      escapp.checkNextPuzzle(parseInt(channel.id), {}, (success, erState) => {
+  const handleApiAnswer = (channel) => {
+    const parsedChannel = channel.id.split("").join(";");
+      escapp.checkNextPuzzle(parsedChannel, {}, (success, erState) => {
         Utils.log("Check solution Escapp response", success, erState);
           try {            
-              successChannel(channel,success);                        
+              successChannel(channel,parsedChannel,success);                        
           } catch(e){
             Utils.log("Error in checkNextPuzzle",e);
           }              
       });  
-    }  
-
   };
 
 
-  const successChannel = (channel,success) => {
+  const successChannel = (parsedChannel,success) => {
       if (success) {      
         if(appSettings.checkSolution === "AFTER_ENTER_CHANNEL"){
-          props.onKeypadSolved(channel);
+          props.onKeypadSolved(parsedChannel);
         }else if(appSettings.checkSolution === "AFTER_WATCH_VIDEO"){
-          correctAnswerRef.current = channel;
-          if(channel.id==="-1"){
+          correctAnswerRef.current = parsedChannel;
+          if(parsedChannel.id==="-1"){
             playerVhsRef.current.loop(false);
           }else{
             playerRef.current.loop(false);
@@ -500,22 +480,14 @@ const MainScreen = (props) => {
       fluid: true,
       loop: true,
       muted: false,
-      techOrder: ["html5", "youtube"],
+      techOrder: ["html5"],
       sources: [
         { 
           src: appSettings.defaultVideo.src, // Usar video por defecto en lugar del inputChannel
           type: appSettings.defaultVideo.type 
         }
       ],
-      userActions: { click: false }, 
-      youtube: {
-        iv_load_policy: 3,
-        modestbranding: 1,
-        rel: 0,
-        showinfo: 0,
-        controls: 0,
-        autoplay: error === "vhs" ? 0 : 1
-        }
+      userActions: { click: false },
     };    
     if(error=== "tv") {
       setPlayerOptions(DefaultOptions);
@@ -615,7 +587,7 @@ const MainScreen = (props) => {
   
   const handleVideoEnded = () => {
     if(correctAnswerRef.current==='')return;
-    props.onKeypadSolved(correctAnswerRef.current.id);
+    props.onKeypadSolved(correctAnswerRef.current.id.split("").join(";"));
   }
 
   {/** TV Retro */}
@@ -711,7 +683,7 @@ const MainScreen = (props) => {
       }
       {(appSettings.displayVHS && inputMode==="vhs" && vhsState!=="in") && 
         <div className='novhs_screen' style={{zIndex: 2,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}>
-          <p className='noTapeText' style={{fontSize:containerWidth*appSettings.noTapeFontSize}}>{I18n.getTrans("i.noVideoTape")}</p>
+          <p className='noTapeText' style={{fontSize:containerWidth*appSettings.noTapeFontSize}}>{ skin==="FUTURISTIC" ? I18n.getTrans("i.noVideoCD") : I18n.getTrans("i.noVideoTape")}</p>
         </div>
       }
       {videoError &&

@@ -29,10 +29,10 @@ const MessageScreen = (props) => {
 
     switch(appSettings.skin){
       case "RETRO":
-        _containerWidth = _keypadWidth * 0.4;
-        _containerHeight = _keypadHeight * 0.4;
+        _containerWidth = _keypadWidth * 0.8;
+        _containerHeight = _keypadHeight * 0.55;
         _containerMarginRight = 0;
-        _containerMarginTop = - _keypadHeight * 0.05;
+        _containerMarginTop = _keypadHeight * 0.19;
         break;
       case "FUTURISTIC":
       default:
@@ -57,7 +57,7 @@ const MessageScreen = (props) => {
   return (
     <div id="screen_message" className="screen_content" style={{ backgroundImage: backgroundImage }}>
       <div id="message_text" style={{ width: containerWidth, height: containerHeight, marginRight: containerMarginRight, marginTop: containerMarginTop }}>
-        <pre>{appSettings.message}</pre>
+        <span>{appSettings.message}</span>
       </div>
       <div className="message_button" onClick={() => props.submitPuzzleSolution()}>{I18n.getTrans("i.continue")}</div>
     </div>
