@@ -91,6 +91,10 @@ export default function App() {
         _appSettings.backgroundKeys = new Array(12).fill(_appSettings.backgroundKey);
     }
 
+    if((typeof _appSettings.vhsVideo !== "undefined")&&(_appSettings.vhsVideo !== "")){
+      _appSettings.inputChannel.src = _appSettings.vhsVideo;
+    }
+
     //Init internacionalization module
     I18n.init(_appSettings);
 

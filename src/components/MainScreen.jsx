@@ -230,15 +230,17 @@ const MainScreen = (props) => {
   }
 
   const handleApiAnswer = (channel) => {
-    const parsedChannel = channel.id.split("").join(";");
+    if(appSettings.solutionLength === channel.id.length || channel.id === "-1"){
+    const parsedChannel = channel.id === "-1" ? "-1" : channel.id.split("").join(";");
       escapp.checkNextPuzzle(parsedChannel, {}, (success, erState) => {
         Utils.log("Check solution Escapp response", success, erState);
           try {            
-              successChannel(channel,parsedChannel,success);                        
+              successChannel(parsedChannel,success);                        
           } catch(e){
             Utils.log("Error in checkNextPuzzle",e);
           }              
       });  
+    }
   };
 
 
@@ -248,7 +250,7 @@ const MainScreen = (props) => {
           props.onKeypadSolved(parsedChannel);
         }else if(appSettings.checkSolution === "AFTER_WATCH_VIDEO"){
           correctAnswerRef.current = parsedChannel;
-          if(parsedChannel.id==="-1"){
+          if(parsedChannel==="-1"){
             playerVhsRef.current.loop(false);
           }else{
             playerRef.current.loop(false);
