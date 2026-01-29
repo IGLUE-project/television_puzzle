@@ -5,7 +5,7 @@ import 'video.js/dist/video-js.css';
 export const VideoJS = (props) => {
   const videoRef = React.useRef(null);
   const playerRef = React.useRef(null);
-  const {options, onReady, powerOn} = props;
+  const { options, onReady, powerOn } = props;
 
   React.useEffect(() => {
 
@@ -22,11 +22,11 @@ export const VideoJS = (props) => {
         onReady && onReady(player);
       });
       if (!powerOn) {
-          player.pause();
-        }
-      
-    // You could update an existing player in the `else` block here
-    // on prop change, for example:
+        player.pause();
+      }
+
+      // You could update an existing player in the `else` block here
+      // on prop change, for example:
     } else {
       const player = playerRef.current;
 
@@ -48,8 +48,16 @@ export const VideoJS = (props) => {
   }, [playerRef]);
 
   return (
-    <div data-vjs-player>
-      <div ref={videoRef} />
+    <div data-vjs-player style={{
+      height: "100%",
+      width: "90%"
+    }}>
+      <div ref={videoRef} style={{
+        display: "flex",
+        height: "100%",
+        width: "100%",
+        alignItems: "center",
+      }} />
     </div>
   );
 }

@@ -13,8 +13,7 @@ export default function App() {
   const [screen, setScreen] = useState(MAIN_SCREEN);
   const prevScreen = useRef(screen);
   const solution = useRef(null);
-  const [appWidth, setAppWidth] = useState(0);
-  const [appHeight, setAppHeight] = useState(0);
+  const [size, setSize] = useState({ width: 0, height: 0 });
   
   useEffect(() => {
     //Init Escapp client
@@ -33,11 +32,6 @@ export default function App() {
     let _appSettings = processAppSettings(_escapp.getAppSettings());
     setAppSettings(_appSettings);
     Utils.log("App settings:", _appSettings);
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    }
   }, []);
 
   function processAppSettings(_appSettings){
@@ -154,23 +148,28 @@ export default function App() {
   }, [escapp, appSettings, Storage]);
 
   useEffect(() => {
-    if(loading === false){
-      handleResize();
-    }
-  }, [loading]);
+    const handleResize = () => {
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
 
-  useEffect(() => {
-    if (screen !== prevScreen.current) {
-      Utils.log("Screen ha cambiado de", prevScreen.current, "a", screen);
-      prevScreen.current = screen;
-      saveAppState();
-    }
-  }, [screen]);
+      let contentPercentage = 1;
 
-  function handleResize(){
-    setAppWidth(window.innerWidth);
-    setAppHeight(window.innerHeight);
-  }
+      const aspectRatio = 926 / 888;
+      let width = windowWidth * contentPercentage;
+      let height = width / aspectRatio;
+
+      if (height > windowHeight * contentPercentage) {
+        height = windowHeight * contentPercentage;
+        width = height * aspectRatio;
+      }
+
+      setSize({ width, height });
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   function restoreAppState(erState){
     Utils.log("Restore application state based on escape room state:", erState);
@@ -257,11 +256,11 @@ export default function App() {
   let screens = [
     {
       id: MAIN_SCREEN,
-      content: <MainScreen appHeight={appHeight} appWidth={appWidth} onKeypadSolved={onKeypadSolved} />
+      content: <MainScreen size={size} onKeypadSolved={onKeypadSolved} />
     },
     {
       id: MESSAGE_SCREEN,
-      content: <MessageScreen appHeight={appHeight} appWidth={appWidth} submitPuzzleSolution={submitPuzzleSolution} />
+      content: <MessageScreen size={size} submitPuzzleSolution={submitPuzzleSolution} />
     }
   ];
 

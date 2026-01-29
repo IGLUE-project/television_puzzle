@@ -13,53 +13,71 @@ const MessageScreen = (props) => {
     handleResize();
   }, [props.appWidth, props.appHeight]);
 
-  function handleResize(){
-    if((props.appHeight === 0)||(props.appWidth === 0)){
+
+  useEffect(() => {
+    handleResize(props.size);
+  }, [props.size]);
+
+
+  function handleResize(size) {
+    if (!size || ((size.height === 0) || (size.width === 0))) {
       return;
     }
 
-    let aspectRatio = 4 / 3;
-    let _keypadWidth = Math.min(props.appHeight * aspectRatio, props.appWidth);
-    let _keypadHeight = _keypadWidth / aspectRatio;
+    let _containerWidth = size.width * 0.8;
+    let _containerHeight = size.height * 0.8;
 
-    let _containerWidth;
-    let _containerHeight;
-    let _containerMarginRight;
-    let _containerMarginTop;
+    let _containerMarginLeft = 0;
+    let _containerMarginTop = size.height * -0.21;
 
-    switch(appSettings.skin){
+    let _boxWidth = size.width * 0.7;
+    let _boxHeight = size.height * 0.7;
+
+
+    switch (appSettings.skin) {
       case "RETRO":
-        _containerWidth = _keypadWidth * 0.8;
-        _containerHeight = _keypadHeight * 0.55;
-        _containerMarginRight = 0;
-        _containerMarginTop = _keypadHeight * 0.19;
+        _containerMarginTop = size.height * -0.12;
+        _containerWidth = size.width * 0.9;
+        _containerHeight = size.height * 0.9;
         break;
       case "FUTURISTIC":
+        _containerMarginTop = size.height * -0.2;
+        _containerHeight = size.height * 1;
+        _containerWidth = size.width * 1;
+        _boxHeight = size.height * 0.9;
+        _boxWidth = size.width * 0.9;
+
+        break;
       default:
-        //Standard skin
-        _containerWidth = _keypadWidth * 0.49;
-        _containerHeight = _keypadHeight * 0.5;
-        _containerMarginRight = _keypadWidth * 0.018;
-        _containerMarginTop = _keypadHeight * 0.03;
     }
 
     setContainerWidth(_containerWidth);
     setContainerHeight(_containerHeight);
-    setContainerMarginRight(_containerMarginRight);
     setContainerMarginTop(_containerMarginTop);
   }
 
+
   let backgroundImage = 'url("' + appSettings.backgroundMessage + '")';
-  if(appSettings.background && appSettings.background !== "NONE"){
+  if (appSettings.background && appSettings.background !== "NONE") {
     backgroundImage += ', url("' + appSettings.background + '")';
   }
 
   return (
-    <div id="screen_message" className="screen_content" style={{ backgroundImage: backgroundImage }}>
-      <div id="message_text" style={{ width: containerWidth, height: containerHeight, marginRight: containerMarginRight, marginTop: containerMarginTop }}>
-        <span>{appSettings.message}</span>
+    <div id="screen_message" className="screen_content" style={{ backgroundImage: 'url(' + appSettings.background + ')' }}>
+      <div id="lockContainer" className="lockContainer"
+        style={{
+          '--background-tv': 'url(' + appSettings.backgroundMessage + ')', width: props.size.width,
+          height: props.size.height, display: "flex",
+          flexDirection: "column",
+          alignItems: "center"
+        }}>
+        <div id="message_text" style={{ width: "85%", height: "80%", zIndex: 10 }}>
+          <span>{appSettings.message}</span>
+        </div>
+        <div className="message_button" style={{ zIndex: 10 }} onClick={() => props.submitPuzzleSolution()}>{I18n.getTrans("i.continue")}</div>
+
       </div>
-      <div className="message_button" onClick={() => props.submitPuzzleSolution()}>{I18n.getTrans("i.continue")}</div>
+
     </div>
   );
 };

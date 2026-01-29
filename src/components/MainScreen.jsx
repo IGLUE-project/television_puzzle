@@ -5,7 +5,6 @@ import BoxButton from './BoxButton.jsx';
 import Remote from './Remote.jsx';
 import "video.js/dist/video-js.css";
 import { VideoJS } from './VideoJS.jsx'; // Importa el componente VideoJS
-import FuzzyOverlayExample from './FuzzyOverlay.jsx'; // Importa el componente FuzzyOverlayExample
 
 const MainScreen = (props) => {
   const { escapp, appSettings, Utils, I18n, Storage } = useContext(GlobalContext);
@@ -79,42 +78,36 @@ const MainScreen = (props) => {
 
 
   useEffect(() => {
-    handleResize();
-  }, [props.appWidth, props.appHeight]);
+    handleResize(props.size);
+  }, [props.size]);
 
-  function handleResize(){
-    if((props.appHeight === 0)||(props.appWidth === 0)){
+  function handleResize(size){
+    if((size.height === 0)||(size.width === 0)){
       return;
     }
 
-    let aspectRatio = 4 / 3;
-    let _keypadWidth = Math.min(props.appHeight * aspectRatio, props.appWidth);
-    let _keypadHeight = _keypadWidth / aspectRatio;
-
-    let _lockWidth = Math.min(props.appHeight * aspectRatio, props.appWidth) ;
-    let _lockHeight = _lockWidth / aspectRatio;
-
-    let _containerWidth = _lockWidth *0.8;
-    let _containerHeight = _lockHeight *0.8;
+    let _containerWidth = size.width *0.8;
+    let _containerHeight = size.height *0.8;
 
     let _containerMarginLeft=0;
-    let _containerMarginTop=_lockHeight * -0.21;
+    let _containerMarginTop=size.height * -0.21;
 
-    let _boxWidth = _lockWidth * 0.7;
-    let _boxHeight = _lockHeight * 0.7;
+    let _boxWidth = size.width * 0.7;
+    let _boxHeight = size.height * 0.7;
 
 
     switch(appSettings.skin){
       case "RETRO":
-        _containerMarginTop = _lockHeight *-0.12;
-        _containerWidth = _lockWidth *0.9;
-        _containerHeight = _lockHeight *0.9;
+        _containerMarginTop = size.height *-0.12;
+        _containerWidth = size.width *0.9;
+        _containerHeight = size.height *0.9;
         break;
       case "FUTURISTIC":
-        _containerMarginTop = _lockHeight * -0.2;
-        _containerHeight = _lockHeight *1;
-        _boxHeight = _lockHeight * 0.9;
-        _boxWidth = _lockWidth * 0.9;
+        _containerMarginTop = size.height * -0.2;
+        _containerHeight = size.height *1;
+        _containerWidth = size.width * 1;
+        _boxHeight = size.height * 0.9;
+        _boxWidth = size.width * 0.9;
 
         break;
       default:
@@ -144,12 +137,6 @@ const MainScreen = (props) => {
     }, 5000);
     setTimer(newTimer);
   
-  }
-
-  //Pone la imagen del fondo
-  let backgroundImage = 'url("' + appSettings.background + '")';
-  if(appSettings.background && appSettings.background !== "NONE"){
-    backgroundImage += ', url("' + appSettings.background + '")';
   }
 
   const handleTimerExpire = () => {
@@ -323,7 +310,7 @@ const MainScreen = (props) => {
     volumeTimeoutRef.current = setTimeout(() => {
       setShowVolume(false); 
       volumeTimeoutRef.current = null; 
-    }, 4000);
+    }, 2000);
   }
 
   useEffect(() => {
@@ -589,12 +576,12 @@ const MainScreen = (props) => {
   
   const handleVideoEnded = () => {
     if(correctAnswerRef.current==='')return;
-    props.onKeypadSolved(correctAnswerRef.current.id.split("").join(";"));
+    props.onKeypadSolved(correctAnswerRef.current);
   }
 
   {/** TV Retro */}
   const TV_Buttons = (<>
-    <div style={{position:"relative", width: containerWidth, height: containerHeight }}>
+    <div style={{position:"absolute", width: containerWidth, height: containerHeight }}>
       {vhsState === "out" && <div className='vhsTapeOut' style={{ top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsOut + '")',}} onClick={handleVhsClick}/>   }
       {vhsState === "in" && <div className='vhsTapeIn' style={{top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")'}}  />   }
 
@@ -611,7 +598,7 @@ const MainScreen = (props) => {
       <div className='boxButton' style={{zIndex: 5,position: "absolute", top:appSettings.powerButtonTop, left:appSettings.powerButtonLeft, width:boxWidth*appSettings.powerButtonWidth, height:boxHeight*appSettings.powerButtonHeight, backgroundImage: 'url("' + appSettings.backgroundPowerButton + '")', cursor:"pointer"}} onClick={powerButtonOnClick}/>
     </div>
     <div style={{ position: "absolute", zIndex: 4, height:containerHeight,  width: containerWidth, }}>    
-      <div style={{position: "absolute", left: appSettings.buttonsLeft,  height: "100%", display: "flex",flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+      <div style={{ height: "100%", display: "flex",flexDirection: "column", alignItems: "flex-end", justifyContent: "center"}}>
         <div id="row1" className="row" style={{ top: appSettings.buttonsTop[0]}}>
           <BoxButton value={"1"} position={1} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
           <BoxButton value={"2"} position={2} onClick={onClickButton} boxHeight={boxHeight} boxWidth={boxWidth} />
@@ -652,88 +639,94 @@ const MainScreen = (props) => {
   </>);
 
   return (
-    <div id="screen_main" className={"screen_content"} style={{ backgroundImage: backgroundImage }}>
-      <div id="lockContainer" className="lockContainer" 
-        style={{backgroundImage: 'url('+appSettings.backgroundTV+')', width: containerWidth, 
-          height: containerHeight,  marginLeft: containerMarginLeft , marginTop: containerMarginTop,
-          display: "flex", alignItems: "center", zIndex:2, pointerEvents:"none",
-          justifyContent: "center", flexDirection: "column"
+    <div id="screen_main" className={"screen_content"} style={{ backgroundImage: 'url(' + appSettings.background + ')' }}>
+      <div id="lockContainer" className="lockContainer"
+        style={{
+          '--background-tv': 'url(' + appSettings.backgroundTV + ')', width: props.size.width,
+          height: props.size.height, marginTop: props.size.height * appSettings.containerMarginTop, marginLeft: props.size.width * appSettings.containerMarginLeft
         }}>
-      <div className='empty_black' style={{top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>
-      
-      {/* Video  */}      
-      <div className='video_container' style={{position: "absolute", width: boxWidth*appSettings.videoPlayerWidth, left: appSettings.videoPlayerLeft, top: appSettings.videoPlayerTop, zIndex: inputMode==="tv" ? 1 : -1}}>
-        <VideoJS  options={playerOptions} powerOn={isPoweredOn} onReady={(player) => {playerRef.current = player;
-            player.on('ended', () => {handleVideoEnded();});            
-            player.on('error', () => { Storage.removeSetting("channel");Utils.log("Error en video TV", player.error()); setVideoError(true);});
-            player.on('techError',() => {Utils.log("Error en video TV", player.error());});}}
-        />  
-      </div>
-      {appSettings.displayVHS && <div className='video_container' style={{position: "absolute", width: boxWidth*appSettings.videoPlayerWidth, left: appSettings.videoPlayerLeft, top: appSettings.videoPlayerTop, zIndex: inputMode==="vhs" ? 1 : -1}}>
-        <VideoJS  options={playerVhsOptions} powerOn={isPoweredOn} onReady={(player) => {playerVhsRef.current = player;
-          player.on('ended', () => {handleVideoEnded();});        
-          player.on('error', () => { Storage.removeSetting("channel"); Utils.log("Error en video TV", player.error()); setVideoError(true);});
-          player.on('techError',() => {Utils.log("Error en video TV", player.error());});}}
-        />  
-      </div>}
+        <div className='empty_black' style={{ width: appSettings.blackScreenWidth, height: appSettings.blackScreenHeight }}></div>
 
-      {blackScreenChannels && <div className='empty_black' style={{zIndex: 2,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}></div>}
-      {(vhsPaused && appSettings.displayVHS && inputMode==="vhs") && 
-        <div className='paused_screen' style={{zIndex: 2,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}>
-          <svg xmlns="http://www.w3.org/2000/svg" height={appSettings.pausedIconSize} viewBox="0 -960 960 960" width={appSettings.pausedIconSize} fill={appSettings.pausedIconColor}><path d="M360-320h80v-320h-80v320Zm160 0h80v-320h-80v320ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>          
+        {/* Video  */}
+        <div className='video_container' style={{ width: appSettings.blackScreenWidth, height: appSettings.blackScreenHeight, zIndex: (inputMode === "tv" && isPoweredOn) ? 3 : -1 }}>
+          <VideoJS options={playerOptions} powerOn={isPoweredOn} onReady={(player) => {
+            playerRef.current = player;
+            player.on('ended', () => { handleVideoEnded(); });
+            player.on('error', () => { Storage.removeSetting("channel"); Utils.log("Error en video TV", player.error()); setVideoError(true); });
+            player.on('techError', () => { Utils.log("Error en video TV", player.error()); });
+          }}
+          />
         </div>
-      }
-      {(appSettings.displayVHS && inputMode==="vhs" && vhsState!=="in") && 
-        <div className='novhs_screen' style={{zIndex: 2,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}>
-          <p className='noTapeText' style={{fontSize:containerWidth*appSettings.noTapeFontSize}}>{ skin==="FUTURISTIC" ? I18n.getTrans("i.noVideoCD") : I18n.getTrans("i.noVideoTape")}</p>
-        </div>
-      }
-      {videoError &&
-        <div className='novhs_screen' style={{zIndex: 2,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}>
-          <p className='noTapeText' style={{fontSize:containerWidth*appSettings.noTapeFontSize}}>{I18n.getTrans("i.error")}</p>
-        </div>
-      }
-      <div className={`screen-content ${!isPoweredOn ? 'tv-off' : ''} ${blackScreen ? 'shutdown' : ''}`}    style={{zIndex: (!isPoweredOn || blackScreen) ? 2 : -1,top:appSettings.blackScreenTop, left:appSettings.blackScreenLeft, width:appSettings.blackScreenWidth, height:appSettings.blackScreenHeight}}/>     
-      
-      {appSettings.fuzzyScreen && isPoweredOn && <div style={{overflow:"hidden", position:"absolute", width:appSettings.fuzzyScreenWidth, height:appSettings.fuzzyScreenHeight, left:appSettings.fuzzyScreenLeft, top:appSettings.fuzzyScreenTop, zIndex:2}}><FuzzyOverlayExample/></div>}
-      <div id="lockContainer" className="lockContainer" 
-        style={{backgroundImage: 'url('+appSettings.backgroundTV+')', width: containerWidth, 
-          height: containerHeight,  marginLeft: containerMarginLeft , pointerEvents:"none",
-          zIndex:2}}/>
+        {appSettings.displayVHS && <div className='video_container' style={{ width: appSettings.blackScreenWidth, height: appSettings.blackScreenHeight, zIndex: (inputMode === "vhs" && isPoweredOn) ? 3 : -1 }}>
+          <VideoJS options={playerVhsOptions} powerOn={isPoweredOn} onReady={(player) => {
+            playerVhsRef.current = player;
+            player.on('ended', () => { handleVideoEnded(); });
+            player.on('error', () => { Storage.removeSetting("channel"); Utils.log("Error en video TV", player.error()); setVideoError(true); });
+            player.on('techError', () => { Utils.log("Error en video TV", player.error()); });
+          }}
+          />
+        </div>}
 
-      {/** CANAL */}
-      {password && isPoweredOn && (<p className={`channel ${showCursor ? "show-cursor" : ""}`} style={{top:appSettings.channelNumberTop, left:appSettings.channelNumberLeft, fontSize: appSettings.channelFontSize}}>{password}</p>)}      
-      {showVolume && isPoweredOn && (
-            <div className='volume_div' style={{left:appSettings.volumeLeft, top:appSettings.volumeTop, zIndex:10, width: containerWidth*appSettings.volumeContainerWidth}}>
-              <p className='volume' style={{fontSize:containerWidth*appSettings.volumeFontSize, color:appSettings.volumeColor}}>vol</p>
-              <div className='volumeBar' style={{width: "100%", height: appSettings.volumeHeight, marginLeft: containerWidth*appSettings.volumeBarLeft, }}>
-                <div className='volumeBarFilled' style={{width: `${volume * 100}%`, backgroundColor:appSettings.volumeBarColor}}></div>
+        {blackScreenChannels && <div className='empty_black' style={{ zIndex: 4, width: appSettings.blackScreenWidth, height: appSettings.blackScreenHeight }}></div>}
+        {(vhsPaused && appSettings.displayVHS && inputMode === "vhs") &&
+          <div className='paused_screen' style={{ zIndex: 4, width: appSettings.blackScreenWidth, height: appSettings.blackScreenHeight }}>
+            <svg xmlns="http://www.w3.org/2000/svg" height={appSettings.pausedIconSize} viewBox="0 -960 960 960" width={appSettings.pausedIconSize} fill={appSettings.pausedIconColor}><path d="M360-320h80v-320h-80v320Zm160 0h80v-320h-80v320ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
+          </div>
+        }
+        {(appSettings.displayVHS && inputMode === "vhs" && vhsState !== "in") &&
+          <div className='novhs_screen' style={{ zIndex: 2, width: appSettings.blackScreenWidth, height: appSettings.blackScreenHeight }}>
+            <p className='noTapeText' style={{ fontSize: containerWidth * appSettings.noTapeFontSize }}>{skin === "FUTURISTIC" ? I18n.getTrans("i.noVideoCD") : I18n.getTrans("i.noVideoTape")}</p>
+          </div>
+        }
+        {videoError &&
+          <div className='novhs_screen' style={{ zIndex: 2, width: appSettings.blackScreenWidth, height: appSettings.blackScreenHeight }}>
+            <p className='noTapeText' style={{ fontSize: containerWidth * appSettings.noTapeFontSize }}>{I18n.getTrans("i.error")}</p>
+          </div>
+        }
+        <div className={`shutdown_screen ${!isPoweredOn ? 'tv-off' : ''} ${blackScreen ? 'shutdown' : ''}`} style={{ zIndex: (!isPoweredOn || blackScreen) ? 3 : -1, width: appSettings.blackScreenWidth, height: appSettings.blackScreenHeight }} />
+
+        {appSettings.fuzzyScreen && isPoweredOn && <div className='fuzzy_screen' style={{ overflow: "hidden", width: appSettings.blackScreenWidth, height: appSettings.blackScreenHeight, zIndex: 3 }}><div className="fuzzy-overlay"></div></div>}
+
+
+        {/** CANAL */}
+        <div className="channels" style={{ height: appSettings.blackScreenHeight, width: appSettings.blackScreenWidth, padding: "5%" }}>
+          {password && isPoweredOn && (<span className={`channel ${showCursor ? "show-cursor" : ""}`} style={{ fontSize: appSettings.channelFontSize }}>{password}</span>)}
+
+          {showVolume && isPoweredOn && (
+            <div className='volume_div' style={{ zIndex: 10, }}>
+              <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+                <p className='volume' style={{ fontSize: containerWidth * appSettings.volumeFontSize, color: appSettings.volumeColor }}>vol</p>
+                <div className='volumeBar' >
+                  <div className='volumeBarFilled' style={{ width: `${volume * 100}%`, backgroundColor: appSettings.volumeBarColor }}></div>
+                </div>
               </div>
             </div>
-      )}                    
-      
-      <audio id="audio_beep" src={appSettings.soundBeep} autostart="false" preload="auto" />
-      <audio id="audio_vhs_tape" src={appSettings.soundVHS} autostart="false" preload="auto" />
-      <audio id="audio_tv_on" src={appSettings.soundTvOn} autostart="false" preload="auto" />
-      <audio id="audio_tv_off" src={appSettings.soundTvOff} autostart="false" preload="auto" />
+          )}
+        </div>
+
+
+        <audio id="audio_beep" src={appSettings.soundBeep} autostart="false" preload="auto" />
+        <audio id="audio_vhs_tape" src={appSettings.soundVHS} autostart="false" preload="auto" />
+        <audio id="audio_tv_on" src={appSettings.soundTvOn} autostart="false" preload="auto" />
+        <audio id="audio_tv_off" src={appSettings.soundTvOff} autostart="false" preload="auto" />
       </div>
       {appSettings.showRemote ?
-        <div style={{overflow: "visible", width: containerWidth, height:containerHeight, position:"absolute", zIndex: 10,}}>
+        <div style={{ overflow: "visible", width: containerWidth, height: containerHeight, position: "absolute", zIndex: 10, }}>
           {appSettings.displayVHS && <>
-            {vhsState === "out" && <div className='vhsTapeOut' style={{ top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsOut + '")', }} onClick={handleVhsClick}/>   }
-            {vhsState === "in" && <div className='vhsTapeIn' style={{ top:appSettings.vhsTop, left:appSettings.vhsLeft, width:containerWidth*appSettings.vhsWidth, height:containerHeight*appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")', }}  />   }</>} 
-          <div className="boxButton" style={{zIndex:20,width:containerWidth*appSettings.buttonTvWidth, height:containerHeight*appSettings.buttonTvHeight, marginLeft:appSettings.buttonTvMarginLeft, marginTop:appSettings.buttonTvMarginTop, backgroundImage: 'url("' + appSettings.backgroundButtonTv + '")',}} onClick={ejectTapeOnClick}>
-            <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>               
-                <svg style={{marginTop:appSettings.buttonTvIconMarginTop}} width={appSettings.buttonTvIconSize} height={appSettings.buttonTvIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M200-200v-80h560v80H200Zm14-160 266-400 266 400H214Zm266-80Zm-118 0h236L480-616 362-440Z"/></svg>
+            {vhsState === "out" && <div className='vhsTapeOut' style={{ top: appSettings.vhsTop, left: appSettings.vhsLeft, width: containerWidth * appSettings.vhsWidth, height: containerHeight * appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsOut + '")', }} onClick={handleVhsClick} />}
+            {vhsState === "in" && <div className='vhsTapeIn' style={{ top: appSettings.vhsTop, left: appSettings.vhsLeft, width: containerWidth * appSettings.vhsWidth, height: containerHeight * appSettings.vhsHeight, backgroundImage: 'url("' + appSettings.vhsIn + '")', }} />}</>}
+          <div className="boxButton" style={{ zIndex: 20, width: containerWidth * appSettings.buttonTvWidth, height: containerHeight * appSettings.buttonTvHeight, marginLeft: appSettings.buttonTvMarginLeft, marginTop: appSettings.buttonTvMarginTop, backgroundImage: 'url("' + appSettings.backgroundButtonTv + '")', }} onClick={ejectTapeOnClick}>
+            <div style={{ justifyContent: "center", alignItems: "center", display: "flex", }}>
+              <svg style={{ marginTop: appSettings.buttonTvIconMarginTop }} width={appSettings.buttonTvIconSize} height={appSettings.buttonTvIconSize} viewBox="0 -960 960 960" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill={appSettings.soundIconColor} stroke={appSettings.soundIconColor}><path d="M200-200v-80h560v80H200Zm14-160 266-400 266 400H214Zm266-80Zm-118 0h236L480-616 362-440Z" /></svg>
             </div>
           </div>
-          <Remote boxWidth={containerWidth} boxHeight={containerHeight} onClickButton={onClickButton} decreaseVolume={decreaseVolume} increaseVolume={increaseVolume} powerButtonOnClick={powerButtonOnClick} handlePlayPause={handlePlayPause} ejectTapeOnClick={ejectTapeOnClick} inputOnClick={inputOnClick} rewind={handleVideoRewind} forward={handleVideoForward}/>
+          <Remote boxWidth={containerWidth} boxHeight={containerHeight} onClickButton={onClickButton} decreaseVolume={decreaseVolume} increaseVolume={increaseVolume} powerButtonOnClick={powerButtonOnClick} handlePlayPause={handlePlayPause} ejectTapeOnClick={ejectTapeOnClick} inputOnClick={inputOnClick} rewind={handleVideoRewind} forward={handleVideoForward} />
         </div> :
-          TV_Buttons
+        TV_Buttons
       }
 
 
- 
+
     </div>);
 };
 

@@ -4,6 +4,7 @@ div.screen_wrapper {
   visibility: hidden;
   pointer-events: none;
   transition: opacity 2.1s ease, visibility ease 2.1s;
+	overflow-y: hidden;
 }
 
 div.screen_wrapper.active {
