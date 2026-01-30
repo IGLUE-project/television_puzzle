@@ -3,15 +3,15 @@ export const DEFAULT_APP_SETTINGS = {
   actionAfterSolve: "NONE",
   message: undefined,
   keysType: "NUMBERS",
-  background: "images/standard/background2.png",
-  backgroundTV : "images/standard/background_TV2.png",
-  backgroundRemote : "images/standard/background_remote.png",
+  background: "images/standard/background.png",
+  backgroundTV: "images/standard/background_TV.png",
+  backgroundRemote: "images/standard/background_remote.png",
   backgroundButton: "images/standard/background_button.png",
   backgroundPowerButton: "images/standard/background_power_button.png",
   vhsOut: "images/standard/vhs_out.png",
   vhsIn: "images/standard/vhs_in.png",
   backgroundButtonTv: "images/standard/background_button_tv.png",
-  backgroundMessage: "images/standard/background_message2.png",
+  backgroundMessage: "images/standard/background_message.png",
   soundBeep: "sounds/beep.mp3",
   soundVHS: "sounds/vhs_tape_in.wav", // Sound for VHS insertion/removal
   soundTvOn: "sounds/tv_on.wav", // Sound for TV on
@@ -25,36 +25,19 @@ export const DEFAULT_APP_SETTINGS = {
   vhsTop: "59.3%", // Top position of the VHS in the TV
   vhsWidth: 0.705, // Width of the VHS tape in the TV
   vhsHeight: 0.15, // Height of the VHS tape in the TV
-  minLength: 4, // Minimum length of the solution
   displayVHS: true,
   blackScreen: true,
   blackScreenWidth: "73%", // Width of the black screen in the TV
   blackScreenHeight: "48%", // Height of the black screen in the TV
-  blackScreenLeft: "12%", // Left position of the black screen in the TV
-  blackScreenTop: "5%", // Top position of the black screen
   fuzzyScreen: true, // Whether to apply a fuzzy effect to the TV screen
-  videoPlayerWidth: 0.78, // Width of the video player
-  videoPlayerLeft: "16%", // Left position of the video player
-  videoPlayerTop: "13.6%", // Top position of the video player
-  channelNumberTop: "15%", // Top position of the channel number in the TV
-  channelNumberLeft: "18%", // Left position of the channel number in the TV
   remoteWidth: 0.4,
-  remoteBottom:"-87%",
+  remoteBottom: "-87%",
   showRemote: true, // Whether to show the remote control
   buttonsTop: ["12%", "22%", "32%", "42%", "52%", "62%", "72%"], // Top positions for the rows of buttons in the remote
   buttonsLeft: "50%", // Left position for the remote buttons
   volumeIconTop: "0.5vmin", // Top position of the volume icon in the remote
   soundIconColor: "#000000", // Color for the sound icon in the remote
   channelFontSize: "6vmin", // Font size for the channel number in the TV
-  fuzzyScreenWidth: "75%", // Width of the fuzzy screen effect
-  fuzzyScreenHeight: "65%", // Height of the fuzzy screen effect
-  fuzzyScreenLeft: "11%", // Left position of the fuzzy screen effect
-  fuzzyScreenTop: "5%", // Top position of the fuzzy screen effect
-  volumeTop: "60%",
-  volumeLeft: "17%", // Left position of the volume control in the remote
-  volumeHeight: "5vmin", // Height of the volume control in the remote
-  volumeContainerWidth: 0.45, // Width of the volume control container in the remote
-  volumeBarLeft: 0.21,
   volumeFontSize: 0.07,
   volumeBarColor: "rgba(15, 167, 15, 0.76)", // Color of the volume bar
   volumeColor: "rgb(15, 167, 15)", // Color of the volume text
@@ -67,22 +50,22 @@ export const DEFAULT_APP_SETTINGS = {
   buttonTvMarginLeft: "85.5%", // Margin left for the button text in the TV
   buttonTvIconMarginTop: "-5%",
   buttonTvIconSize: "4.5vmin", // Size of the icon in the TV button
-  defaultVideo:{src: "videos/WhiteNoise.mp4", type: "video/mp4"},
-  channels : [
-    { id: "11", src:"videos/lions.webm" },
-    { id: "12345", src:"videos/monkey.webm" }, 
+  defaultVideo: { src: "videos/WhiteNoise.mp4", type: "video/mp4" },
+  channels: [
+    { id: "11", src: "videos/lions.webm" },
+    { id: "12345", src: "videos/monkey.webm" },
   ],
   containerMarginTop: 0.115,
   containerMarginLeft: -0.015,
-  inputChannel: {id: "-1", name: "vhs", src:"videos/spain_metro.webm"}, // Default input channel for the VHS
+  inputChannel: { id: "-1", name: "vhs", src: "videos/spain_metro.webm" }, // Default input channel for the VHS
 };
 
 export const SKIN_SETTINGS_RETRO = {
-  background: "images/retro/background2.png",
-  backgroundTV : "images/retro/background_TV4.png",
+  background: "images/retro/background.png",
+  backgroundTV: "images/retro/background_TV.png",
   backgroundButton: "images/retro/background_button.png",
   backgroundPowerButton: "images/retro/retro_power_button.png",
-  backgroundMessage: "images/retro/background_message_retro2.png",
+  backgroundMessage: "images/retro/background_message_retro.png",
   soundBeep: "sounds/beep_retro.mp3",
   vhsOut: "images/retro/vhs_out.png",
   vhsIn: "images/retro/vhs_in.png", // Background image for the VHS in the TV
@@ -109,22 +92,6 @@ export const SKIN_SETTINGS_RETRO = {
   blackScreen: true,
   blackScreenWidth: "62%", // Width of the black screen in the TV
   blackScreenHeight: "45%", // Height of the black screen in the TV
-  blackScreenLeft: "5%", // Left position of the black screen in the TV
-  blackScreenTop: "25%", // Top position of the black screen
-  fuzzyScreenWidth: "70%", // Width of the fuzzy screen effect
-  fuzzyScreenHeight: "60%", // Height of the fuzzy screen effect
-  fuzzyScreenLeft: "5%", // Left position of the fuzzy screen effect
-  fuzzyScreenTop: "25%", // Top position of the fuzzy screen effect
-  videoPlayerWidth: 0.75, // Width of the video player
-  videoPlayerLeft: "10.5%", // Left position of the video player
-  videoPlayerTop: "36%", // Top position of the video player
-  channelNumberTop: "35%", // Top position of the channel number in the TV
-  channelNumberLeft: "14%", // Left position of the channel number in the TV
-  volumeTop: "72%",
-  volumeLeft: "12%", // Left position of the volume control in the remote
-  volumeHeight: "4.5vmin", // Height of the volume control in the remote
-  volumeContainerWidth: 0.35, // Width of the volume control container in the remote
-  volumeBarLeft: 0.21,
   volumeFontSize: 0.06, // Font size for the volume control text in the remote
   playPauseButtonTop: "2%", // Top position of the play/pause button in the remote
   playPauseButtonLeft: "55%", // Left position of the play/pause button in
@@ -137,14 +104,14 @@ export const SKIN_SETTINGS_RETRO = {
 };
 
 export const SKIN_SETTINGS_FUTURISTIC = {
-  background: "images/futuristic/background2.png",
-  backgroundTV : "images/futuristic/background_TV3.png",
-  backgroundRemote : "images/futuristic/background_remote.png",
+  background: "images/futuristic/background.png",
+  backgroundTV: "images/futuristic/background_TV.png",
+  backgroundRemote: "images/futuristic/background_remote.png",
   backgroundButton: "images/futuristic/background_button.png",
   backgroundPowerButton: "images/futuristic/background_power_button.png",
-  backgroundMessage: "images/futuristic/background_message_futuristic2.png",
+  backgroundMessage: "images/futuristic/background_message_futuristic.png",
   vhsOut: "images/futuristic/dvd_out.png",
-  vhsIn: "images/futuristic/dvd_in.png", 
+  vhsIn: "images/futuristic/dvd_in.png",
   vhsLeft: "38.5%", // Left position of the VHS in the TV
   vhsTop: "64.6%", // Top position of the VHS in the TV
   vhsWidth: 0.225, // Width of the VHS tape in the TV
@@ -152,30 +119,18 @@ export const SKIN_SETTINGS_FUTURISTIC = {
   displayVHS: true,
   fuzzyScreen: false,
   remoteBottom: "-85%",
-  videoPlayerWidth: 0.68, // Width of the video player
-  videoPlayerLeft: "12%", // Left position of the video player
-  videoPlayerTop: "19.5%", // Top position of the video player
-  channelNumberTop: "20%", // Top position of the channel number in the TV
-  channelNumberLeft: "10%", // Left position of the channel number in the TV
   blackScreen: true,
   blackScreenWidth: "100%", // Width of the black screen in the TV
   blackScreenHeight: "55%", // Height of the black screen in the TV
-  blackScreenLeft: "3%", // Left position of the black screen in the TV
-  blackScreenTop: "15%", // Top position of the black screen
   buttonFontSize: "5vmin", // Font size for the text in the keypad
   soundIconSize: "5vmin", // Size of the sound icon in the keypad
   buttonTextColor: "#FFFFFF", // Color for the text in the keypad
   volumeIconTop: "1vmin", // Top position of the volume icon in the remote
   buttonWidth: 0.08, // Relative width of the buttons in the keypad
   buttonHeight: 0.08, // Relative height of the buttons in the keypad
-  buttonsTop: ["10%","20%", "30%", "40%", "50%", "60%", "70%"], // Top positions for the rows of buttons in the remote
+  buttonsTop: ["10%", "20%", "30%", "40%", "50%", "60%", "70%"], // Top positions for the rows of buttons in the remote
   buttonsLeft: "50%", // Left position for the remote buttons
   soundIconColor: "#FFFFFF", // Color for the sound icon in the remote
-  volumeTop: "62%",
-  volumeLeft: "8%", // Left position of the volume control in the remote
-  volumeHeight: "5vmin", // Height of the volume control in the remote
-  volumeContainerWidth: 0.6, // Width of the volume control container in the remote
-  volumeBarLeft: 0.25,
   volumeFontSize: 0.08,
   soundVHS: "sounds/dvd.wav",
   buttonTvWidth: 0.07, // Size of the button text in the TV
@@ -183,13 +138,13 @@ export const SKIN_SETTINGS_FUTURISTIC = {
   buttonTvMarginTop: "60%", // Margin top for the button text in the TV
   buttonTvMarginLeft: "67.5%", // Margin left for the button text in the TV
   buttonTvIconSize: "4vmin", // Size of the icon in the TV button
-  inputChannel: {id: "-1", name: "DVD", src:"videos/spain_metro.webm"}, // Default input channel for the VHS
+  inputChannel: { id: "-1", name: "DVD", src: "videos/spain_metro.webm" }, // Default input channel for the VHS
   containerMarginTop: 0.07,
   containerMarginLeft: 0,
 };
 
 export const ESCAPP_CLIENT_SETTINGS = {
-  imagesPath:"./images/",
+  imagesPath: "./images/",
 };
 
 export const MAIN_SCREEN = "MAIN_SCREEN";
