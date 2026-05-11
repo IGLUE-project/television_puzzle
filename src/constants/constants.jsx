@@ -1,21 +1,13 @@
 export const DEFAULT_APP_SETTINGS = {
-  skin: "STANDARD",
+  skin: "RETRO_REMOTE",
   actionAfterSolve: "NONE",
   message: undefined,
-  keysType: "NUMBERS",
-  background: "images/standard/background.png",
-  backgroundTV: "images/standard/background_TV.png",
-  backgroundRemote: "images/standard/background_remote.png",
-  backgroundButton: "images/standard/background_button.png",
-  backgroundPowerButton: "images/standard/background_power_button.png",
-  vhsOut: "images/standard/vhs_out.png",
-  vhsIn: "images/standard/vhs_in.png",
-  backgroundButtonTv: "images/standard/background_button_tv.png",
-  backgroundMessage: "images/standard/background_message.png",
-  soundBeep: "sounds/beep.mp3",
+
+  soundBeep: "sounds/tv_remote_click.mp3",
   soundVHS: "sounds/vhs_tape_in.wav", // Sound for VHS insertion/removal
-  soundTvOn: "sounds/tv_on.wav", // Sound for TV on
-  soundTvOff: "sounds/tv_off.wav", // Sound for TV off
+  soundTvOn: "sounds/retro_tv_on.wav", // Sound for TV on
+  soundTvOff: "sounds/retro_tv_off.wav", // Sound for TV off
+  
   buttonFontSize: "5vmin", // Font size for the text in the keypad
   soundIconSize: "5vmin", // Size of the sound icon in the keypad
   buttonTextColor: "#000000", // Color for the text in the keypad
@@ -50,14 +42,44 @@ export const DEFAULT_APP_SETTINGS = {
   buttonTvMarginLeft: "85.5%", // Margin left for the button text in the TV
   buttonTvIconMarginTop: "-5%",
   buttonTvIconSize: "4.5vmin", // Size of the icon in the TV button
-  defaultVideo: { src: "videos/WhiteNoise.mp4", type: "video/mp4" },
+  defaultVideo: { 
+    src: "videos/TV_Noise_16-9.mp4", 
+    type: "video/mp4" 
+  },
   channels: [
-    { id: "11", src: "videos/lions.webm" },
-    { id: "12345", src: "videos/monkey.webm" },
+    { 
+      id: "11", 
+      src: "videos/sample_16_9.webm" 
+    },
+    { 
+      id: "12", 
+      src: "videos/sample2_16_9.mp4"
+    },
+    {
+      id: "13", 
+      src: "videos/sample_4_3.webm" 
+    },
+    {
+      id: "14", 
+      src: "videos/sample2_4_3.mp4"
+    }
   ],
   containerMarginTop: 0.115,
   containerMarginLeft: -0.015,
   inputChannel: { id: "-1", name: "vhs", src: "videos/spain_metro.webm" }, // Default input channel for the VHS
+};
+
+export const SKIN_SETTINGS_RETRO_REMOTE = {
+  background: "images/retro_remote/background.png",
+  backgroundTV: "images/retro_remote/background_TV.png",
+  backgroundRemote: "images/retro_remote/background_remote.png",
+  backgroundButton: "images/retro_remote/background_button.png",
+  backgroundPowerButton: "images/retro_remote/background_power_button.png",
+  vhsOut: "images/retro_remote/vhs_out.png",
+  vhsIn: "images/retro_remote/vhs_in.png",
+  backgroundButtonTv: "images/retro_remote/background_button_tv.png",
+
+  soundBeep: "sounds/tv_remote_click.mp3",
 };
 
 export const SKIN_SETTINGS_RETRO = {
@@ -99,11 +121,9 @@ export const SKIN_SETTINGS_RETRO = {
   ejectButtonLeft: "64%", // Left position of the eject button in the remote
   containerMarginTop: 0.46,
   containerMarginLeft: -0.23,
-
-
 };
 
-export const SKIN_SETTINGS_FUTURISTIC = {
+export const SKIN_SETTINGS_STANDARD = {
   background: "images/futuristic/background.png",
   backgroundTV: "images/futuristic/background_TV.png",
   backgroundRemote: "images/futuristic/background_remote.png",

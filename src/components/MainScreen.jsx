@@ -90,26 +90,27 @@ const MainScreen = (props) => {
 
     let _containerWidth = size.width * 0.8;
     let _containerHeight = size.height * 0.8;
+    let _containerMarginTop = 0;
 
     let _boxWidth = size.width * 0.7;
     let _boxHeight = size.height * 0.7;
 
-
     switch (appSettings.skin) {
-      case "RETRO":
-        _containerMarginTop = size.height * -0.12;
-        _containerWidth = size.width * 0.9;
-        _containerHeight = size.height * 0.9;
-        break;
-      case "FUTURISTIC":
+      case "STANDARD":
         _containerMarginTop = size.height * -0.2;
         _containerHeight = size.height * 1;
         _containerWidth = size.width * 1;
         _boxHeight = size.height * 0.9;
         _boxWidth = size.width * 0.9;
-
         break;
+      case "RETRO":
+        _containerMarginTop = size.height * -0.12;
+        _containerWidth = size.width * 0.9;
+        _containerHeight = size.height * 0.9;
+        break;
+      case "RETRO_REMOTE":
       default:
+        break;
     }
 
     setContainerWidth(_containerWidth);
