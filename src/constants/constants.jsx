@@ -59,6 +59,8 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   initialVolume: 0.5,
   enableInput: true,
   enableRewindAndForward: true,
+  keepState: true,
+
   //Images
   background: "images/retro_remote/background.png",
   backgroundTV: "images/retro_remote/background_TV.png",

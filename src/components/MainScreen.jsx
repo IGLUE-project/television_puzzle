@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef, forwardRef, useImperativeHandle } from 'react';
 import { GlobalContext } from "./GlobalContext";
 import './../assets/scss/main.scss';
 import './../assets/scss/fonts.css';
@@ -9,21 +9,20 @@ import videojs from 'video.js';
 import "video.js/dist/video-js.css";
 
 
-const MainScreen = (props) => {
+const MainScreen = forwardRef((props, ref) => {
   const { escapp, appSettings, Utils, I18n, Storage } = useContext(GlobalContext);
   
   const [containerWidth, setContainerWidth] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
 
-  const [tvState, setTVState] = useState("off"); //possible values: "off", "channels", "input"
+  const [tvState, setTVState] = useState("off"); // possible values: "off", "channels", "input". Start with "off" to force the TV to be switched on to allow autoplay
   const tvStateRef = useRef(tvState);
-  const [channel, setChannel] = useState("1");
+  const [channel, setChannel] = useState(props.appState?.channel ?? "1");
   const channelRef = useRef(channel);
-  const [inputMode, setInputMode] = useState("channels"); //possible values: "channels", "input"
-  const [inputState, setInputState] = useState(Storage.getSetting("inputState") || "out"); //possible values: "out", "paused", "rewinding", "forwarding", playing"
+  const [inputMode, setInputMode] = useState(["channels", "input"].includes(props.appState.inputMode) ? props.appState.inputMode : "channels");
+  const [inputState, setInputState] = useState(["out", "paused", "playing"].includes(props.appState.inputState) ? props.appState.inputState : "out");
   const inputStateRef = useRef(inputState);
-  const inputVideoTimeRef = useRef(0);
-  const channelsVideoTimeRef = useRef({});
+  const channelsVideoTimeRef = useRef(props.appState?.channelsVideoTime ?? {});
   const [videoError, setVideoError] = useState(false);
   const [tvMessage, setTVMessage] = useState("");
 
@@ -36,7 +35,6 @@ const MainScreen = (props) => {
   const incorrectSolutions = useRef(new Set());
   const correctSolution = useRef(undefined);
   const correctChannel = useRef(undefined);
-  const [processingSolution, setProcessingSolution] = useState(false);
 
   const initializedRef = useRef(false);
   const playerRef = useRef(null);
@@ -45,9 +43,30 @@ const MainScreen = (props) => {
   const rewindIntervalRef = useRef(null);
   const forwardIntervalRef = useRef(null);
 
-  const [volume, setVolume] = useState(appSettings.initialVolume); // Volume (0 - 1)
+  const [volume, setVolume] = useState(props.appState?.volume ?? appSettings.initialVolume); // Volume (0 - 1)
   const [showVolume, setShowVolume] = useState(false);
   const volumeTimeoutRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({
+    getState: () => {
+      let inputStateValue = inputStateRef.current;
+      if (!["out", "paused", "playing"].includes(inputStateValue)) {
+        inputStateValue = "paused";
+      }
+      const inputModeValue = (channelRef.current === "input" ? "input" : "channels");
+      if((tvState !== "off")&&(playerRef)){
+        storeChannelVideoTime(channelRef.current);
+      }
+      return {
+        tvState: tvStateRef.current,
+        inputMode: inputModeValue,
+        channel: channelRef.current,
+        inputState: inputStateValue,
+        volume,
+        channelsVideoTime: channelsVideoTimeRef.current
+      };
+    }
+  }));
 
   useEffect(() => {
     //Init the Video.js player when the component mounts
@@ -89,6 +108,10 @@ const MainScreen = (props) => {
         player.on('techError', () => { 
           handleVideoError();
         });
+
+        if(tvStateRef.current !== "off"){
+          playAndUpdateChannel(channel);
+        }
       });
     }
 
@@ -166,28 +189,20 @@ const MainScreen = (props) => {
     } else if((tvStateRef.current !== "off")&&(tvState === "off")){
       //TV has been turned off
       if(playerRef.current){
-        if(tvStateRef.current === "input"){
-          inputVideoTimeRef.current = playerRef.current.currentTime();
-        } else if((tvStateRef.current === "channels")&&(typeof channel === "string")){
-          channelsVideoTimeRef.current[channel] = playerRef.current.currentTime();
-        }
+        storeChannelVideoTime(channel);
         playerRef.current.pause();
       }
       audio = document.getElementById("audio_tv_off");
     } else {
       if(tvState === "input"){
         //TV changed from channels to input
-        if((playerRef.current)&&(typeof channel === "string")){
-          channelsVideoTimeRef.current[channel] = playerRef.current.currentTime();
-        }
+        storeChannelVideoTime(channel); //channel has the old value at this point
         setTVHeaderContent(null);
         setUserSelectedChannel(null);
         playAndUpdateChannel("input");
       } else {
         //TV changed from input to channels
-        if (playerRef.current){
-          inputVideoTimeRef.current = playerRef.current.currentTime();
-        }
+        storeChannelVideoTime("input");
         playAndUpdateChannel(channel);
       }
     }
@@ -212,6 +227,13 @@ const MainScreen = (props) => {
         setTVState("off");
       }
     }, 500);
+  }
+
+  const storeChannelVideoTime = function(_channel){
+    if (!playerRef.current) return;
+    let channelData = appSettings.channelsHash[_channel];
+    if ((!channelData) || (!channelData.src)) return;
+    channelsVideoTimeRef.current[_channel] = playerRef.current.currentTime();
   }
 
   const playRemoteButtonAudio = function(){
@@ -241,7 +263,7 @@ const MainScreen = (props) => {
   ////////
 
   useEffect(() => {
-    // Utils.log("Channel change", channel);
+    //Utils.log("Channel change", channel);
     channelRef.current = channel;
     playChannel(channel);
   }, [channel]);
@@ -285,14 +307,8 @@ const MainScreen = (props) => {
 
       //Restore time if stored
       let videoTime = 0;
-      if(_channel === "input"){
-        if (typeof inputVideoTimeRef.current === "number"){
-          videoTime = inputVideoTimeRef.current;
-        }
-      } else {
-        if (typeof channelsVideoTimeRef.current[_channel] === "number"){
-          videoTime = channelsVideoTimeRef.current[_channel];
-        }
+      if (typeof channelsVideoTimeRef.current[_channel] === "number"){
+        videoTime = channelsVideoTimeRef.current[_channel];
       }
       playerRef.current.currentTime(videoTime);
 
@@ -499,9 +515,7 @@ const MainScreen = (props) => {
       return;
     }
 
-    if(playerRef.current){
-      inputVideoTimeRef.current = playerRef.current.currentTime();
-    }
+    storeChannelVideoTime("input");
 
     if((inputStateRef.current !== "out")&&(inputState === "out")){
       //Input has been ejected during pause or playing.
@@ -618,7 +632,7 @@ const MainScreen = (props) => {
       const currentTime = player.currentTime();
       const newTime = Math.max(currentTime - appSettings.rewindFactor, 0);
       player.currentTime(newTime);
-      inputVideoTimeRef.current = newTime;
+      channelsVideoTimeRef.current["input"] = newTime;
       if (newTime <= 0) {
         stopRewind();
         setInputState("paused");
@@ -655,7 +669,7 @@ const MainScreen = (props) => {
       const duration = player.duration();
       const newTime = Math.min(currentTime + appSettings.rewindFactor, duration);
       player.currentTime(newTime);
-      inputVideoTimeRef.current = newTime;
+      channelsVideoTimeRef.current["input"] = newTime;
       if (newTime >= duration) {
         stopForward();
       }
@@ -801,6 +815,6 @@ const MainScreen = (props) => {
       )}
 
     </div>);
-};
+});
 
 export default MainScreen;

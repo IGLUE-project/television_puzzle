@@ -7,9 +7,12 @@ import MainScreen from './MainScreen.jsx';
 
 export default function App() {
   const { escapp, setEscapp, appSettings, setAppSettings, Storage, setStorage, Utils, I18n } = useContext(GlobalContext);
+  const mainScreenRef = useRef(null);
+  const storageRef = useRef(null);
   const hasExecutedEscappValidation = useRef(false);
   const [loading, setLoading] = useState(true);
   const [screen, setScreen] = useState(MAIN_SCREEN);
+  const [appState, setAppState] = useState({});
   const prevScreen = useRef(screen);
   const solution = useRef(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -169,16 +172,17 @@ export default function App() {
   useEffect(() => {
     if (!hasExecutedEscappValidation.current && escapp !== null && appSettings !== null && Storage !== null) {
       hasExecutedEscappValidation.current = true;
+      storageRef.current = Storage;
 
       //Register callbacks in Escapp client and validate user.
-      escapp.registerCallback("onNewErStateCallback", function (erState) {
-        try {
-          Utils.log("New escape room state received from ESCAPP", erState);
-          restoreAppState(erState);
-        } catch (e) {
-          Utils.log("Error in onNewErStateCallback", e);
-        }
-      });
+      // escapp.registerCallback("onNewErStateCallback", function (erState) {
+      //   try {
+      //     Utils.log("New escape room state received from ESCAPP", erState);
+      //     //restoreAppState(erState);
+      //   } catch (e) {
+      //     Utils.log("Error in onNewErStateCallback", e);
+      //   }
+      // });
 
       escapp.registerCallback("onErRestartCallback", function (erState) {
         try {
@@ -224,41 +228,43 @@ export default function App() {
 
       setSize({ width, height });
     };
+    const handlePageHide = () => {
+      saveAppState();
+    };
 
     handleResize();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("pagehide", handlePageHide);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("pagehide", handlePageHide);
+    };
+
   }, []);
 
   function restoreAppState(erState) {
-    Utils.log("Restore application state based on escape room state:", erState);
-    if (escapp.getAllPuzzlesSolved()) {
-      //Puzzle already solved
-    } else {
-      //Puzzle not solved. Restore app state based on local storage.
-      restoreAppStateFromLocalStorage();
-    }
+    restoreAppStateFromLocalStorage(erState);
   }
 
-  function restoreAppStateFromLocalStorage() {
-    if (typeof Storage !== "undefined") {
-      let stateToRestore = Storage.getSetting("state");
-      if (stateToRestore) {
-        Utils.log("Restore app state", stateToRestore);
-        setScreen(stateToRestore.screen);
-        if (typeof stateToRestore.solution === "string") {
-          solution.current = stateToRestore.solution;
-        }
-      }
+  function restoreAppStateFromLocalStorage(erState) {
+    if (appSettings.keepState!==true) return;
+    if (typeof Storage === "undefined") return;
+    let stateToRestore = Storage.getSetting("state");
+    if (stateToRestore) {
+      Utils.log("Restore app state", stateToRestore);
+      setAppState(stateToRestore);
     }
   }
 
   function saveAppState() {
-    if (typeof Storage !== "undefined") {
-      let currentAppState = { screen: screen };
-      Utils.log("Save app state in local storage", currentAppState);
-      Storage.saveSetting("state", currentAppState);
-    }
+    if (appSettings.keepState!==true) return;
+    if (!storageRef.current) return;
+    const currentAppState = mainScreenRef.current?.getState?.();
+    if (!currentAppState) return;
+
+    Utils.log("Save app state in local storage", currentAppState);
+    storageRef.current.saveSetting("state", currentAppState);
   }
 
   function onPuzzleSolved(_solution) {
@@ -310,7 +316,7 @@ export default function App() {
   let screens = [
     {
       id: MAIN_SCREEN,
-      content: <MainScreen size={size} onPuzzleSolved={onPuzzleSolved} />
+      content: <MainScreen ref={mainScreenRef} appState={appState} size={size} onPuzzleSolved={onPuzzleSolved} />
     }
   ];
 
