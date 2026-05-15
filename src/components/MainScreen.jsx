@@ -145,8 +145,8 @@ const MainScreen = (props) => {
   ////////////
 
   useEffect(() => {
-    Utils.log("Previous tvState:", tvStateRef.current);
-    Utils.log("New tvState:", tvState);
+    // Utils.log("Previous tvState:", tvStateRef.current);
+    // Utils.log("New tvState:", tvState);
 
     if((tvState === "channels")||(tvState === "input")){
       setInputMode(tvState);
@@ -213,13 +213,13 @@ const MainScreen = (props) => {
   ////////
 
   useEffect(() => {
-    Utils.log("Channel change", channel);
+    // Utils.log("Channel change", channel);
     channelRef.current = channel;
     playChannel(channel);
   }, [channel]);
 
   const playChannel = (_channel) => {
-    Utils.log("Play channel:", _channel);
+    //Utils.log("Play channel:", _channel);
 
     if (!playerRef.current) return;
     if (tvState === "off") return;
@@ -266,7 +266,10 @@ const MainScreen = (props) => {
     }
 
     updatePlayerVolume();
-    checkSolution(_channel);
+
+    if((_channel !== "input")||(inputState === "playing")){
+      checkSolution(_channel);
+    }
   }
 
   const playAndUpdateChannel = function(_channel){
@@ -278,17 +281,27 @@ const MainScreen = (props) => {
   }
 
   const checkSolution = (channel) => {
+    //Utils.log("Check channel: " + channel);
     if((typeof channel !== "string")||(channel.trim()==="")) return;
-    let solutionArray = channel.split("");
-    if(solutionArray.length !== appSettings.solutionLength) return;
+
+    let solution;
+    let solutionLength;
+    if(channel !== "input"){
+      let solutionArray = channel.split("");
+      solutionLength = solutionArray.length;
+      solution = solutionArray.join(";");
+    } else {
+      solution = channel;
+      solutionLength = solution.length;
+    }
+    if(solutionLength !== appSettings.solutionLength) return;
+    
     if(incorrectSolutions.current.has(channel)) return;
     if((typeof correctChannel.current === "string") && escapp.getAllPuzzlesSolved() && (escapp.getSolvedPuzzles().length > 0)) return;
 
-    let solution = solutionArray.join(";");
-    Utils.log("Check solution: " + solution);
-
+    //Utils.log("Check solution: " + solution);
     escapp.checkNextPuzzle(solution, {}, (success, erState) => {
-      Utils.log("Check solution Escapp response", success, erState);
+      //Utils.log("Check solution Escapp response", success, erState);
       if(success === true){
         correctSolution.current = solution;
         correctChannel.current = channel;
@@ -437,8 +450,8 @@ const MainScreen = (props) => {
   ////////
 
   useEffect(() => {
-    Utils.log("Previous inputState:", inputStateRef.current);
-    Utils.log("New inputState:", inputState);
+    // Utils.log("Previous inputState:", inputStateRef.current);
+    // Utils.log("New inputState:", inputState);
 
     if (tvState !== "input"){
       inputStateRef.current = inputState;
