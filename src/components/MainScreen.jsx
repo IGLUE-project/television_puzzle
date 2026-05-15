@@ -25,6 +25,7 @@ const MainScreen = forwardRef((props, ref) => {
   const channelsVideoTimeRef = useRef(props.appState?.channelsVideoTime ?? {});
   const [videoError, setVideoError] = useState(false);
   const [tvMessage, setTVMessage] = useState("");
+  const [isShuttingDown, setIsShuttingDown] = useState(false);
 
   const [userSelectedChannel, setUserSelectedChannel] = useState(null);
   const [tvHeaderContent, setTVHeaderContent] = useState(null);
@@ -192,6 +193,10 @@ const MainScreen = forwardRef((props, ref) => {
         storeChannelVideoTime(channel);
         playerRef.current.pause();
       }
+      setIsShuttingDown(true);
+      setTimeout(() => {
+        setIsShuttingDown(false);
+      }, 800);
       audio = document.getElementById("audio_tv_off");
     } else {
       if(tvState === "input"){
@@ -711,11 +716,12 @@ const MainScreen = forwardRef((props, ref) => {
         }}>
         <div className='tvScreenContainer' style={{ height: appSettings.tvScreenHeight, marginBottom: appSettings.tvScreenMarginBottom }}>
           {!showVideo && (
-            <div className='tvScreenBlack tvScreenContent'></div>
+            <div className={`tvScreenBlack tvScreenContent ${isShuttingDown ? "shutdown" : ""}`}></div>
           )}
-          <div className="tvVideoContainer tvScreenContent" style={{
+          <div className={`tvVideoContainer tvScreenContent`} style={{
               zIndex: showVideo ? 1 : 0,
-              display: showVideo ? "block" : "none"
+              display: showVideo ? "block" : "none",
+              padding: appSettings.videoContainerPadding ? (appSettings.videoContainerPadding+"%") : "0%"
             }}>
             <div data-vjs-player style={{ height: "100%", width: "100%" }}>
               <div ref={videoRef} style={{display: "flex", height: "100%", width: "100%", alignItems: "center"}}></div>
@@ -779,17 +785,16 @@ const MainScreen = forwardRef((props, ref) => {
             </svg>
           </div>
         </div>
-        <audio id="audio_remote_button" src={appSettings.soundRemoteButton} autostart="false" preload="auto" />
-        <audio id="audio_tv_on" src={appSettings.soundTvOn} autostart="false" preload="auto" />
-        <audio id="audio_tv_off" src={appSettings.soundTvOff} autostart="false" preload="auto" />
-        <audio id="audio_disc_in" src={appSettings.soundDiscIn} autostart="false" preload="auto" />
-        <audio id="audio_disc_out" src={appSettings.soundDiscOut} autostart="false" preload="auto" />
-        <audio id="audio_vhs_tape_in" src={appSettings.soundVHSIn} autostart="false" preload="auto" />
-        <audio id="audio_vhs_tape_out" src={appSettings.soundVHSOut} autostart="false" preload="auto" />
-        <audio id="audio_vhs_eject_notape" src={appSettings.soundVHSOutNoTape} autostart="false" preload="auto" />
-        <audio id="audio_vhs_rewind" src={appSettings.soundVHSRewind} autostart="false" preload="auto" />
+        {appSettings.soundRemoteButton && <audio id="audio_remote_button" src={appSettings.soundRemoteButton} autostart="false" preload="auto"/>}
+        {appSettings.soundTvOn && <audio id="audio_tv_on" src={appSettings.soundTvOn} autostart="false" preload="auto"/>}
+        {appSettings.soundTvOff && <audio id="audio_tv_off" src={appSettings.soundTvOff} autostart="false" preload="auto"/>}
+        {appSettings.soundDiscIn && <audio id="audio_disc_in" src={appSettings.soundDiscIn} autostart="false" preload="auto"/>}
+        {appSettings.soundDiscOut && <audio id="audio_disc_out" src={appSettings.soundDiscOut} autostart="false" preload="auto"/>}
+        {appSettings.soundVHSIn && <audio id="audio_vhs_tape_in" src={appSettings.soundVHSIn} autostart="false" preload="auto"/>}
+        {appSettings.soundVHSOut && <audio id="audio_vhs_tape_out" src={appSettings.soundVHSOut} autostart="false" preload="auto"/>}
+        {appSettings.soundVHSOutNoTape && <audio id="audio_vhs_eject_notape" src={appSettings.soundVHSOutNoTape} autostart="false" preload="auto"/>}
+        {appSettings.soundVHSRewind && <audio id="audio_vhs_rewind" src={appSettings.soundVHSRewind} autostart="false" preload="auto" />}
       </div>
-      
       
       {appSettings.showRemote ?
          <Remote containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButton} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickPlayPause={onClickPlayPause} onClickInputButton={onClickInputButton} onClickRewind={onClickRewind} onClickForward={onClickForward} />

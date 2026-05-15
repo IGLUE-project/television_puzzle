@@ -2,18 +2,41 @@
 
 export let ESCAPP_APP_SETTINGS = {
   //Settings that can be specified by the authors
-  skin: "STANDARD", //skin can be "STANDARD", "RETRO" or "FUTURISTIC".
-  //background: "NONE", //background can be "NONE" or a URL.
-  actionAfterSolve: "SHOW_MESSAGE", //actionAfterSolve can be "NONE" or "SHOW_MESSAGE".
-  //message: "Custom message",
-  checkSolution: "AFTER_WATCH_VIDEO", //checkSolution can be "AFTER_ENTER_CHANNEL" or "AFTER_WATCH_VIDEO".
-  //id is channel number
-  channels : [
-    { id: "11", src:"videos/lions.webm" },
-    { id: "1234", src:"videos/monkey.webm" }, 
+  skin: "RETRO_REMOTE", //skin can be "STANDARD" or "RETRO_REMOTE".
+  // background: "NONE", //background can be "NONE" or a URL.
+  actionAfterSolve: "PLAY_VIDEO", //actionAfterSolve can be "NONE", "SHOW_MESSAGE" or "PLAY_VIDEO".
+  // delayMessage: "3", //In seconds. Only for actionAfterSolve="SHOW_MESSAGE"
+  maxChannelLength: 4, //Maximum number of digits in a channel number
+  // videoContainerPadding: 5, //Allow to specify a padding for the video container
+  // enableLoopForChannels: true, //Whether the channel videos will play on a loop
+  // fuzzyScreen: true, //Whether to apply a fuzzy effect to the TV screen
+  initialVolume: 0.5, //Initial volume of the TV
+  enableInput: true, //Enable disc for standard skin or VHS for retro skin
+  enableRewindAndForward: true, //Enable rewinding and fast-forwarding for the input (disc for the standard skin or VHS for the retro skin)
+  keepState: false, //Enable keeping the TV state when the app is closed
+  //List with TV channels
+  channels: [
+    { 
+      id: "2", 
+      src: "videos/sample_16_9.webm"
+    },
+    {
+      id: "3", 
+      src: "videos/sample_4_3.webm"
+    },
+    {
+      id: "4", 
+      message: "Hello World"
+    }
   ],
-  // vhsVideo :"videos/monkey.webm", //video showed in the tape
-
+  //Video for the input
+  inputChannel: {
+    src: "videos/sample2_16_9.mp4"
+  },
+  //Override default video for channels
+  // defaultChannelVideo: {
+  //   src: "videos/TV_Test_Card_16-9.mp4" 
+  // },
 
   //Settings that will be automatically specified by the Escapp server
   solutionLength: 4,

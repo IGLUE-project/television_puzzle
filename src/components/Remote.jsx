@@ -72,7 +72,6 @@ const boxHeight = props.containerHeight*appSettings.remoteButtonHeight;
                     {Icons.forwardRemoteIcon(appSettings)}
                 </div>
             </div> }
-           
         </div>
     }
       </div>
