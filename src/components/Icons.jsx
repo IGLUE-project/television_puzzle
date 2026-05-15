@@ -4,7 +4,6 @@ const Icons = {
       style={{ height: "100%", width: "100%" }}
       viewBox="0 0 1920 1080"
     >
-      <rect width="1920" height="1080" fill="black" />
       <circle
         cx="960"
         cy="540"
@@ -37,7 +36,6 @@ const Icons = {
       style={{ height: "100%", width: "100%" }}
       viewBox="0 0 1920 1080"
     >
-      <rect width="1920" height="1080" fill="black" />
       <circle
         cx="960"
         cy="540"
@@ -61,7 +59,66 @@ const Icons = {
         fill="#f0eadc"
       />
     </svg>
-  )
+  ),
+
+  inputRemoteIcon: (appSettings) => (
+    <svg width={appSettings.buttonFontSize} height={appSettings.buttonFontSize} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M20 12 H54 Q58 12 58 16 V48 Q58 52 54 52 H20 Q16 52 16 48 V40"
+        fill="none"
+        stroke={appSettings.buttonTextColor}
+        strokeWidth="6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M6 32 H36"
+        fill="none"
+        stroke={appSettings.buttonTextColor}
+        strokeWidth="6"
+        strokeLinecap="round"
+      />
+      <path
+        d="M28 24 L36 32 L28 40"
+        fill="none"
+        stroke={appSettings.buttonTextColor}
+        strokeWidth="6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
+
+  volumeRemoteIcon: (appSettings) => (
+    <svg width={appSettings.remoteButtonSize} height={appSettings.remoteButtonSize} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 24v16h12l16 14V10L20 24H8z" fill={appSettings.remoteButtonColor}/>
+      <path d="M44 22c4 4 4 16 0 20" fill="none" stroke={appSettings.remoteButtonColor} strokeWidth="4" strokeLinecap="round"/>
+      <path d="M50 14c9 9 9 27 0 36" fill="none" stroke={appSettings.remoteButtonColor} strokeWidth="4" strokeLinecap="round"/>
+    </svg>
+  ),
+
+  rewindRemoteIcon: (appSettings) => (
+    <svg width={appSettings.remoteButtonSize} height={appSettings.remoteButtonSize} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34 16L14 32L34 48V16Z" fill={appSettings.remoteButtonColor}/>
+      <path d="M52 16L32 32L52 48V16Z" fill={appSettings.remoteButtonColor}/>
+    </svg>
+  ),
+
+  forwardRemoteIcon: (appSettings) => (
+    <svg width={appSettings.remoteButtonSize} height={appSettings.remoteButtonSize} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 16L32 32L12 48V16Z" fill={appSettings.remoteButtonColor}/>
+      <path d="M30 16L50 32L30 48V16Z" fill={appSettings.remoteButtonColor}/>
+    </svg>
+  ),
+
+  playPauseRemoteIcon: (appSettings) => (
+    <svg width={appSettings.remoteButtonSize} height={appSettings.remoteButtonSize} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 16L34 32L14 48V16Z" fill={appSettings.remoteButtonColor}/>
+      <rect x="42" y="16" width="6" height="32" rx="1" fill={appSettings.remoteButtonColor}/>
+      <rect x="52" y="16" width="6" height="32" rx="1" fill={appSettings.remoteButtonColor}/>
+    </svg>
+  ),
+
 };
 
 export default Icons;

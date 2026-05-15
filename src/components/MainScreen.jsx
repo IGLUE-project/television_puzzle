@@ -20,13 +20,13 @@ const MainScreen = (props) => {
   const [channel, setChannel] = useState("1");
   const channelRef = useRef(channel);
   const [inputMode, setInputMode] = useState("channels"); //possible values: "channels", "input"
-  const [inputState, setInputState] = useState(Storage.getSetting("inputState") || "out"); //possible values: "out", "paused", "playing"
+  const [inputState, setInputState] = useState(Storage.getSetting("inputState") || "out"); //possible values: "out", "paused", "rewinding", "forwarding", playing"
   const inputStateRef = useRef(inputState);
   const [videoError, setVideoError] = useState(false);
   const [tvMessage, setTVMessage] = useState("");
 
   const [userSelectedChannel, setUserSelectedChannel] = useState(null);
-  const [tvHeaderContentChannels, setTVHeaderContentChannels] = useState(null);
+  const [tvHeaderContent, setTVHeaderContent] = useState(null);
   const [showCursor, setShowCursor] = useState(false);
   const [channelTimer, setChannelTimer] = useState(null);
   const processingChannelChangeRef = useRef(false);
@@ -39,6 +39,9 @@ const MainScreen = (props) => {
   const initializedRef = useRef(false);
   const playerRef = useRef(null);
   const videoRef = useRef(null);
+  // const canPlayVideoMapRef = useRef({});
+  const rewindIntervalRef = useRef(null);
+  const forwardIntervalRef = useRef(null);
 
   const [volume, setVolume] = useState(appSettings.initialVolume); // Volume (0 - 1)
   const [showVolume, setShowVolume] = useState(false);
@@ -72,6 +75,7 @@ const MainScreen = (props) => {
         playerRef.current.pause();
         player.on('canplay', () => {
           //Utils.log('Video ready to play');
+          // canPlayVideoMapRef.current[playerRef.current.currentSrc()] = true;
           setVideoError(false);
         });
         player.on('ended', () => {
@@ -166,7 +170,7 @@ const MainScreen = (props) => {
     } else {
       if(tvState === "input"){
         //TV changed from channels to input
-        setTVHeaderContentChannels(null);
+        setTVHeaderContent(null);
         setUserSelectedChannel(null);
         playAndUpdateChannel("input");
       } else {
@@ -187,9 +191,7 @@ const MainScreen = (props) => {
   }, [tvState]);
 
   const onClickPowerButton = () => {
-    const remoteButtonAudio = document.getElementById("audio_remote_button");
-    remoteButtonAudio.currentTime = 0;
-    remoteButtonAudio.play();
+    playRemoteButtonAudio();
     setTimeout(() => {
       if(tvState === "off"){
         setTVState(inputMode);
@@ -197,6 +199,13 @@ const MainScreen = (props) => {
         setTVState("off");
       }
     }, 500);
+  }
+
+  const playRemoteButtonAudio = function(){
+    const remoteButtonAudio = document.getElementById("audio_remote_button");
+    remoteButtonAudio.pause();
+    remoteButtonAudio.currentTime = 0;
+    remoteButtonAudio.play();
   }
 
   /////////
@@ -238,14 +247,6 @@ const MainScreen = (props) => {
       playerRef.current.pause();
     }
 
-    if(_channel === "input"){
-      if(inputState === "out"){
-        return setTVMessage(appSettings.messageNoInput);
-      } else if(inputState === "paused"){
-        return setTVMessage(""); //The pause screen will be shown
-      }
-    }
-    
     if(typeof channelData.src === "string"){
       //Video
       let loop = ((_channel !== "input") && (appSettings.enableLoopForChannels===true));
@@ -338,19 +339,15 @@ const MainScreen = (props) => {
   }
 
   const onClickChannelButton = (value) => {
+    playRemoteButtonAudio();
     if (processingChannelChangeRef.current || tvState === "off") return;
     let _userSelectedChannel = (userSelectedChannel === null) ? "" : userSelectedChannel;
     if (_userSelectedChannel.length >= appSettings.maxChannelLength) return;
     
     let selectedChannel = _userSelectedChannel + value;
     setUserSelectedChannel(selectedChannel);
-    setTVHeaderContentChannels(selectedChannel);
+    setTVHeaderContent(selectedChannel);
     setShowCursor(selectedChannel.length < appSettings.maxChannelLength);
-
-    const shortBeep = document.getElementById("audio_remote_button");
-    shortBeep.pause();
-    shortBeep.currentTime = 0;
-    shortBeep.play();
 
     if (channelTimer) { clearTimeout(channelTimer); }
     const newChannelTimer = setTimeout(() => {
@@ -364,7 +361,7 @@ const MainScreen = (props) => {
     processingChannelChangeRef.current = true;
     setShowCursor(false);
     setTimeout(() => {
-      setTVHeaderContentChannels(null);
+      setTVHeaderContent(null);
       setUserSelectedChannel(null);
       let changedToInputDuringChannelSelection = ((tvStateWhenChannelWasSelected !== tvStateRef.current)&&(tvStateRef.current === "input"));
       if((selectedChannel !== channel)&&(tvState !== "off")&&(!changedToInputDuringChannelSelection)){
@@ -375,101 +372,29 @@ const MainScreen = (props) => {
     }, 1500);
   };
 
-
-
-
-    // const checkChannels = (channelInput) => {
-  //   const channel = appSettings.channels.find((channel) => channel.id === channelInput);
-  //   setBlackScreenChannels(true);
-  //   setTimeout(() => { 
-  //     setBlackScreenChannels(false); 
-  //   }, 900);
-  //   if (channel) {
-  //     rightChannel(channel);
-  //   } else { wrongChannel(); }
-  // }
-
-  // useEffect(() => {
-  //   if (!processingSolution) return;
-  //   if (tvHeaderContent.length >= 1) {
-  //     checkChannels(tvHeaderContent);
-  //   } else {
-  //     wrongChannel();
-  //   }
-  // }, [processingSolution]);
-
-  // const wrongChannel = () => {
-  //   correctSolution.current = '';
-  //   setPlayerOptions(appSettings.defaultVideo);
-  //   setVideoError(false);
-  //   if (playerRef.current === null) {
-  //     Utils.log("Error: El reproductor no está inicializado");
-  //     setVideoError(true);
-  //     Storage.removeSetting("channel");
-  //     return;
-  //   }
-  //   try {
-  //     playerRef.current.pause();
-  //     playerRef.current.src(appSettings.defaultVideo);
-  //     playerRef.current.load();
-  //     updatePlayerVolume();
-  //     playerRef.current.oncanplay = () => {
-  //       playerRef.current.play();
-  //     };
-  //   } catch (e) {
-  //     console.error("Error al cambiar la fuente del reproductor:", e);
-  //   }
-  // }
-
-  // const rightChannel = (channel) => {
-  //   setPlayerOptions(channel);
-  //   let source = { src: channel.src, type: channel.type };
-  //   setVideoError(false);
-  //   if (playerRef.current === null) {
-  //     Utils.log("Error: El reproductor no está inicializado");
-  //     Storage.removeSetting("channel");
-  //     setVideoError(true);
-  //     return;
-  //   }
-  //   try {
-  //     playerRef.current.pause();
-  //     playerRef.current.src(source);
-  //     playerRef.current.load();
-  //     updatePlayerVolume();
-  //     Utils.log("Video Saved in Storage", channel);
-  //     Storage.saveSetting("channel", channel);
-  //     handleApiAnswer(channel);
-
-  //   } catch (e) {
-  //     Utils.log("Error al cambiar la fuente del reproductor:", e);
-  //     Storage.removeSetting("channel");
-  //   }
-  // }
-
-
-
-
   //////////
   // Volume
   /////////
 
   const onClickIncreaseVolume = () => {
-    if (tvState !== "off") {
-      displayVolume();
-      if (volume < 1) {
-        const newVolume = parseFloat(Math.min(volume + 0.1, 1).toFixed(1));
-        setVolume(newVolume);
-      }
+    playRemoteButtonAudio();
+    if(tvState === "off") return;
+    if((tvState === "input")&&((inputState === "rewinding")||(inputState === "forwarding"))) return;
+    displayVolume();
+    if (volume < 1) {
+      const newVolume = parseFloat(Math.min(volume + 0.1, 1).toFixed(1));
+      setVolume(newVolume);
     }
   };
 
   const onClickDecreaseVolume = () => {
-    if (tvState !== "off") {
-      displayVolume();
-      if (volume > 0) {
-        const newVolume = parseFloat(Math.max(volume - 0.1, 0).toFixed(1));
-        setVolume(newVolume);
-      }
+    playRemoteButtonAudio();
+    if(tvState === "off") return;
+    if((tvState === "input")&&((inputState === "rewinding")||(inputState === "forwarding"))) return;
+    displayVolume();
+    if (volume > 0) {
+      const newVolume = parseFloat(Math.max(volume - 0.1, 0).toFixed(1));
+      setVolume(newVolume);
     }
   };
 
@@ -515,12 +440,29 @@ const MainScreen = (props) => {
     Utils.log("Previous inputState:", inputStateRef.current);
     Utils.log("New inputState:", inputState);
 
-    if((inputStateRef.current !== "out")&&(inputState === "out")&&(tvState === "input")){
-      //Input has been ejected during pause or playing.
-      //Update screen when no input message.
-      playAndUpdateChannel("input");
+    if (tvState !== "input"){
+      inputStateRef.current = inputState;
       return;
     }
+
+    if((inputStateRef.current !== "out")&&(inputState === "out")){
+      //Input has been ejected during pause or playing.
+      if(playerRef.current){
+        playerRef.current.pause();
+      }
+      playAndUpdateChannel("input"); //Update screen when no input message.
+    } else if((inputStateRef.current === "paused")&&(inputState === "playing")){
+      //Start playing or resume video
+      playAndUpdateChannel("input");
+    } else if(((inputStateRef.current === "rewinding")||(inputStateRef.current === "forwarding"))&&(inputState === "playing")){
+      stopRewindAndForward();
+      playAndUpdateChannel("input");
+    } else if((inputStateRef.current === "playing")&&(inputState === "paused")){
+      //Pause current video
+      if(playerRef.current){
+        playerRef.current.pause();
+      }
+    } 
 
     //Update previous value
     inputStateRef.current = inputState;
@@ -573,88 +515,107 @@ const MainScreen = (props) => {
   }
 
   const onClickInputButton = () => {
-    const remoteButtonAudio = document.getElementById("audio_remote_button");
-    remoteButtonAudio.currentTime = 0;
-    remoteButtonAudio.play();
-    if(tvState !== "input"){
-      setTimeout(() => {
+    playRemoteButtonAudio();
+    if(tvState === "off") return;
+    setTimeout(() => {
+      if(tvState !== "input"){
         setTVState("input");
-      }, 500);
+      }
+    }, 500);
+  }
+
+  const onClickPlayPause = () => {
+    playRemoteButtonAudio();
+    if(tvState === "off") return;
+    setTimeout(() => {
+      if(tvState === "input"){
+        if(inputState==="out"){
+          //Do nothing
+        } else if(inputState==="playing"){
+          setInputState("paused");
+        } else {
+          setInputState("playing");
+        }
+      }
+    }, 500);
+  }
+
+  const onClickRewind = () => {
+    playRemoteButtonAudio();
+    if (!playerRef.current || tvState !== "input" || inputState === "out" || inputState === "rewinding") return;
+    if (rewindIntervalRef.current) return;
+    if(inputState === "forwarding") stopForward();
+
+    setInputState("rewinding");
+    setTVHeaderContent("◀◀");
+
+    playerRef.current.pause();
+
+    rewindIntervalRef.current = setInterval(() => {
+      const player = playerRef.current;
+      if (!player) return;
+      const currentTime = player.currentTime();
+      const newTime = Math.max(currentTime - 0.25, 0);
+      player.currentTime(newTime);
+      if (newTime <= 0) {
+        stopRewind();
+        setInputState("paused");
+      }
+    }, 100);
+  };
+
+  const stopRewind = () => {
+    if (rewindIntervalRef.current) {
+      clearInterval(rewindIntervalRef.current);
+      rewindIntervalRef.current = null;
     }
-  }
+    setTVHeaderContent(null);
+  };
 
-  const handlePlayPause = () => {
-    // const shortBeep = document.getElementById("audio_remote_button");
-    // shortBeep.currentTime = 0;
-    // shortBeep.play();
-    // if (!isPoweredOn || processingSolution || !appSettings.enableInput || inputMode === "tv" || inputState !== "in") return; // No permite interacción si el TV está apagado
-    // setVideoError(false);
-    // if (playerVhsRef.current === null) {
-    //   Utils.log("Error: El reproductor VHS no está inicializado");
-    //   setVideoError(true);
-    //   return;
-    // }
-    // if (!vhsPaused) {
-    //   playerVhsRef.current.pause();
-    //   setVhsPaused(true);
-    //   setTVHeaderContent("Pause ❚❚");
-    //   setTimeout(() => {
-    //     setTVHeaderContent("");
-    //   }, 1000);
-    // } else {
-    //   playerVhsRef.current.play();
-    //   correctSolution.current === '' && handleApiAnswer(appSettings.inputChannel);
-    //   setTVHeaderContent("Play ▶");
-    //   setTimeout(() => {
-    //     setTVHeaderContent("");
-    //   }, 1000);
-    //   setVhsPaused(false);
-    // }
-  }
+  const onClickForward = () => {
+    playRemoteButtonAudio();
+    if (!playerRef.current || tvState !== "input" || inputState === "out" || inputState === "forwarding") return;
+    if (forwardIntervalRef.current) return;
+    if(inputState === "rewinding") stopRewind(); 
+    setInputState("forwarding");
+    setTVHeaderContent("▶▶");
 
-  const handleVideoForward = () => {
-    // if (!isPoweredOn || processingSolution || !appSettings.enableInput || inputMode === "tv" || inputState !== "in" || correctSolution.current !== '') return; // No permite interacción si el TV está apagado
-    // const shortBeep = document.getElementById("audio_remote_button");
-    // shortBeep.currentTime = 0;
-    // shortBeep.play();
-    // if (playerVhsRef.current === null) {
-    //   Utils.log("Error: El reproductor VHS no está inicializado");
-    //   return;
-    // }
+    playerRef.current.pause();
 
-    // const currentTime = playerVhsRef.current.currentTime();
-    // const duration = playerVhsRef.current.duration();
-    // const forwardTime = Math.min(currentTime + 5, duration); // Avanzar 5 segundos    
-    // playerVhsRef.current.currentTime(forwardTime);
-    // setTVHeaderContent("▶▶");
-    // setTimeout(() => {
-    //   setTVHeaderContent("");
-    // }, 600);
-  }
+    forwardIntervalRef.current = setInterval(() => {
+      const player = playerRef.current;
+      if (!player) return;
+      const currentTime = player.currentTime();
+      const duration = player.duration();
+      const newTime = Math.min(currentTime + 0.25, duration);
+      player.currentTime(newTime);
+      if (newTime >= duration) {
+        stopForward();
+      }
+    }, 100);
+  };
 
-  const handleVideoRewind = () => {
-    // if (!isPoweredOn || processingSolution || !appSettings.enableInput || inputMode === "tv" || inputState !== "in") return; // No permite interacción si el TV está apagado
-    // const shortBeep = document.getElementById("audio_remote_button");
-    // shortBeep.currentTime = 0;
-    // shortBeep.play();
-    // if (playerVhsRef.current === null) {
-    //   Utils.log("Error: El reproductor VHS no está inicializado");
-    //   return;
-    // }
-    // const currentTime = playerVhsRef.current.currentTime();
-    // const rewindTime = Math.max(currentTime - 5, 0); // Retroceder 5 segundos
-    // playerVhsRef.current.currentTime(rewindTime);
-    // setTVHeaderContent("◀◀");
-    // setTimeout(() => {
-    //   setTVHeaderContent("");
-    // }, 600);
-  }
+  const stopForward = () => {
+    if (forwardIntervalRef.current) {
+      clearInterval(forwardIntervalRef.current);
+      forwardIntervalRef.current = null;
+    }
+    setTVHeaderContent(null);
+  };
+
+  const stopRewindAndForward = () => {
+    stopRewind();
+    stopForward();
+  };
 
   let showVideo = ((tvState !== "off")&&(videoError === false));
+  let showMessageNoInput = false;
   let showPausedInput = false;
+  let showPausedInputForVideo = false;
   if(tvState === "input"){
-    showVideo = (showVideo && (inputState==="playing"));
+    showVideo = (showVideo && (inputState!=="out"));
     showPausedInput = (inputState==="paused");
+    showMessageNoInput = (inputState === "out");
   }
   let showFuzzyScreen = (appSettings.fuzzyScreen && (tvState !== "off"));
 
@@ -683,8 +644,13 @@ const MainScreen = (props) => {
               <p className='tvMessage' style={{ fontSize: containerWidth * appSettings.messageFontSize }}>{tvMessage}</p>
             </div>
           }
+          {showMessageNoInput &&
+            <div className='tvScreenContent tvMessageContainer'>
+              <p className='tvMessage' style={{ fontSize: containerWidth * appSettings.messageFontSize }}>{appSettings.messageNoInput}</p>
+            </div>
+          }
           {showPausedInput &&
-            <div className="tvScreenContent inputPausedScreen">
+            <div className={`tvScreenContent inputPausedScreen ${ showVideo ? "playing" : "" }`}>
               {appSettings.skin==="STANDARD" ? Icons.standardPauseIcon : Icons.retroPauseIcon}
             </div>
           }
@@ -694,7 +660,7 @@ const MainScreen = (props) => {
             </div>
           }
           <div className="channels">
-            {tvHeaderContentChannels && (tvState !== "off") && (<span className={`channel ${showCursor ? "show-cursor" : ""}`} style={{ fontSize: appSettings.tvHeaderFontSize }}>{tvHeaderContentChannels}</span>)}
+            {tvHeaderContent && (tvState !== "off") && (<span className={`channel ${showCursor ? "show-cursor" : ""}`} style={{ fontSize: appSettings.tvHeaderFontSize }}>{tvHeaderContent}</span>)}
             {showVolume && tvState!=="off" && tvHeaderContent === null && (
               <div className='volume_div' style={{ zIndex: 10, }}>
                 <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
@@ -744,7 +710,7 @@ const MainScreen = (props) => {
       
       
       {appSettings.showRemote ?
-         <Remote containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButton} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} handlePlayPause={handlePlayPause} onClickInputButton={onClickInputButton} rewind={handleVideoRewind} forward={handleVideoForward} />
+         <Remote containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButton} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickPlayPause={onClickPlayPause} onClickInputButton={onClickInputButton} onClickRewind={onClickRewind} onClickForward={onClickForward} />
          : null
       }
 

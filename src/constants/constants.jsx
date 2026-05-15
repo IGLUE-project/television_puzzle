@@ -58,6 +58,7 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   fuzzyScreen: true, // Whether to apply a fuzzy effect to the TV screen
   initialVolume: 0.5,
   enableInput: true,
+  enableRewindAndForward: true,
   //Images
   background: "images/retro_remote/background.png",
   backgroundTV: "images/retro_remote/background_TV.png",
@@ -93,10 +94,9 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   remoteButtonsLeft: "50%",
   remoteButtonWidth: 0.09, 
   remoteButtonHeight: 0.07,
-  remoteVolumeButtonMarginTop: "0.5vmin",
-  remoteVolumeButtonSize: "6vmin", 
-  remoteVolumeButtonColor: "#000000",
-  removeButtonsInput: true,
+  remoteButtonSize: "6vmin", 
+  remoteButtonColor: "#000000",
+  remoteButtonsInput: true,
   //VHS
   vhsTop: "72.3%",
   vhsSize: 0.135,
