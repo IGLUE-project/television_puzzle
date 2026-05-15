@@ -1,6 +1,6 @@
 export const DEFAULT_APP_SETTINGS = {
   skin: "RETRO_REMOTE",
-  actionAfterSolve: "SHOW_MESSAGE", //actionAfterSolve can be "NONE", "SHOW_MESSAGE" or "PLAY_VIDEO".
+  actionAfterSolve: "PLAY_VIDEO", //actionAfterSolve can be "NONE", "SHOW_MESSAGE" or "PLAY_VIDEO".
 
   message: undefined,
   delayMessage: "3", //in seconds
@@ -12,19 +12,14 @@ export const DEFAULT_APP_SETTINGS = {
 
   maxChannelLength: 8,
   
-  soundVHS: "sounds/vhs_tape_in.wav", // Sound for VHS insertion/removal
-  soundTvOn: "sounds/retro_tv_on.wav", // Sound for TV on
-  soundTvOff: "sounds/retro_tv_off.wav", // Sound for TV off
+
   
   buttonFontSize: "5vmin", 
 
   buttonTextColor: "#000000",
 
  
-  vhsLeft: "13.5%", // Left position of the VHS in the TV
-  vhsTop: "59.3%", // Top position of the VHS in the TV
-  vhsWidth: 0.705, // Width of the VHS tape in the TV
-  vhsHeight: 0.15, // Height of the VHS tape in the TV
+
   
   tvScreenWidth: "73%", // Width of the black screen in the TV
   tvScreenHeight: "48%", // Height of the black screen in the TV
@@ -52,7 +47,7 @@ export const DEFAULT_APP_SETTINGS = {
   containerMarginTop: 0.115,
   containerMarginLeft: -0.015,
 
-  defaultVideo: {
+  defaultChannelVideo: {
     src: "videos/TV_Noise_16-9.mp4" 
   },
 
@@ -66,14 +61,21 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   //Images
   background: "images/retro_remote/background.png",
   backgroundTV: "images/retro_remote/background_TV.png",
+  backgroundTV_VHS: "images/retro_remote/background_TV_vhs.png",
   backgroundRemote: "images/retro_remote/background_remote.png",
   backgroundButton: "images/retro_remote/background_button.png",
   backgroundPowerButton: "images/retro_remote/background_power_button.png",
-  vhsOut: "images/retro_remote/vhs_out.png",
-  vhsIn: "images/retro_remote/vhs_in.png",
   backgroundButtonTv: "images/retro_remote/background_button_tv.png",
+  vhsOut: "images/retro_remote/vhs_out.png",
+  vhsOutHover: "images/retro_remote/vhs_out_hover.png",
+  vhsIn: "images/retro_remote/vhs_in.png",
   //Sounds
   soundRemoteButton: "sounds/tv_remote_click.mp3",
+  soundTvOn: "sounds/retro_tv_on.wav",
+  soundTvOff: "sounds/retro_tv_off.wav",
+  soundVHSIn: "sounds/vhs_tape_in.wav",
+  soundVHSOut: "sounds/vhs_tape_out.wav", 
+  
   //TV screen
   tvScreenHeight: "56%",
   tvScreenMarginBottom: "14%",
@@ -81,7 +83,7 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   messageFontSize: "0.05",
   //Remote
   remoteBottom: "-65%",
-  remoteWidth: 0.4,
+  remoteWidth: 0.25,
   remoteButtonsTop: ["10%", "20%", "30%", "40%", "50%", "62%", "70%"],
   remoteButtonsLeft: "50%",
   remoteButtonWidth: 0.09, 
@@ -90,6 +92,9 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   remoteVolumeButtonSize: "6vmin", 
   remoteVolumeButtonColor: "#000000",
   removeButtonsInput: true,
+  //VHS
+  vhsTop: "72.3%",
+  vhsSize: 0.135,
 };
 
 export const SKIN_SETTINGS_RETRO = {
@@ -102,8 +107,7 @@ export const SKIN_SETTINGS_RETRO = {
   vhsOut: "images/retro/vhs_out.png",
   vhsIn: "images/retro/vhs_in.png", // Background image for the VHS in the TV
   VHSButton: "images/retro/old_VHS_button.png",
-  vhsLeft: "11.2%", // Left position of the VHS in the TV
-  vhsTop: "0%", // Top position of the VHS in the TV
+
   vhsWidth: 0.45, // Width of the VHS tape in the TV
   vhsHeight: 0.09, // Height of the VHS tape in the TV
   showRemote: false,

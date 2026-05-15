@@ -215,14 +215,6 @@ div.volumeBarFilled {
 	height: 100%;
 }
 
-div.remoteContainer {
-	overflow: visible;
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	z-index: 10;
-}
-
 div.remote {
 	position: absolute;
 	transform: translateX(-50%);
@@ -230,8 +222,8 @@ div.remote {
 	background-repeat: no-repeat;
 	background-position: center;
 	transition: bottom 0.4s cubic-bezier(.4, 2, .6, 1);
-	z-index: 4;
-	bottom: -62% !important;
+	z-index: 10;
+	bottom: -65% !important;
 }
 
 div.remoteRow {
@@ -242,7 +234,7 @@ div.remoteRow {
 	position: absolute;
 	transform: translateX(-50%);
 	justify-content: center;
-	width: 47%;
+	width: 70%;
 }
 
 div.retro_remote div.remote:not(.remove_buttons_input) #remoteRow1 {
@@ -254,7 +246,7 @@ div.retro_remote div.remoteBoxButton12, div.retro_remote div.remoteBoxButton13 {
 }
 
 div.retro_remote div.remoteRow {
-	width: 47%;
+	width: 70%;
 }
 
 div.retro_remote .remote:hover {
@@ -280,21 +272,30 @@ div.standard .remote:hover {
 
 .vhsTapeOut {
 	position: absolute;
-	z-index: 16;
-	background-size: cover;
+    transform: translateX(-50%);
+	z-index: 4;
+	background-size: 100% 85%;
+    background-repeat: no-repeat;
+    background-position: top;
 	cursor: pointer;
 	transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .vhsTapeOut:hover {
-	transform: scale(1.01);
+    background-image: var(--background-image-hover) !important; 
 	filter: brightness(1.3);
 }
 
-.vhsTapeIn {
-	position: absolute;
-	z-index: 16;
-	background-size: cover;
+div.ejectButton {
+    position: absolute;
+    top: 71%;
+    right: 20.5%;
+    background-size: 100% 100%;
+    z-index: 20;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
 
 div.tvMessageContainer {

@@ -60,7 +60,7 @@ const MainScreen = (props) => {
         loop: appSettings.enableLoopForChannels,
         muted: false,
         techOrder: ["html5"],
-        sources: [ appSettings.defaultVideo ],
+        sources: [ appSettings.defaultChannelVideo ],
         userActions: { click: false },
       };
 
@@ -148,7 +148,7 @@ const MainScreen = (props) => {
       audio = document.getElementById("audio_tv_on");
       if(tvState === "channels") {
         playChannel(channel);
-      } else if((tvState === "input")&&(inputState==="in")){
+      } else if(tvState === "input"){
         setChannel("input");
       }
     } else if((tvStateRef.current !== "off")&&(tvState === "off")){
@@ -157,6 +157,8 @@ const MainScreen = (props) => {
         playerRef.current.pause();
       }
       audio = document.getElementById("audio_tv_off");
+    } else if(tvState === "input"){
+      setChannel("input");
     }
 
     if(typeof audio !== "undefined"){
@@ -200,19 +202,29 @@ const MainScreen = (props) => {
     if (!playerRef.current) return;
     if (tvState === "off") return;
     if (!(/^\d+$/.test(_channel)) && (_channel !== "input")) return;
-    
+
     let channelData = appSettings.channelsHash[_channel];
     if (!channelData) {
-      channelData = appSettings.defaultVideo;
+      if(tvState==="channels"){
+        channelData = appSettings.defaultChannelVideo;
+      } else {
+        channelData = {};
+      }
     }
+
+    let srcChange = ((typeof channelData.src === "undefined")||(channelData.src !== playerRef.current.src()));
+    if(srcChange){
+      playerRef.current.pause();
+    }
+
+    if((_channel === "input")&&(inputState === "out")) return;
 
     if(typeof channelData.src === "string"){
       //Video
       let loop = ((_channel !== "input") && (appSettings.enableLoopForChannels===true));
       playerRef.current.loop(loop);
 
-      if(channelData.src !== playerRef.current.src()){
-        playerRef.current.pause();
+      if(srcChange){
         playerRef.current.src(channelData);
         playerRef.current.load();
         playerRef.current.play();
@@ -221,6 +233,7 @@ const MainScreen = (props) => {
       setTVMessage("");
     } else if(typeof channelData.message === "string"){
       //Message
+      playerRef.current.pause();
       setTVMessage(channelData.message);
     }
 
@@ -254,9 +267,14 @@ const MainScreen = (props) => {
     if (appSettings.actionAfterSolve === "NONE") {
       props.onPuzzleSolved(correctSolution.current);
     } else if(appSettings.actionAfterSolve === "SHOW_MESSAGE"){
+      let delayMessageNumber = appSettings.delayMessageNumber;
+      let correctChannelData = appSettings.channelsHash[correctChannel.current];
+      if((typeof correctChannelData !== "object")||(correctChannelData.src === "string")||(correctChannelData.message !== "string")){
+        delayMessageNumber = 0; //There is no message to show
+      }
       setTimeout(function(){
           props.onPuzzleSolved(correctSolution.current);
-      }, appSettings.delayMessageNumber);
+      }, delayMessageNumber);
     } else if (appSettings.actionAfterSolve === "PLAY_VIDEO") {
       if (!playerRef.current) return;
 
@@ -266,7 +284,7 @@ const MainScreen = (props) => {
       }
 
       //Wait for handleVideoEnded
-      playerRef.current.loop(false); 
+      playerRef.current.loop(false);
     }
   }
 
@@ -451,31 +469,48 @@ const MainScreen = (props) => {
     };
   }, []);
 
-  const handleVhsClick = () => {
-    // const vhsSound = document.getElementById("audio_vhs_tape");
-    // if (inputState === "out") {
-    //   vhsSound.currentTime = 0;
-    //   vhsSound.play();
-    //   setVhsPaused(true);
-    //   setInputState("in");
-    //   Storage.saveSetting("inputState", "in");
-    // }
+
+  ////////
+  // VHS
+  ////////
+
+  const onClickInput = () => {
+    let audio;
+    if (inputState === "out") {
+      audio = document.getElementById("audio_vhs_tape_in");
+      audio.pause();
+      audio.currentTime = 0;
+      audio.play();
+      setInputState("paused");
+    }
   }
 
-  const ejectTapeOnClick = () => {
-    // if (inputState === "in") {
-    //   const vhsSound = document.getElementById("audio_vhs_tape");
-    //   vhsSound.currentTime = 0;
-    //   vhsSound.play();
-    //   setInputState("out");
-    //   Storage.saveSetting("inputState", "out");
-    //   if(playerRef.current){
-    //     playerRef.current.pause();
-    //   }
-    // }
+  const onClickEjectInput = () => {
+    let audio;
+    if (inputState !== "out") {
+      audio = document.getElementById("audio_vhs_tape_out");
+      audio.pause();
+      audio.currentTime = 0;
+      audio.play();
+      setInputState("out");
+
+      if(tvState === "input"){
+        if(playerRef.current){
+          playerRef.current.pause();
+        }
+      }
+    }
   }
 
-  const inputOnClick = () => {
+  const onClickInputButton = () => {
+    const remoteButtonAudio = document.getElementById("audio_remote_button");
+    remoteButtonAudio.currentTime = 0;
+    remoteButtonAudio.play();
+    setTimeout(() => {
+      setTVState("input");
+    }, 500);
+
+
     // if (!isPoweredOn || processingSolution || !appSettings.enableInput || correctSolution.current !== '') return;
     // const shortBeep = document.getElementById("audio_remote_button");
     // shortBeep.currentTime = 0;
@@ -590,6 +625,9 @@ const MainScreen = (props) => {
   }
 
   let showVideo = ((tvState !== "off")&&(videoError === false));
+  if(tvState === "input"){
+    showVideo = (showVideo && (inputState!="out"));
+  }
   return (
     <div id="screen_main" className={"screen_content"} style={{ backgroundImage: 'url(' + appSettings.background + ')' }}>
       <div id="tvContainer" className="tvContainer"
@@ -636,17 +674,61 @@ const MainScreen = (props) => {
             )}
           </div>
         </div>
+
+      <div
+          className="ejectButton"
+          style={{
+            width: containerWidth * appSettings.buttonTvWidth,
+            height: containerHeight * appSettings.buttonTvHeight,
+            backgroundImage: `url("${appSettings.backgroundButtonTv}")`,
+          }}
+          onClick={onClickEjectInput}
+        >
+          <div
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              display: "flex",
+            }}
+          >
+            <svg width={appSettings.buttonFontSize} height={appSettings.buttonFontSize} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+              <path d="M32 12L18 30H46L32 12Z" fill={appSettings.buttonTextColor}/>
+              <rect x="16" y="34" width="32" height="5" rx="2" fill={appSettings.buttonTextColor}/>
+              <rect x="14" y="44" width="36" height="8" rx="2" fill={appSettings.buttonTextColor}/>
+            </svg>
+          </div>
+        </div>
+
         <audio id="audio_remote_button" src={appSettings.soundRemoteButton} autostart="false" preload="auto" />
         <audio id="audio_tv_on" src={appSettings.soundTvOn} autostart="false" preload="auto" />
         <audio id="audio_tv_off" src={appSettings.soundTvOff} autostart="false" preload="auto" />
-        <audio id="audio_vhs_tape" src={appSettings.soundVHS} autostart="false" preload="auto" />
+        <audio id="audio_vhs_tape_in" src={appSettings.soundVHSIn} autostart="false" preload="auto" />
+        <audio id="audio_vhs_tape_out" src={appSettings.soundVHSOut} autostart="false" preload="auto" />
       </div>
       
+      
       {appSettings.showRemote ?
-        <div className="remoteContainer">
-          <Remote containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButton} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} handlePlayPause={handlePlayPause} ejectTapeOnClick={ejectTapeOnClick} inputOnClick={inputOnClick} rewind={handleVideoRewind} forward={handleVideoForward} />
-        </div> : null
+         <Remote containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButton} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} handlePlayPause={handlePlayPause} onClickInputButton={onClickInputButton} rewind={handleVideoRewind} forward={handleVideoForward} />
+         : null
       }
+
+      {appSettings.vhs && (
+        <>
+          {inputState === "out" && (
+            <div className="vhsTapeOut"
+              style={{
+                top: appSettings.vhsTop,
+                left: "50%",
+                width: containerHeight * appSettings.vhsSize * 6.5,
+                height: containerHeight * appSettings.vhsSize,
+                backgroundImage: `url("${appSettings.vhsOut}")`,
+                '--background-image-hover': 'url(' + appSettings.vhsOutHover + ')', 
+              }}
+              onClick={onClickInput}
+            />
+          )}
+        </>
+      )}
 
     </div>);
 };

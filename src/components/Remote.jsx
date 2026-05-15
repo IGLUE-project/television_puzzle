@@ -9,7 +9,7 @@ const boxHeight = props.containerHeight*appSettings.remoteButtonHeight;
     <div className={`remote ${appSettings.removeButtonsInput ? 'remove_buttons_input' : ''}`} 
       style={{
         backgroundImage: 'url('+appSettings.backgroundRemote+')',
-        height: props.containerHeight, 
+        height: props.containerHeight*0.98, 
         width: props.containerWidth*appSettings.remoteWidth,
         left:"50%",
         bottom: appSettings.remoteBottom,
@@ -18,7 +18,7 @@ const boxHeight = props.containerHeight*appSettings.remoteButtonHeight;
             <div className="remoteBoxButton remoteBoxButtonPower" style={{width:boxWidth, height:boxHeight, backgroundImage: 'url("' + appSettings.backgroundPowerButton + '")', cursor:"pointer"}} onClick={props.onClickPowerButton}></div>
             {appSettings.removeButtonsInput ? 
                 <div className="remoteBoxButton remoteBoxButtonInput" style={{width:boxWidth, height:boxHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
-                    <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }} onClick={props.inputOnClick}>               
+                    <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }} onClick={props.onClickInputButton}>               
                         <svg width={appSettings.buttonFontSize} height={appSettings.buttonFontSize} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
                           <path
                             d="M20 12 H54 Q58 12 58 16 V48 Q58 52 54 52 H20 Q16 52 16 48 V40"

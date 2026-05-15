@@ -71,10 +71,10 @@ export default function App() {
       _appSettings.actionAfterSolve = DEFAULT_APP_SETTINGS.actionAfterSolve;
     }
 
-    if(typeof _appSettings.defaultVideo.type === "undefined"){
-      let defaultVideoType = _getVideoTypeForChannel(_appSettings.defaultVideo);
-      if(defaultVideoType !== null){
-        _appSettings.defaultVideo.type = defaultVideoType;
+    if(typeof _appSettings.defaultChannelVideo.type === "undefined"){
+      let defaultChannelVideoType = _getVideoTypeForChannel(_appSettings.defaultChannelVideo);
+      if(defaultChannelVideoType !== null){
+        _appSettings.defaultChannelVideo.type = defaultChannelVideoType;
       }
     }
 
@@ -89,12 +89,13 @@ export default function App() {
       }, {});
     }
 
-    let validatedInputChannel = _validateChannel(_appSettings.inputChannel);
+    if(typeof _appSettings.inputChannel === "object"){
+      _appSettings.inputChannel.id = "input";
+    }
+    let validatedInputChannel = _validateChannel(_appSettings.inputChannel,true);
     if(typeof validatedInputChannel !== "undefined"){
       _appSettings.channelsHash["input"] = validatedInputChannel;
     }
-
-    console.log("_appSettings.channelsHash",_appSettings.channelsHash);
 
     if (typeof _appSettings.delayMessage === "number") {
       _appSettings.delayMessageNumber = _appSettings.delayMessage;
@@ -102,6 +103,12 @@ export default function App() {
       _appSettings.delayMessageNumber = parseFloat(_appSettings.delayMessage);
     }
     _appSettings.delayMessageNumber = 1000*_appSettings.delayMessageNumber; //Convert delay to ms
+
+    _appSettings.vhs = _appSettings.enableInput && _appSettings.skin === "RETRO_REMOTE";
+
+    if(_appSettings.vhs){
+      _appSettings.backgroundTV = _appSettings.backgroundTV_VHS;
+    }
 
     //Init internacionalization module
     I18n.init(_appSettings);
@@ -121,9 +128,9 @@ export default function App() {
     return _appSettings;
   }
 
-  function _validateChannel(channel){
+  function _validateChannel(channel,ignoreId=false){
     let validatedChannel;
-    if((typeof channel === "object")&&(typeof channel.id === "string")&&(/^\d+$/.test(channel.id))){
+    if(((typeof channel === "object")&&(typeof channel.id === "string")&&(/^\d+$/.test(channel.id)))||(ignoreId)){
       if (typeof channel.src === "string"){
         validatedChannel = {src: channel.src};
         let channelVideoType = _getVideoTypeForChannel(channel);
