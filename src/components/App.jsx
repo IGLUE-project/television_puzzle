@@ -2,9 +2,8 @@ import { useState, useEffect, useRef, useContext } from 'react';
 import { GlobalContext } from "./GlobalContext";
 import './../assets/scss/app.scss';
 
-import { DEFAULT_APP_SETTINGS, SKIN_SETTINGS_STANDARD, SKIN_SETTINGS_RETRO, SKIN_SETTINGS_RETRO_REMOTE, ESCAPP_CLIENT_SETTINGS, MAIN_SCREEN, MESSAGE_SCREEN } from '../constants/constants.jsx';
+import { DEFAULT_APP_SETTINGS, SKIN_SETTINGS_STANDARD, SKIN_SETTINGS_RETRO, SKIN_SETTINGS_RETRO_REMOTE, ESCAPP_CLIENT_SETTINGS, MAIN_SCREEN } from '../constants/constants.jsx';
 import MainScreen from './MainScreen.jsx';
-import MessageScreen from './MessageScreen.jsx';
 
 export default function App() {
   const { escapp, setEscapp, appSettings, setAppSettings, Storage, setStorage, Utils, I18n } = useContext(GlobalContext);
@@ -14,6 +13,12 @@ export default function App() {
   const prevScreen = useRef(screen);
   const solution = useRef(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
+  const html5VideoTypes = {
+    mp4: "video/mp4",
+    webm: "video/webm",
+    ogg: "video/ogg",
+    ogv: "video/ogg"
+  };
 
   useEffect(() => {
     //Init Escapp client
@@ -66,31 +71,37 @@ export default function App() {
       _appSettings.actionAfterSolve = DEFAULT_APP_SETTINGS.actionAfterSolve;
     }
 
-    switch (_appSettings.keysType) {
-      case "LETTERS":
-        _appSettings.keys = _appSettings.letters;
-        _appSettings.backgroundKeys = new Array(12).fill(_appSettings.backgroundKey);
-        break;
-      case "COLORS":
-        _appSettings.keys = _appSettings.colors;
-        _appSettings.backgroundKeys = _appSettings.coloredBackgroundKeys;
-        break;
-      case "SYMBOLS":
-        _appSettings.keys = _appSettings.symbols;
-        if ((_appSettings.skin === "FUTURISTIC") && (_appSettings.backgroundKey === "images/background_key_futuristic.png")) {
-          _appSettings.backgroundKey = "images/background_key_futuristic_black.png";
-        }
-        _appSettings.backgroundKeys = new Array(12).fill(_appSettings.backgroundKey);
-        break;
-      default:
-        //NUMBERS
-        _appSettings.keys = _appSettings.numbers;
-        _appSettings.backgroundKeys = new Array(12).fill(_appSettings.backgroundKey);
+    if(typeof _appSettings.defaultVideo.type === "undefined"){
+      let defaultVideoType = _getVideoTypeForChannel(_appSettings.defaultVideo);
+      if(defaultVideoType !== null){
+        _appSettings.defaultVideo.type = defaultVideoType;
+      }
     }
 
-    if ((typeof _appSettings.vhsVideo !== "undefined") && (_appSettings.vhsVideo !== "")) {
-      _appSettings.inputChannel.src = _appSettings.vhsVideo;
+    _appSettings.channelsHash = {};
+    if(_appSettings.channels instanceof Array){
+      _appSettings.channelsHash = _appSettings.channels.reduce((acc, channel) => {
+        if((typeof channel.id === "string")&&(/^\d+$/.test(channel.id))&&(typeof channel.src === "string")){
+          let channelHash = {src: channel.src};
+          let channelVideoType = _getVideoTypeForChannel(channel);
+          if(channelVideoType !== null){
+            channelHash.type = channelVideoType;
+          }
+          acc[channel.id] = channelHash;
+        }
+        return acc;
+      }, {});
     }
+
+    if((typeof _appSettings.inputChannel === "object")&&(typeof _appSettings.inputChannel.src === "string")){
+      _appSettings.channelsHash["input"] = {src: _appSettings.inputChannel.src};
+      let inputChannelVideoType = _getVideoTypeForChannel(_appSettings.inputChannel);
+      if(inputChannelVideoType !== null){
+        _appSettings.channelsHash["input"].type = inputChannelVideoType;
+      }
+    }
+
+    console.log("ChannelsHash", _appSettings.channelsHash);
 
     //Init internacionalization module
     I18n.init(_appSettings);
@@ -108,6 +119,26 @@ export default function App() {
     //Utils.preloadVideos(["videos/some_video.mp4"]);
 
     return _appSettings;
+  }
+
+  function _getVideoTypeForChannel(channel){
+    if((typeof channel.type === "string")&&(html5VideoTypes.includes(channel.type))){
+      return channel.type;
+    } else {
+      return _getVideoTypeFromSource(channel.src);
+    }
+  }
+
+  function _getVideoTypeFromSource(source) {
+    if (typeof source !== "string") return null;
+    const extension = source.split('.').pop().toLowerCase();
+    const html5VideoTypes = {
+      mp4: "video/mp4",
+      webm: "video/webm",
+      ogg: "video/ogg",
+      ogv: "video/ogg"
+    };
+    return html5VideoTypes[extension] || null;
   }
 
   useEffect(() => {
@@ -157,7 +188,7 @@ export default function App() {
 
       let contentPercentage = 1;
 
-      const aspectRatio = 926 / 888;
+      const aspectRatio = 16 / 9;
       let width = windowWidth * contentPercentage;
       let height = width / aspectRatio;
 
@@ -178,9 +209,6 @@ export default function App() {
     Utils.log("Restore application state based on escape room state:", erState);
     if (escapp.getAllPuzzlesSolved()) {
       //Puzzle already solved
-      if ((appSettings.actionAfterSolve === "SHOW_MESSAGE") && (screen !== MESSAGE_SCREEN)) {
-        setScreen(MESSAGE_SCREEN);
-      }
     } else {
       //Puzzle not solved. Restore app state based on local storage.
       restoreAppStateFromLocalStorage();
@@ -203,16 +231,13 @@ export default function App() {
   function saveAppState() {
     if (typeof Storage !== "undefined") {
       let currentAppState = { screen: screen };
-      if (screen === MESSAGE_SCREEN) {
-        currentAppState.solution = solution.current;
-      }
       Utils.log("Save app state in local storage", currentAppState);
       Storage.saveSetting("state", currentAppState);
     }
   }
 
-  function onKeypadSolved(_solution) {
-    Utils.log("onKeypadSolved with solution:", _solution);
+  function onPuzzleSolved(_solution) {
+    Utils.log("onPuzzleSolved with solution:", _solution);
     if (typeof _solution !== "string") {
       return;
     }
@@ -220,7 +245,8 @@ export default function App() {
 
     switch (appSettings.actionAfterSolve) {
       case "SHOW_MESSAGE":
-        return setScreen(MESSAGE_SCREEN);
+        //TO DO
+        return;
       case "NONE":
       default:
         return submitPuzzleSolution();
@@ -259,16 +285,20 @@ export default function App() {
   let screens = [
     {
       id: MAIN_SCREEN,
-      content: <MainScreen size={size} onKeypadSolved={onKeypadSolved} />
-    },
-    {
-      id: MESSAGE_SCREEN,
-      content: <MessageScreen size={size} submitPuzzleSolution={submitPuzzleSolution} />
+      content: <MainScreen size={size} onPuzzleSolved={onPuzzleSolved} />
     }
   ];
 
-  return (
-    <div id="global_wrapper" className={`${(appSettings !== null && typeof appSettings.skin === "string") ? appSettings.skin.toLowerCase() : ''}`}>
+return (
+    <div id="global_wrapper"
+      className={`
+        ${(appSettings !== null && typeof appSettings.skin === "string")
+          ? appSettings.skin.toLowerCase()
+          : ''
+        }
+        ${appSettings?.enableInput ? 'input_enabled' : 'input_disabled'}
+      `}
+    >
       {renderScreens(screens)}
     </div>
   )

@@ -1,16 +1,16 @@
 import React, { useContext } from 'react';
 import { GlobalContext } from "./GlobalContext";
 
-const BoxButton = (props) => {
+const RemoteBoxButton = (props) => {
   const {  appSettings } = useContext(GlobalContext);
 
   return (
     <div
-      className={"boxButton boxButton" + props.position}
+      className={"remoteBoxButton remoteBoxButton" + props.position}
       onClick={() => props.onClick(props.value)}
       style={{
-        width: props.boxWidth * appSettings.buttonWidth,
-        height: props.boxHeight * appSettings.buttonHeight,
+        width: props.boxWidth,
+        height: props.boxHeight,
         display: "inline-block", 
         backgroundImage: 'url("' + appSettings.backgroundButton + '")',
       }}
@@ -20,4 +20,4 @@ const BoxButton = (props) => {
   );
 };
 
-export default BoxButton;
+export default RemoteBoxButton;
