@@ -1,23 +1,17 @@
 export let LOCALES = {
   en:{
-    "i.message": "You’ve tuned to the correct channel! \n Click 'Continue' to advance to the next puzzle.",
-    "i.continue":"Continue",
     "i.noVideoTape": "Insert a VHS tape",
-    "i.noVideoCD": "Insert a CD",
-    "i.error": "An error occurred while loading the video. ",
+    "i.noDisc": "Insert a disc",
+    "i.error": "An error occurred while loading the video.",
   },
   es:{
-    "i.message": "¡Has sintonizado el canal correcto! \n Pulsa 'Continuar' para avanzar al siguiente reto.",
-    "i.continue":"Continuar",
     "i.noVideoTape": "Inserte una cinta VHS",
-    "i.noVideoCD": "Inserte un CD",
-    "i.error": "Se ha producido un error al cargar el video. ",
+    "i.noDisc": "Inserte un disco",
+    "i.error": "Se produjo un error al cargar el video.",
   },
   sr:{
-    "i.message": "You’ve tuned to the correct channel! \n Click 'Continue' to advance to the next puzzle.",
-    "i.continue":"Continue",
-    "i.noVideoTape": "Insert a VHS tape",
-    "i.noVideoCD": "Insert a CD",
-    "i.error": "An error occurred while loading the video. ",
+    "i.noVideoTape": "Ubacite VHS kasetu",
+    "i.noDisc": "Ubacite disk",
+    "i.error": "Došlo je do greške prilikom učitavanja videa.",
   },
 };

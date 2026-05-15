@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Sixtyfour:BLED,SCAN@33,-2&display=swap');
-
 div#screen_main {
 	display: flex;
 	justify-content: center;
@@ -114,17 +112,13 @@ div.retro div.boxLight {
 		min-width: 100%;
 		min-height: 100%;
 		z-index: 3;
+        position: absolute;
+        top: 0;
 	}
-	.tvScreenBlack,
-	.tvVideoContainer,
-	.fuzzy_screen,
-	.shutdown_screen,
-	.paused_screen,
-	.channels,
-	.volume {
-		grid-area: 1 / 1;
-		display: grid;
-	}
+    .fuzzy_screen {
+        overflow: hidden;
+        z-index: 4;
+    }
 	.channels {
         position: absolute;
         top: 0%;
@@ -284,17 +278,6 @@ div.standard .remote:hover {
 	height: 65%;
 }
 
-.novhs_screen {
-	background-color: rgb(0, 0, 0);
-	position: absolute;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	width: 90%;
-	height: 65%;
-}
-
 .vhsTapeOut {
 	position: absolute;
 	z-index: 16;
@@ -314,7 +297,14 @@ div.standard .remote:hover {
 	background-size: cover;
 }
 
-.noTapeText {
+div.tvMessageContainer {
+    background-color: rgb(0, 0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tvMessage {
 	color: rgb(15, 167, 15);
 	font-family: "Sixtyfour", sans-serif;
 	font-optical-sizing: auto;
@@ -324,6 +314,7 @@ div.standard .remote:hover {
 	font-variation-settings:
 		"BLED" 10,
 		"SCAN" 5;
+    line-height: 120%;
 }
 
 ///
@@ -358,7 +349,7 @@ body {
 .fuzzy-overlay {
 	height: 100%;
 	width: 100%;
-	background-image: url("images/black-noise.png");
+	background-image: url("images/TV_Noise_Overlay_16-9.png");
 	background-repeat: repeat;
 	opacity: 0.20;
 	z-index: 0;

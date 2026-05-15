@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { GlobalContext } from "./GlobalContext";
 import './../assets/scss/main.scss';
+import './../assets/scss/fonts.css';
 import RemoteBoxButton from './RemoteBoxButton.jsx';
 import Remote from './Remote.jsx';
 import videojs from 'video.js';
@@ -20,6 +21,7 @@ const MainScreen = (props) => {
   const [inputMode, setInputMode] = useState("channels"); //possible values: "channels", "input"
   const [inputState, setInputState] = useState(Storage.getSetting("inputState") || "out"); //possible values: "out", "paused", "playing"
   const [videoError, setVideoError] = useState(false);
+  const [tvMessage, setTVMessage] = useState("");
 
   const [userSelectedChannel, setUserSelectedChannel] = useState(null);
   const [tvHeaderContent, setTVHeaderContent] = useState(null);
@@ -204,20 +206,26 @@ const MainScreen = (props) => {
       channelData = appSettings.defaultVideo;
     }
 
-    try {
-      let source = channelData;
-      playerRef.current.pause();
-      playerRef.current.src(source);
-      playerRef.current.load();
+    if(typeof channelData.src === "string"){
+      //Video
       let loop = ((_channel !== "input") && (appSettings.enableLoopForChannels===true));
       playerRef.current.loop(loop);
-      playerRef.current.play();
-      updatePlayerVolume();
-      checkSolution(_channel);
-    } catch (e) {
-      Utils.log("Error al cambiar la fuente del reproductor:", e);
-      Storage.removeSetting("channel");
+
+      if(channelData.src !== playerRef.current.src()){
+        playerRef.current.pause();
+        playerRef.current.src(channelData);
+        playerRef.current.load();
+        playerRef.current.play();
+      }
+
+      setTVMessage("");
+    } else if(typeof channelData.message === "string"){
+      //Message
+      setTVMessage(channelData.message);
     }
+
+    updatePlayerVolume();
+    checkSolution(_channel);
   }
 
   const checkSolution = (channel) => {
@@ -225,6 +233,7 @@ const MainScreen = (props) => {
     let solutionArray = channel.split("");
     if(solutionArray.length !== appSettings.solutionLength) return;
     if(incorrectSolutions.current.has(channel)) return;
+    if((typeof correctChannel.current === "string") && escapp.getAllPuzzlesSolved() && (escapp.getSolvedPuzzles().length > 0)) return;
 
     let solution = solutionArray.join(";");
     Utils.log("Check solution: " + solution);
@@ -234,16 +243,20 @@ const MainScreen = (props) => {
       if(success === true){
         correctSolution.current = solution;
         correctChannel.current = channel;
-        afterSuccesfullCheck();
+        afterFirstSuccesfullCheck();
       } else {
         incorrectSolutions.current.add(channel);
       }
     });
   };
 
-  const afterSuccesfullCheck = () => {
+  const afterFirstSuccesfullCheck = () => {
     if (appSettings.actionAfterSolve === "NONE") {
       props.onPuzzleSolved(correctSolution.current);
+    } else if(appSettings.actionAfterSolve === "SHOW_MESSAGE"){
+      setTimeout(function(){
+          props.onPuzzleSolved(correctSolution.current);
+      }, appSettings.delayMessageNumber);
     } else if (appSettings.actionAfterSolve === "PLAY_VIDEO") {
       if (!playerRef.current) return;
 
@@ -259,7 +272,9 @@ const MainScreen = (props) => {
 
   const handleVideoEnded = () => {
     if ((typeof correctSolution.current !== "undefined")&&(appSettings.actionAfterSolve === "PLAY_VIDEO")&&(correctChannel.current === channelRef.current)) {
-      props.onPuzzleSolved(correctSolution.current);
+      if(escapp.getAllPuzzlesSolved()===false){
+        props.onPuzzleSolved(correctSolution.current);
+      }
     } else {
       if((playerRef.current)&&(tvStateRef.current === "channels")&&(appSettings.enableLoopForChannels===true)){
         playerRef.current.loop(true);
@@ -594,7 +609,18 @@ const MainScreen = (props) => {
             <div data-vjs-player style={{ height: "100%", width: "100%" }}>
               <div ref={videoRef} style={{display: "flex", height: "100%", width: "100%", alignItems: "center"}}></div>
             </div>
+            { appSettings.fuzzyScreen && 
+              <div className='fuzzy_screen tvScreenContent'>
+                <div className="fuzzy-overlay"></div>
+              </div>
+            }
           </div>
+          {tvMessage && tvMessage.trim()!=="" && tvState!=="off" &&
+            <div className='tvScreenContent tvMessageContainer'>
+              <p className='tvMessage' style={{ fontSize: containerWidth * appSettings.messageFontSize }}>{tvMessage}</p>
+            </div>
+          }
+
           <div className="channels">
             {tvHeaderContent && tvState!=="off" && (<span className={`channel ${showCursor ? "show-cursor" : ""}`} style={{ fontSize: appSettings.channelFontSize }}>{tvHeaderContent}</span>)}
 

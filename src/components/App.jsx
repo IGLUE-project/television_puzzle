@@ -81,27 +81,27 @@ export default function App() {
     _appSettings.channelsHash = {};
     if(_appSettings.channels instanceof Array){
       _appSettings.channelsHash = _appSettings.channels.reduce((acc, channel) => {
-        if((typeof channel.id === "string")&&(/^\d+$/.test(channel.id))&&(typeof channel.src === "string")){
-          let channelHash = {src: channel.src};
-          let channelVideoType = _getVideoTypeForChannel(channel);
-          if(channelVideoType !== null){
-            channelHash.type = channelVideoType;
-          }
-          acc[channel.id] = channelHash;
+        let validatedChannel = _validateChannel(channel);
+        if(typeof validatedChannel !== "undefined"){
+          acc[channel.id] = validatedChannel;
         }
         return acc;
       }, {});
     }
 
-    if((typeof _appSettings.inputChannel === "object")&&(typeof _appSettings.inputChannel.src === "string")){
-      _appSettings.channelsHash["input"] = {src: _appSettings.inputChannel.src};
-      let inputChannelVideoType = _getVideoTypeForChannel(_appSettings.inputChannel);
-      if(inputChannelVideoType !== null){
-        _appSettings.channelsHash["input"].type = inputChannelVideoType;
-      }
+    let validatedInputChannel = _validateChannel(_appSettings.inputChannel);
+    if(typeof validatedInputChannel !== "undefined"){
+      _appSettings.channelsHash["input"] = validatedInputChannel;
     }
 
-    console.log("ChannelsHash", _appSettings.channelsHash);
+    console.log("_appSettings.channelsHash",_appSettings.channelsHash);
+
+    if (typeof _appSettings.delayMessage === "number") {
+      _appSettings.delayMessageNumber = _appSettings.delayMessage;
+    } else {
+      _appSettings.delayMessageNumber = parseFloat(_appSettings.delayMessage);
+    }
+    _appSettings.delayMessageNumber = 1000*_appSettings.delayMessageNumber; //Convert delay to ms
 
     //Init internacionalization module
     I18n.init(_appSettings);
@@ -119,6 +119,22 @@ export default function App() {
     //Utils.preloadVideos(["videos/some_video.mp4"]);
 
     return _appSettings;
+  }
+
+  function _validateChannel(channel){
+    let validatedChannel;
+    if((typeof channel === "object")&&(typeof channel.id === "string")&&(/^\d+$/.test(channel.id))){
+      if (typeof channel.src === "string"){
+        validatedChannel = {src: channel.src};
+        let channelVideoType = _getVideoTypeForChannel(channel);
+        if(channelVideoType !== null){
+          validatedChannel.type = channelVideoType;
+        }
+      } else if (typeof channel.message === "string"){
+          validatedChannel = {message: channel.message};
+      }
+    }
+    return validatedChannel;
   }
 
   function _getVideoTypeForChannel(channel){

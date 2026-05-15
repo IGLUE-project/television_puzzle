@@ -1,10 +1,12 @@
 export const DEFAULT_APP_SETTINGS = {
   skin: "RETRO_REMOTE",
-  actionAfterSolve: "PLAY_VIDEO", //actionAfterSolve can be "NONE", "SHOW_MESSAGE" or "PLAY_VIDEO".
+  actionAfterSolve: "SHOW_MESSAGE", //actionAfterSolve can be "NONE", "SHOW_MESSAGE" or "PLAY_VIDEO".
 
   message: undefined,
+  delayMessage: "3", //in seconds
 
-  enableLoopForChannels: false,
+  enableLoopForChannels: true,
+
   enableInput: false,
   showRemote: true,
 
@@ -19,7 +21,6 @@ export const DEFAULT_APP_SETTINGS = {
   buttonTextColor: "#000000",
 
  
-
   vhsLeft: "13.5%", // Left position of the VHS in the TV
   vhsTop: "59.3%", // Top position of the VHS in the TV
   vhsWidth: 0.705, // Width of the VHS tape in the TV
@@ -29,7 +30,7 @@ export const DEFAULT_APP_SETTINGS = {
   tvScreenHeight: "48%", // Height of the black screen in the TV
 
 
-  fuzzyScreen: true, // Whether to apply a fuzzy effect to the TV screen
+  
 
   
   buttonsTop: ["12%", "22%", "32%", "42%", "52%", "62%", "72%"], // Top positions for the rows of buttons in the remote
@@ -41,7 +42,7 @@ export const DEFAULT_APP_SETTINGS = {
   volumeColor: "rgb(15, 167, 15)", // Color of the volume text
   pausedIconSize: "25vmin", // Size of the paused icon in the remote
   pausedIconColor: "rgb(15, 167, 15)", // Color of the paused icon in the remote
-  noTapeFontSize: "0.06",
+  
   buttonTvWidth: 0.09, // Size of the button text in the TV
   buttonTvHeight: 0.1, // Height of the button text in the TV
   buttonTvMarginTop: "55.5%", // Margin top for the button text in the TV
@@ -54,31 +55,12 @@ export const DEFAULT_APP_SETTINGS = {
   defaultVideo: {
     src: "videos/TV_Noise_16-9.mp4" 
   },
-  channels: [
-    { 
-      id: "11", 
-      src: "videos/sample_16_9.webm"
-    },
-    { 
-      id: "1234", 
-      src: "videos/sample2_16_9.mp4"
-    },
-    {
-      id: "13", 
-      src: "videos/sample_4_3.webm"
-    },
-    {
-      id: "14", 
-      src: "videos/sample2_4_3.mp4"
-    }
-  ],
-  inputChannel: {
-    src: "videos/sample2_16_9.mp4"
-  },
+
 };
 
 export const SKIN_SETTINGS_RETRO_REMOTE = {
   //Authors settings
+  fuzzyScreen: true, // Whether to apply a fuzzy effect to the TV screen
   initialVolume: 0.5,
   enableInput: true,
   //Images
@@ -95,6 +77,8 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   //TV screen
   tvScreenHeight: "56%",
   tvScreenMarginBottom: "14%",
+  //Message
+  messageFontSize: "0.05",
   //Remote
   remoteBottom: "-65%",
   remoteWidth: 0.4,
