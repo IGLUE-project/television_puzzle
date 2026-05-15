@@ -4,6 +4,7 @@ import './../assets/scss/main.scss';
 import './../assets/scss/fonts.css';
 import RemoteBoxButton from './RemoteBoxButton.jsx';
 import Remote from './Remote.jsx';
+import Icons from './Icons.jsx';
 import videojs from 'video.js';
 import "video.js/dist/video-js.css";
 
@@ -20,11 +21,12 @@ const MainScreen = (props) => {
   const channelRef = useRef(channel);
   const [inputMode, setInputMode] = useState("channels"); //possible values: "channels", "input"
   const [inputState, setInputState] = useState(Storage.getSetting("inputState") || "out"); //possible values: "out", "paused", "playing"
+  const inputStateRef = useRef(inputState);
   const [videoError, setVideoError] = useState(false);
   const [tvMessage, setTVMessage] = useState("");
 
   const [userSelectedChannel, setUserSelectedChannel] = useState(null);
-  const [tvHeaderContent, setTVHeaderContent] = useState(null);
+  const [tvHeaderContentChannels, setTVHeaderContentChannels] = useState(null);
   const [showCursor, setShowCursor] = useState(false);
   const [channelTimer, setChannelTimer] = useState(null);
   const processingChannelChangeRef = useRef(false);
@@ -142,14 +144,18 @@ const MainScreen = (props) => {
     Utils.log("Previous tvState:", tvStateRef.current);
     Utils.log("New tvState:", tvState);
 
+    if((tvState === "channels")||(tvState === "input")){
+      setInputMode(tvState);
+    }
+
     let audio;
     if((tvStateRef.current === "off")&&(tvState !== "off")){
       //TV has been turned on
       audio = document.getElementById("audio_tv_on");
       if(tvState === "channels") {
-        playChannel(channel);
+        playAndUpdateChannel(channel);
       } else if(tvState === "input"){
-        setChannel("input");
+        playAndUpdateChannel("input");
       }
     } else if((tvStateRef.current !== "off")&&(tvState === "off")){
       //TV has been turned off
@@ -157,8 +163,16 @@ const MainScreen = (props) => {
         playerRef.current.pause();
       }
       audio = document.getElementById("audio_tv_off");
-    } else if(tvState === "input"){
-      setChannel("input");
+    } else {
+      if(tvState === "input"){
+        //TV changed from channels to input
+        setTVHeaderContentChannels(null);
+        setUserSelectedChannel(null);
+        playAndUpdateChannel("input");
+      } else {
+        //TV changed from input to channels
+        playAndUpdateChannel(channel);
+      }
     }
 
     if(typeof audio !== "undefined"){
@@ -193,7 +207,6 @@ const MainScreen = (props) => {
     Utils.log("Channel change", channel);
     channelRef.current = channel;
     playChannel(channel);
-    processingChannelChangeRef.current = false;
   }, [channel]);
 
   const playChannel = (_channel) => {
@@ -202,6 +215,14 @@ const MainScreen = (props) => {
     if (!playerRef.current) return;
     if (tvState === "off") return;
     if (!(/^\d+$/.test(_channel)) && (_channel !== "input")) return;
+
+    processingChannelChangeRef.current = false;
+
+    if((_channel !== "input")&&(tvState === "input")){
+      return setTVState("channels");
+    } else if((_channel === "input")&&(tvState !== "input")){
+      return setTVState("input");
+    }
 
     let channelData = appSettings.channelsHash[_channel];
     if (!channelData) {
@@ -217,28 +238,42 @@ const MainScreen = (props) => {
       playerRef.current.pause();
     }
 
-    if((_channel === "input")&&(inputState === "out")) return;
-
+    if(_channel === "input"){
+      if(inputState === "out"){
+        return setTVMessage(appSettings.messageNoInput);
+      } else if(inputState === "paused"){
+        return setTVMessage(""); //The pause screen will be shown
+      }
+    }
+    
     if(typeof channelData.src === "string"){
       //Video
       let loop = ((_channel !== "input") && (appSettings.enableLoopForChannels===true));
       playerRef.current.loop(loop);
-
       if(srcChange){
         playerRef.current.src(channelData);
         playerRef.current.load();
-        playerRef.current.play();
       }
-
+      if((_channel !== "input")||(inputState === "playing")){
+        if (playerRef.current.paused()) {
+          playerRef.current.play();
+        }
+      }
       setTVMessage("");
     } else if(typeof channelData.message === "string"){
-      //Message
-      playerRef.current.pause();
       setTVMessage(channelData.message);
     }
 
     updatePlayerVolume();
     checkSolution(_channel);
+  }
+
+  const playAndUpdateChannel = function(_channel){
+    if(channel === _channel){
+      playChannel(_channel);
+    } else {
+      setChannel(_channel);
+    }
   }
 
   const checkSolution = (channel) => {
@@ -309,7 +344,7 @@ const MainScreen = (props) => {
     
     let selectedChannel = _userSelectedChannel + value;
     setUserSelectedChannel(selectedChannel);
-    setTVHeaderContent(selectedChannel);
+    setTVHeaderContentChannels(selectedChannel);
     setShowCursor(selectedChannel.length < appSettings.maxChannelLength);
 
     const shortBeep = document.getElementById("audio_remote_button");
@@ -319,18 +354,20 @@ const MainScreen = (props) => {
 
     if (channelTimer) { clearTimeout(channelTimer); }
     const newChannelTimer = setTimeout(() => {
-      handleChannelTimerExpire(selectedChannel);
+      handleChannelTimerExpire(selectedChannel,tvState);
     }, 4000);
     setChannelTimer(newChannelTimer);
   }
 
-  const handleChannelTimerExpire = (selectedChannel) => {
+  const handleChannelTimerExpire = (selectedChannel,tvStateWhenChannelWasSelected) => {
+    if(tvState === "off") return;
     processingChannelChangeRef.current = true;
     setShowCursor(false);
     setTimeout(() => {
-      setTVHeaderContent(null);
+      setTVHeaderContentChannels(null);
       setUserSelectedChannel(null);
-      if(selectedChannel !== channel){
+      let changedToInputDuringChannelSelection = ((tvStateWhenChannelWasSelected !== tvStateRef.current)&&(tvStateRef.current === "input"));
+      if((selectedChannel !== channel)&&(tvState !== "off")&&(!changedToInputDuringChannelSelection)){
         setChannel(selectedChannel);
       } else {
         processingChannelChangeRef.current = false;
@@ -471,34 +508,67 @@ const MainScreen = (props) => {
 
 
   ////////
-  // VHS
+  // Input (VHS and disc)
   ////////
+
+  useEffect(() => {
+    Utils.log("Previous inputState:", inputStateRef.current);
+    Utils.log("New inputState:", inputState);
+
+    if((inputStateRef.current !== "out")&&(inputState === "out")&&(tvState === "input")){
+      //Input has been ejected during pause or playing.
+      //Update screen when no input message.
+      playAndUpdateChannel("input");
+      return;
+    }
+
+    //Update previous value
+    inputStateRef.current = inputState;
+  }, [inputState]);
 
   const onClickInput = () => {
     let audio;
     if (inputState === "out") {
-      audio = document.getElementById("audio_vhs_tape_in");
+      if(appSettings.vhs){
+        audio = document.getElementById("audio_vhs_tape_in");
+      } else {
+        audio = document.getElementById("audio_disc_in");
+      }
+      setInputState("paused");
+    }
+
+    if(typeof audio !== "undefined"){
       audio.pause();
       audio.currentTime = 0;
       audio.play();
-      setInputState("paused");
     }
   }
 
   const onClickEjectInput = () => {
     let audio;
     if (inputState !== "out") {
-      audio = document.getElementById("audio_vhs_tape_out");
+      if(appSettings.vhs){
+        audio = document.getElementById("audio_vhs_tape_out");
+      } else {
+        audio = document.getElementById("audio_disc_out");
+      }
+      if(appSettings.enableInput){
+        setTimeout(function(){
+          setInputState("out");
+        }, 1000);
+      }
+    } else {
+      if(appSettings.vhs){
+        audio = document.getElementById("audio_vhs_eject_notape");
+      } else {
+        audio = document.getElementById("audio_remote_button");
+      }
+    }
+
+    if(typeof audio !== "undefined"){
       audio.pause();
       audio.currentTime = 0;
       audio.play();
-      setInputState("out");
-
-      if(tvState === "input"){
-        if(playerRef.current){
-          playerRef.current.pause();
-        }
-      }
     }
   }
 
@@ -506,56 +576,12 @@ const MainScreen = (props) => {
     const remoteButtonAudio = document.getElementById("audio_remote_button");
     remoteButtonAudio.currentTime = 0;
     remoteButtonAudio.play();
-    setTimeout(() => {
-      setTVState("input");
-    }, 500);
-
-
-    // if (!isPoweredOn || processingSolution || !appSettings.enableInput || correctSolution.current !== '') return;
-    // const shortBeep = document.getElementById("audio_remote_button");
-    // shortBeep.currentTime = 0;
-    // shortBeep.play();
-    // if (channelTimer) {
-    //   clearTimeout(channelTimer);
-    //   setChannelTimer(null);
-    // }
-    // setBlackScreenChannels(true);
-    // setTimeout(() => {
-    //   setBlackScreenChannels(false);
-    // }, 900);
-    // if (inputMode === "tv") {
-    //   if (playerVhsRef.current === null) {
-    //     Utils.log("Error: El reproductor VHS no está inicializado");
-    //     return;
-    //   }
-    //   setInputMode("vhs");
-    //   setTVHeaderContent(appSettings.inputChannel.src);
-    //   setTimeout(() => {
-    //     setTVHeaderContent("");
-    //   }, 1500);
-    //   if (vhsPaused || inputState !== "in") {
-    //     playerVhsRef.current.pause();
-    //   } else {
-    //     playerVhsRef.current.play();
-    //   }
-    //   playerRef.current.pause();
-    // } else if (inputMode === "vhs") {
-    //   if (playerRef.current === null) {
-    //     Utils.log("Error: El reproductor no está inicializado");
-    //     reinitializePlayer();
-    //     return;
-    //   }
-    //   setInputMode("tv");
-    //   setTVHeaderContent("tv");
-    //   playerVhsRef.current.pause();
-    //   playerRef.current.play();
-    //   setTimeout(() => {
-    //     setTVHeaderContent("");
-    //   }, 1500);
-    // }
+    if(tvState !== "input"){
+      setTimeout(() => {
+        setTVState("input");
+      }, 500);
+    }
   }
-
-
 
   const handlePlayPause = () => {
     // const shortBeep = document.getElementById("audio_remote_button");
@@ -625,9 +651,13 @@ const MainScreen = (props) => {
   }
 
   let showVideo = ((tvState !== "off")&&(videoError === false));
+  let showPausedInput = false;
   if(tvState === "input"){
-    showVideo = (showVideo && (inputState!="out"));
+    showVideo = (showVideo && (inputState==="playing"));
+    showPausedInput = (inputState==="paused");
   }
+  let showFuzzyScreen = (appSettings.fuzzyScreen && (tvState !== "off"));
+
   return (
     <div id="screen_main" className={"screen_content"} style={{ backgroundImage: 'url(' + appSettings.background + ')' }}>
       <div id="tvContainer" className="tvContainer"
@@ -647,21 +677,24 @@ const MainScreen = (props) => {
             <div data-vjs-player style={{ height: "100%", width: "100%" }}>
               <div ref={videoRef} style={{display: "flex", height: "100%", width: "100%", alignItems: "center"}}></div>
             </div>
-            { appSettings.fuzzyScreen && 
-              <div className='fuzzy_screen tvScreenContent'>
-                <div className="fuzzy-overlay"></div>
-              </div>
-            }
           </div>
           {tvMessage && tvMessage.trim()!=="" && tvState!=="off" &&
             <div className='tvScreenContent tvMessageContainer'>
               <p className='tvMessage' style={{ fontSize: containerWidth * appSettings.messageFontSize }}>{tvMessage}</p>
             </div>
           }
-
+          {showPausedInput &&
+            <div className="tvScreenContent inputPausedScreen">
+              {appSettings.skin==="STANDARD" ? Icons.standardPauseIcon : Icons.retroPauseIcon}
+            </div>
+          }
+          { showFuzzyScreen && 
+            <div className='fuzzy_screen tvScreenContent'>
+              <div className="fuzzy-overlay"></div>
+            </div>
+          }
           <div className="channels">
-            {tvHeaderContent && tvState!=="off" && (<span className={`channel ${showCursor ? "show-cursor" : ""}`} style={{ fontSize: appSettings.channelFontSize }}>{tvHeaderContent}</span>)}
-
+            {tvHeaderContentChannels && (tvState !== "off") && (<span className={`channel ${showCursor ? "show-cursor" : ""}`} style={{ fontSize: appSettings.tvHeaderFontSize }}>{tvHeaderContentChannels}</span>)}
             {showVolume && tvState!=="off" && tvHeaderContent === null && (
               <div className='volume_div' style={{ zIndex: 10, }}>
                 <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
@@ -702,8 +735,11 @@ const MainScreen = (props) => {
         <audio id="audio_remote_button" src={appSettings.soundRemoteButton} autostart="false" preload="auto" />
         <audio id="audio_tv_on" src={appSettings.soundTvOn} autostart="false" preload="auto" />
         <audio id="audio_tv_off" src={appSettings.soundTvOff} autostart="false" preload="auto" />
+        <audio id="audio_disc_in" src={appSettings.soundDiscIn} autostart="false" preload="auto" />
+        <audio id="audio_disc_out" src={appSettings.soundDiscOut} autostart="false" preload="auto" />
         <audio id="audio_vhs_tape_in" src={appSettings.soundVHSIn} autostart="false" preload="auto" />
         <audio id="audio_vhs_tape_out" src={appSettings.soundVHSOut} autostart="false" preload="auto" />
+        <audio id="audio_vhs_eject_notape" src={appSettings.soundVHSOutNoTape} autostart="false" preload="auto" />
       </div>
       
       

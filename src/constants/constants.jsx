@@ -31,7 +31,7 @@ export const DEFAULT_APP_SETTINGS = {
   buttonsTop: ["12%", "22%", "32%", "42%", "52%", "62%", "72%"], // Top positions for the rows of buttons in the remote
   buttonsLeft: "50%", // Left position for the remote buttons
 
-  channelFontSize: "6vmin", // Font size for the channel number in the TV
+
   volumeFontSize: 0.07,
   volumeBarColor: "rgba(15, 167, 15, 0.76)", // Color of the volume bar
   volumeColor: "rgb(15, 167, 15)", // Color of the volume text
@@ -73,12 +73,17 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   soundRemoteButton: "sounds/tv_remote_click.mp3",
   soundTvOn: "sounds/retro_tv_on.wav",
   soundTvOff: "sounds/retro_tv_off.wav",
+  soundDiscIn: "sounds/disc_in.wav",
+  soundDiscOut: "sounds/disc_out.wav",
   soundVHSIn: "sounds/vhs_tape_in.wav",
-  soundVHSOut: "sounds/vhs_tape_out.wav", 
+  soundVHSOut: "sounds/vhs_tape_out.wav",
+  soundVHSOutNoTape: "sounds/vhs_eject_notape.mp3",
   
   //TV screen
   tvScreenHeight: "56%",
   tvScreenMarginBottom: "14%",
+  //Header
+  tvHeaderFontSize: "6vmin",
   //Message
   messageFontSize: "0.05",
   //Remote
