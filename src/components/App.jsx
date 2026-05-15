@@ -113,10 +113,10 @@ export default function App() {
     //Init internacionalization module
     I18n.init(_appSettings);
 
-    if(_appSettings.vhs){
-      _appSettings.messageNoInput = I18n.getTrans("i.noVideoTape");
-    } else {
+    if(_appSettings.skin === "STANDARD"){
       _appSettings.messageNoInput = I18n.getTrans("i.noDisc");
+    } else {
+      _appSettings.messageNoInput = I18n.getTrans("i.noVideoTape");
     }
 
     //Change HTTP protocol to HTTPs in URLs if necessary

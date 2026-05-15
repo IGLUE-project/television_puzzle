@@ -79,6 +79,7 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   soundVHSIn: "sounds/vhs_tape_in.wav",
   soundVHSOut: "sounds/vhs_tape_out.wav",
   soundVHSOutNoTape: "sounds/vhs_eject_notape.mp3",
+  soundVHSRewind: "sounds/vhs_tape_rewind.wav",
   
   //TV screen
   tvScreenHeight: "56%",
@@ -100,6 +101,7 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   //VHS
   vhsTop: "72.3%",
   vhsSize: 0.135,
+  rewindFactor: 0.4,
 };
 
 export const SKIN_SETTINGS_RETRO = {

@@ -22,6 +22,8 @@ const MainScreen = (props) => {
   const [inputMode, setInputMode] = useState("channels"); //possible values: "channels", "input"
   const [inputState, setInputState] = useState(Storage.getSetting("inputState") || "out"); //possible values: "out", "paused", "rewinding", "forwarding", playing"
   const inputStateRef = useRef(inputState);
+  const inputVideoTimeRef = useRef(0);
+  const channelsVideoTimeRef = useRef({});
   const [videoError, setVideoError] = useState(false);
   const [tvMessage, setTVMessage] = useState("");
 
@@ -164,17 +166,28 @@ const MainScreen = (props) => {
     } else if((tvStateRef.current !== "off")&&(tvState === "off")){
       //TV has been turned off
       if(playerRef.current){
+        if(tvStateRef.current === "input"){
+          inputVideoTimeRef.current = playerRef.current.currentTime();
+        } else if((tvStateRef.current === "channels")&&(typeof channel === "string")){
+          channelsVideoTimeRef.current[channel] = playerRef.current.currentTime();
+        }
         playerRef.current.pause();
       }
       audio = document.getElementById("audio_tv_off");
     } else {
       if(tvState === "input"){
         //TV changed from channels to input
+        if((playerRef.current)&&(typeof channel === "string")){
+          channelsVideoTimeRef.current[channel] = playerRef.current.currentTime();
+        }
         setTVHeaderContent(null);
         setUserSelectedChannel(null);
         playAndUpdateChannel("input");
       } else {
         //TV changed from input to channels
+        if (playerRef.current){
+          inputVideoTimeRef.current = playerRef.current.currentTime();
+        }
         playAndUpdateChannel(channel);
       }
     }
@@ -207,6 +220,21 @@ const MainScreen = (props) => {
     remoteButtonAudio.currentTime = 0;
     remoteButtonAudio.play();
   }
+
+  const playRewindAudio = function(){
+    const audio = document.getElementById("audio_vhs_rewind");
+    audio.pause();
+    audio.currentTime = 0;
+    audio.play();
+  }
+
+  const pauseRewindAudio = function(){
+    const audio = document.getElementById("audio_vhs_rewind");
+    audio.pause();
+    audio.currentTime = 0;
+  }
+
+  
 
   /////////
   // Channels
@@ -242,19 +270,32 @@ const MainScreen = (props) => {
       }
     }
 
-    let srcChange = ((typeof channelData.src === "undefined")||(channelData.src !== playerRef.current.src()));
-    if(srcChange){
-      playerRef.current.pause();
-    }
+    playerRef.current.pause();
 
     if(typeof channelData.src === "string"){
       //Video
       let loop = ((_channel !== "input") && (appSettings.enableLoopForChannels===true));
       playerRef.current.loop(loop);
+
+      let srcChange = ((typeof channelData.src === "undefined")||(channelData.src !== playerRef.current.src()));
       if(srcChange){
         playerRef.current.src(channelData);
         playerRef.current.load();
       }
+
+      //Restore time if stored
+      let videoTime = 0;
+      if(_channel === "input"){
+        if (typeof inputVideoTimeRef.current === "number"){
+          videoTime = inputVideoTimeRef.current;
+        }
+      } else {
+        if (typeof channelsVideoTimeRef.current[_channel] === "number"){
+          videoTime = channelsVideoTimeRef.current[_channel];
+        }
+      }
+      playerRef.current.currentTime(videoTime);
+
       if((_channel !== "input")||(inputState === "playing")){
         if (playerRef.current.paused()) {
           playerRef.current.play();
@@ -458,6 +499,10 @@ const MainScreen = (props) => {
       return;
     }
 
+    if(playerRef.current){
+      inputVideoTimeRef.current = playerRef.current.currentTime();
+    }
+
     if((inputStateRef.current !== "out")&&(inputState === "out")){
       //Input has been ejected during pause or playing.
       if(playerRef.current){
@@ -475,7 +520,7 @@ const MainScreen = (props) => {
       if(playerRef.current){
         playerRef.current.pause();
       }
-    } 
+    }
 
     //Update previous value
     inputStateRef.current = inputState;
@@ -561,6 +606,9 @@ const MainScreen = (props) => {
 
     setInputState("rewinding");
     setTVHeaderContent("◀◀");
+    setTimeout(function(){
+      playRewindAudio();
+    },500);
 
     playerRef.current.pause();
 
@@ -568,16 +616,18 @@ const MainScreen = (props) => {
       const player = playerRef.current;
       if (!player) return;
       const currentTime = player.currentTime();
-      const newTime = Math.max(currentTime - 0.25, 0);
+      const newTime = Math.max(currentTime - appSettings.rewindFactor, 0);
       player.currentTime(newTime);
+      inputVideoTimeRef.current = newTime;
       if (newTime <= 0) {
         stopRewind();
         setInputState("paused");
       }
-    }, 100);
+    }, 200);
   };
 
   const stopRewind = () => {
+    pauseRewindAudio();
     if (rewindIntervalRef.current) {
       clearInterval(rewindIntervalRef.current);
       rewindIntervalRef.current = null;
@@ -592,6 +642,9 @@ const MainScreen = (props) => {
     if(inputState === "rewinding") stopRewind(); 
     setInputState("forwarding");
     setTVHeaderContent("▶▶");
+    setTimeout(function(){
+      playRewindAudio();
+    },500);
 
     playerRef.current.pause();
 
@@ -600,15 +653,17 @@ const MainScreen = (props) => {
       if (!player) return;
       const currentTime = player.currentTime();
       const duration = player.duration();
-      const newTime = Math.min(currentTime + 0.25, duration);
+      const newTime = Math.min(currentTime + appSettings.rewindFactor, duration);
       player.currentTime(newTime);
+      inputVideoTimeRef.current = newTime;
       if (newTime >= duration) {
         stopForward();
       }
-    }, 100);
+    }, 200);
   };
 
   const stopForward = () => {
+    pauseRewindAudio();
     if (forwardIntervalRef.current) {
       clearInterval(forwardIntervalRef.current);
       forwardIntervalRef.current = null;
@@ -710,7 +765,6 @@ const MainScreen = (props) => {
             </svg>
           </div>
         </div>
-
         <audio id="audio_remote_button" src={appSettings.soundRemoteButton} autostart="false" preload="auto" />
         <audio id="audio_tv_on" src={appSettings.soundTvOn} autostart="false" preload="auto" />
         <audio id="audio_tv_off" src={appSettings.soundTvOff} autostart="false" preload="auto" />
@@ -719,6 +773,7 @@ const MainScreen = (props) => {
         <audio id="audio_vhs_tape_in" src={appSettings.soundVHSIn} autostart="false" preload="auto" />
         <audio id="audio_vhs_tape_out" src={appSettings.soundVHSOut} autostart="false" preload="auto" />
         <audio id="audio_vhs_eject_notape" src={appSettings.soundVHSOutNoTape} autostart="false" preload="auto" />
+        <audio id="audio_vhs_rewind" src={appSettings.soundVHSRewind} autostart="false" preload="auto" />
       </div>
       
       
