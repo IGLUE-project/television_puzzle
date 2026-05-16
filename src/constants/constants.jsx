@@ -27,9 +27,9 @@ export const SKIN_SETTINGS_STANDARD = {
   background: "images/standard/background.png",
   backgroundTV: "images/standard/background_TV.png",
   backgroundRemote: "images/standard/background_remote.png",
-  backgroundButton: "images/standard/background_button.png",
+  backgroundButtonRemote: "images/standard/background_button_remote.png",
   backgroundPowerButton: "images/standard/background_power_button.png",
-  backgroundButtonTv: "images/standard/background_button_tv.png",
+  backgroundEjectButton: "images/standard/background_eject_button.png",
   inputOutImage: "images/standard/disc_out.png",
 
   //Videos
@@ -42,13 +42,9 @@ export const SKIN_SETTINGS_STANDARD = {
   soundTvOff: "sounds/smart_tv_off.mp3",
   soundDiscIn: "sounds/disc_in.wav",
   soundDiscOut: "sounds/disc_out.wav",
-  //UI
-  buttonFontSize: "5vmin", 
-  buttonTextColor: "#000000",
-  buttonTvWidth: 0.035,
-  buttonTvHeight: 0.05,
   //TV screen
   tvScreenHeight: "65%",
+  tvScreenMarginLeft: "0%",
   tvScreenMarginBottom: "12.5%",
   //Header
   tvHeaderFontSize: "5vmin",
@@ -68,10 +64,18 @@ export const SKIN_SETTINGS_STANDARD = {
   remoteButtonHeight: 0.065,
   remoteButtonSize: "5vmin", 
   remoteButtonColor: "#000000",
+  remoteButtonFontSize: "5vmin", 
+  remoteButtonTextColor: "#000000",
   remoteButtonsInput: true,
   //Input
   inputObjectOutTop: "79.6%",
+  inputObjectOutLeft: "50.0%",
   inputObjectSize: 0.043,
+  //Eject button
+  ejectButtonFontSize: "3vmin", 
+  ejectButtonTextColor: "#000000",
+  ejectButtonTvWidth: 0.035,
+  ejectButtonTvHeight: 0.05,
 };
 
 export const SKIN_SETTINGS_RETRO_REMOTE = {
@@ -86,9 +90,9 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   backgroundTV: "images/retro_remote/background_TV.png",
   backgroundTVInputOut: "images/retro_remote/background_TV_VHS_out.png",
   backgroundRemote: "images/retro_remote/background_remote.png",
-  backgroundButton: "images/retro_remote/background_button.png",
+  backgroundButtonRemote: "images/retro_remote/background_button_remote.png",
   backgroundPowerButton: "images/retro_remote/background_power_button.png",
-  backgroundButtonTv: "images/retro_remote/background_button_tv.png",
+  backgroundEjectButton: "images/retro_remote/background_eject_button.png",
   inputOutImage: "images/retro_remote/vhs_out.png",
   //Videos
   defaultChannelVideo: {
@@ -102,13 +106,9 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   soundVHSOut: "sounds/vhs_tape_out.wav",
   soundVHSOutNoTape: "sounds/vhs_eject_notape.mp3",
   soundVHSRewind: "sounds/vhs_tape_rewind.wav",
-  //UI
-  buttonFontSize: "5vmin", 
-  buttonTextColor: "#000000",
-  buttonTvWidth: 0.09,
-  buttonTvHeight: 0.1,
   //TV screen
   tvScreenHeight: "56%",
+  tvScreenMarginLeft: "0%",
   tvScreenMarginBottom: "14%",
   //Header
   tvHeaderFontSize: "6vmin",
@@ -128,10 +128,18 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   remoteButtonHeight: 0.07,
   remoteButtonSize: "6vmin", 
   remoteButtonColor: "#000000",
+  remoteButtonFontSize: "5vmin", 
+  remoteButtonTextColor: "#000000",
   remoteButtonsInput: true,
   //Input
   inputObjectOutTop: "72.3%",
+  inputObjectOutLeft: "50.0%",
   inputObjectSize: 0.135,
+  //Eject button
+  ejectButtonFontSize: "5vmin", 
+  ejectButtonTextColor: "#000000",
+  ejectButtonTvWidth: 0.09,
+  ejectButtonTvHeight: 0.1,
 };
 
 export const SKIN_SETTINGS_RETRO = {
@@ -142,34 +150,28 @@ export const SKIN_SETTINGS_RETRO = {
   //Internal
   showRemote: false,
   //Images
-  background: "images/retro_remote/background.png",
-  backgroundTV: "images/retro_remote/background_TV.png",
-  backgroundTVInputOut: "images/retro_remote/background_TV_VHS_out.png",
-  backgroundRemote: "images/retro_remote/background_remote.png",
-  backgroundButton: "images/retro_remote/background_button.png",
-  backgroundPowerButton: "images/retro_remote/background_power_button.png",
-  backgroundButtonTv: "images/retro_remote/background_button_tv.png",
+  background: "images/retro/background.png",
+  backgroundTV: "images/retro/background_TV_16_9.png",
+  backgroundTVInputOut: "images/retro/background_TV_16_9_VHS_out.png",
+  backgroundPowerButton: "images/retro/background_power_button.png",
+  backgroundEjectButton: "images/retro/background_eject_button.png",
+  backgroundButtonTv: "images/retro/background_button_tv.png",
   inputOutImage: "images/retro_remote/vhs_out.png",
   //Videos
   defaultChannelVideo: {
     src: "videos/TV_Noise_16-9.mp4" 
   },
   //Sounds
-  soundRemoteButton: "sounds/tv_remote_click.mp3",
   soundTvOn: "sounds/retro_tv_on.wav",
   soundTvOff: "sounds/retro_tv_off.wav",
   soundVHSIn: "sounds/vhs_tape_in.wav",
   soundVHSOut: "sounds/vhs_tape_out.wav",
   soundVHSOutNoTape: "sounds/vhs_eject_notape.mp3",
   soundVHSRewind: "sounds/vhs_tape_rewind.wav",
-  //UI
-  buttonFontSize: "5vmin", 
-  buttonTextColor: "#000000",
-  buttonTvWidth: 0.09,
-  buttonTvHeight: 0.1,
   //TV screen
-  tvScreenHeight: "56%",
-  tvScreenMarginBottom: "14%",
+  tvScreenHeight: "51%",
+  tvScreenMarginLeft: "-19%",
+  tvScreenMarginBottom: "-9%",
   //Header
   tvHeaderFontSize: "6vmin",
   //Volume
@@ -178,20 +180,15 @@ export const SKIN_SETTINGS_RETRO = {
   volumeColor: "rgb(15, 167, 15)", // Color of the volume text
   //Message
   messageFontSize: "0.05",
-  //Remote
-  remoteBottom: "-65%",
-  remoteHeight: 0.98,
-  remoteWidth: 0.25,
-  remoteButtonsTop: ["10%", "20%", "30%", "40%", "50%", "62%", "70%"],
-  remoteButtonsLeft: "50%",
-  remoteButtonWidth: 0.09, 
-  remoteButtonHeight: 0.07,
-  remoteButtonSize: "6vmin", 
-  remoteButtonColor: "#000000",
-  remoteButtonsInput: true,
   //Input
-  inputObjectOutTop: "72.3%",
-  inputObjectSize: 0.135,
+  inputObjectOutTop: "11.3%",
+  inputObjectOutLeft: "50.0%",
+  inputObjectSize: 0.095,
+  //Eject button
+  ejectButtonFontSize: "5vmin", 
+  ejectButtonTextColor: "#08130f",
+  ejectButtonTvWidth: 0.06,
+  ejectButtonTvHeight: 0.06,
 };
 
 export const ESCAPP_CLIENT_SETTINGS = {

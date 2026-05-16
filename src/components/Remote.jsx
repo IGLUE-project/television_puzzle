@@ -19,7 +19,7 @@ const boxHeight = props.containerHeight*appSettings.remoteButtonHeight;
         <div id="remoteRow1" className="remoteRow" style={{ top: appSettings.remoteButtonsTop[0], left: appSettings.remoteButtonsLeft}}>
             <div className="remoteBoxButton remoteBoxButtonPower" style={{width:boxWidth, height:boxHeight, backgroundImage: 'url("' + appSettings.backgroundPowerButton + '")', cursor:"pointer"}} onClick={props.onClickPowerButton}></div>
             {appSettings.remoteButtonsInput ? 
-                <div className="remoteBoxButton remoteBoxButtonInput" style={{width:boxWidth, height:boxHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
+                <div className="remoteBoxButton remoteBoxButtonInput" style={{width:boxWidth, height:boxHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButtonRemote + '")',}}>
                     <div style={{ justifyContent:"center", alignItems:"center", display:"flex", }} onClick={props.onClickInputButton}>               
                         {Icons.inputRemoteIcon(appSettings)}
                     </div>
@@ -57,17 +57,17 @@ const boxHeight = props.containerHeight*appSettings.remoteButtonHeight;
         </div>
         {appSettings.remoteButtonsInput &&        
         <div id="remoteRow7" className="remoteRow" style={{top: appSettings.remoteButtonsTop[6], left: appSettings.remoteButtonsLeft}}>
-            { appSettings.enableRewindAndForward && <div className="remoteBoxButton" onClick={props.onClickRewind} style={{width:boxWidth, height:boxHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
+            { appSettings.enableRewindAndForward && <div className="remoteBoxButton" onClick={props.onClickRewind} style={{width:boxWidth, height:boxHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButtonRemote + '")',}}>
                 <div className="remoteRowRewind" style={{ justifyContent:"center", alignItems:"center", display:"flex" }}>    
                     {Icons.rewindRemoteIcon(appSettings)}
                 </div>
             </div> }
-            <div className="remoteBoxButton" onClick={props.onClickPlayPause} style={{width:boxWidth, height:boxHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
+            <div className="remoteBoxButton" onClick={props.onClickPlayPause} style={{width:boxWidth, height:boxHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButtonRemote + '")',}}>
                 <div className="remoteRowPlayPause" style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>                    
                     {Icons.playPauseRemoteIcon(appSettings)}
                 </div>
             </div>            
-            { appSettings.enableRewindAndForward && <div className="remoteBoxButton" onClick={props.onClickForward} style={{width:boxWidth, height:boxHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButton + '")',}}>
+            { appSettings.enableRewindAndForward && <div className="remoteBoxButton" onClick={props.onClickForward} style={{width:boxWidth, height:boxHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButtonRemote + '")',}}>
                 <div className="remoteRowForward" style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>    
                     {Icons.forwardRemoteIcon(appSettings)}
                 </div>

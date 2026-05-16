@@ -718,7 +718,11 @@ const MainScreen = forwardRef((props, ref) => {
           width: props.size.width,
           height: props.size.height, 
         }}>
-        <div className='tvScreenContainer' style={{ height: appSettings.tvScreenHeight, marginBottom: appSettings.tvScreenMarginBottom }}>
+        <div className='tvScreenContainer' style={{ 
+          height: appSettings.tvScreenHeight, 
+          marginLeft: appSettings.tvScreenMarginLeft, 
+          marginBottom: appSettings.tvScreenMarginBottom,
+        }}>
           {!showVideo && (
             <div className={`tvScreenBlack tvScreenContent ${isShuttingDown ? "shutdown" : ""}`}></div>
           )}
@@ -772,14 +776,14 @@ const MainScreen = forwardRef((props, ref) => {
       <div
           className="ejectButton"
           style={{
-            width: containerWidth * appSettings.buttonTvWidth,
-            height: containerHeight * appSettings.buttonTvHeight,
-            backgroundImage: `url("${appSettings.backgroundButtonTv}")`,
+            width: containerWidth * appSettings.ejectButtonTvWidth,
+            height: containerHeight * appSettings.ejectButtonTvHeight,
+            backgroundImage: `url("${appSettings.backgroundEjectButton}")`,
           }}
           onClick={onClickEjectInput}
         >
           <div style={{justifyContent: "center", alignItems: "center", display: "flex"}}>
-            {appSettings.skin === "STANDARD" ? Icons.ejectIconDisc(appSettings) : Icons.ejectIcon(appSettings)}
+            {appSettings.skin === "STANDARD" ? Icons.ejectIconDisc(appSettings) : Icons.ejectIconVHS(appSettings)}
           </div>
         </div>
         {appSettings.soundRemoteButton && <audio id="audio_remote_button" src={appSettings.soundRemoteButton} autostart="false" preload="auto"/>}
@@ -801,7 +805,7 @@ const MainScreen = forwardRef((props, ref) => {
       <div className={`inputObjectOutWrapper`}
           style={{
           top: appSettings.inputObjectOutTop,
-          left: "50%",
+          left: appSettings.inputObjectOutLeft,
           width: containerHeight * appSettings.inputObjectSize * 6.5,
           height: containerHeight * appSettings.inputObjectSize,
       }}>

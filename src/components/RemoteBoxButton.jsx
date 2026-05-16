@@ -12,10 +12,10 @@ const RemoteBoxButton = (props) => {
         width: props.boxWidth,
         height: props.boxHeight,
         display: "inline-block", 
-        backgroundImage: 'url("' + appSettings.backgroundButton + '")',
+        backgroundImage: 'url("' + appSettings.backgroundButtonRemote + '")',
       }}
     >
-      <div><p style={{color:appSettings.buttonTextColor, fontSize:appSettings.buttonFontSize}}>{props.value}</p></div>
+      <div><p style={{color:appSettings.remoteButtonTextColor, fontSize:appSettings.remoteButtonFontSize}}>{props.value}</p></div>
     </div>
   );
 };

@@ -57,20 +57,79 @@ div.remoteBoxButton div img.symbol {
 	max-width: 55%;
 }
 
-div.boxLight {
+
+div.remote {
 	position: absolute;
-	background-position: center;
-	background-repeat: no-repeat;
+	transform: translateX(-50%);
 	background-size: contain;
-	border: none;
-	outline: none;
-	text-decoration: none;
-	border-image: none;
-	pointer-events: none;
+	background-repeat: no-repeat;
+	background-position: center;
+	transition: bottom 0.4s cubic-bezier(.4, 2, .6, 1);
+	z-index: 10;
+	bottom: -65%;
 }
 
-div.retro div.boxLight {
-	transition: opacity 2.5s ease, visibility ease 2.5s;
+#global_wrapper.standard div.remote {
+    bottom: -83%;
+}
+
+div.remoteRow {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	position: absolute;
+	transform: translateX(-50%);
+	justify-content: center;
+	width: 70%;
+}
+
+div.standard div.remoteBoxButtonInput svg {
+	height: 65%;
+}
+
+div.standard div.remoteRowPlayPause svg {
+	height: 65%;
+}
+
+div.retro_remote div.remote:not(.remote_buttons_input) #remoteRow1 {
+    justify-content: flex-start;
+}
+
+div.standard div.remoteBoxButton12, div.standard div.remoteBoxButton13 {
+    margin-top: -6%;
+}
+
+div.standard div.remoteBoxButton12 div, div.standard div.remoteBoxButton13 div {
+    margin-top: -3px;
+}
+
+div.standard div.remoteRowVolumeIcon {
+    margin-top: -4%;
+}
+
+div.retro_remote div.remoteBoxButton12, div.retro_remote div.remoteBoxButton13, div.retro_remote div.remoteRowVolumeIcon {
+    margin-top: -8%;
+}
+
+div.retro_remote div.remoteRow {
+	width: 70%;
+}
+
+div.remoteRowRewind svg {
+    margin-right: 2px;
+}
+
+div.remoteRowForward svg {
+    margin-left: 2px;
+}
+
+div.retro_remote .remote:hover {
+	bottom: -15% !important;
+}
+
+div.standard .remote:hover {
+	bottom: -15% !important;
 }
 
 .tvContainer {
@@ -229,72 +288,6 @@ div.volumeBarFilled {
 	height: 100%;
 }
 
-div.remote {
-	position: absolute;
-	transform: translateX(-50%);
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-position: center;
-	transition: bottom 0.4s cubic-bezier(.4, 2, .6, 1);
-	z-index: 10;
-	bottom: -65%;
-}
-
-#global_wrapper.standard div.remote {
-    bottom: -83%;
-}
-
-div.remoteRow {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-	position: absolute;
-	transform: translateX(-50%);
-	justify-content: center;
-	width: 70%;
-}
-
-div.retro_remote div.remote:not(.remote_buttons_input) #remoteRow1 {
-    justify-content: flex-start;
-}
-
-div.standard div.remoteBoxButton12, div.standard div.remoteBoxButton13 {
-    margin-top: -6%;
-}
-
-div.standard div.remoteBoxButton12 div, div.standard div.remoteBoxButton13 div {
-    margin-top: -3px;
-}
-
-div.standard div.remoteRowVolumeIcon {
-    margin-top: -4%;
-}
-
-div.retro_remote div.remoteBoxButton12, div.retro_remote div.remoteBoxButton13, div.retro_remote div.remoteRowVolumeIcon {
-    margin-top: -8%;
-}
-
-div.retro_remote div.remoteRow {
-	width: 70%;
-}
-
-div.remoteRowRewind svg {
-    margin-right: 2px;
-}
-
-div.remoteRowForward svg {
-    margin-left: 2px;
-}
-
-div.retro_remote .remote:hover {
-	bottom: -15% !important;
-}
-
-div.standard .remote:hover {
-	bottom: -15% !important;
-}
-
 .tvScreenBlack {
 	background-color: rgb(0, 0, 0);
 }
@@ -319,7 +312,44 @@ div.inputPausedScreen.playing {
 	background-position: center;
 	background-repeat: no-repeat;
 	z-index: 4;
-	transition: opacity 2.1s ease;
+	transition-property: opacity;
+	transition-timing-function: ease;
+}
+
+#global_wrapper.standard #tvContainer.showInputObject::after,
+#global_wrapper.standard #tvContainer.showInputObject::before {
+	transition-duration: 2.1s;
+	transition-delay: 0.0s;
+}
+
+#global_wrapper.retro_remote #tvContainer.showInputObject::after,
+#global_wrapper.retro_remote #tvContainer.showInputObject::before {
+	transition-duration: 0.25s;
+	transition-delay: 0s;
+}
+
+#global_wrapper.retro #tvContainer.showInputObject::after,
+#global_wrapper.retro #tvContainer.showInputObject::before {
+	transition-duration: 0.25s;
+	transition-delay: 0s;
+}
+
+#global_wrapper.standard #tvContainer:not(.showInputObject)::after,
+#global_wrapper.standard #tvContainer:not(.showInputObject)::before {
+	transition-duration: 2.1s;
+	transition-delay: 0.0s;
+}
+
+#global_wrapper.retro_remote #tvContainer:not(.showInputObject)::after,
+#global_wrapper.retro_remote #tvContainer:not(.showInputObject)::before {
+	transition-duration: 0.4s;
+	transition-delay: 1.2s;
+}
+
+#global_wrapper.retro #tvContainer:not(.showInputObject)::after,
+#global_wrapper.retro #tvContainer:not(.showInputObject)::before {
+	transition-duration: 0.4s;
+	transition-delay: 1.2s;
 }
 
 #global_wrapper #tvContainer::before {
@@ -341,6 +371,10 @@ div.inputPausedScreen.playing {
 	transform: translateX(-50%);
 	z-index: 4;
 	overflow: hidden;
+}
+
+#global_wrapper.retro .inputObjectOutWrapper {
+	transform: translateX(-96%);
 }
 
 .inputObjectOut {
@@ -378,7 +412,12 @@ div.inputPausedScreen.playing {
 	transition-delay: 0s, 0s;
 }
 
-#global_wrapper.retro_remote .inputObjectOut.visible, #global_wrapper.retro .inputObjectOut.visible {
+#global_wrapper.retro_remote .inputObjectOut.visible {
+	transition-duration: 1.2s, 0.0s;
+	transition-delay: 0s, 0s;
+}
+
+#global_wrapper.retro .inputObjectOut.visible {
 	transition-duration: 1.2s, 0.0s;
 	transition-delay: 0s, 0s;
 }
@@ -386,18 +425,25 @@ div.inputPausedScreen.playing {
 .inputObjectOut.hidden {
 	opacity: 0;
 	pointer-events: none;
+	filter: brightness(1.0);
 	transition-duration: 2.0s, 0.5s;
 	transition-delay: 0.0s, 1.1s;
-	transform: translateX(-50%) translateY(-30px) scaleX(0.95);
 }
 
 #global_wrapper.standard .inputObjectOut.hidden {
+	transform: translateX(-50%) translateY(-30px) scaleX(0.95);
 	transition-duration: 2.8s, 0s;
 	transition-delay: 0.0s, 2.8s;
-	filter: brightness(1.0);
 }
 
-#global_wrapper.retro_remote .inputObjectOut.hidden, #global_wrapper.retro .inputObjectOut.hidden {
+#global_wrapper.retro_remote .inputObjectOut.hidden {
+	transform: translateX(-50%) translateY(-30px) scaleX(0.95);
+	transition-duration: 2.0s, 0.5s;
+	transition-delay: 0.0s, 1.1s;
+}
+
+#global_wrapper.retro .inputObjectOut.hidden {
+	transform: translateX(-50%) translateY(-15px) scaleX(0.95);
 	transition-duration: 2.0s, 0.5s;
 	transition-delay: 0.0s, 1.1s;
 }
@@ -410,6 +456,10 @@ div.ejectButton {
     justify-content: center;
     align-items: center;
     cursor: pointer;
+	transition:
+		transform 0.06s ease,
+		filter 0.06s ease,
+		box-shadow 0.06s ease;
 }
 
 #global_wrapper.standard div.ejectButton {
@@ -417,9 +467,36 @@ div.ejectButton {
     right: 38.9%;
 }
 
-#global_wrapper.retro_remote div.ejectButton, #global_wrapper.retro div.ejectButton {
+#global_wrapper.retro_remote div.ejectButton {
     top: 71%;
     right: 20.5%;
+}
+
+#global_wrapper.retro div.ejectButton {
+    top: 11.1%;
+    right: 42.5%;
+}
+
+#global_wrapper.retro div.ejectButton svg {
+	width: 75%;
+    margin-top: -7%;
+}
+
+#global_wrapper.standard div.ejectButton:active {
+	transform: translateY(0px) scaleY(0.85) scaleX(0.85);
+	filter: brightness(0.95);
+}
+
+#global_wrapper.retro div.ejectButton:active {
+	filter: brightness(0.95);
+	box-shadow:
+		inset 0 3px 6px rgba(0,0,0,0.7),
+		inset 0 1px 1px rgba(255,255,255,0.05);
+}
+
+#global_wrapper.retro_remote div.ejectButton:active {
+	transform: translateY(0px) scaleY(0.98) scaleX(0.98);
+	filter: brightness(0.95);
 }
 
 div.tvMessageContainer {

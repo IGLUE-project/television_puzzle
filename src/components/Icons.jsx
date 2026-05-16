@@ -62,11 +62,11 @@ const Icons = {
   ),
 
   inputRemoteIcon: (appSettings) => (
-    <svg width={appSettings.buttonFontSize} height={appSettings.buttonFontSize} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+    <svg width={appSettings.remoteButtonFontSize} height={appSettings.remoteButtonFontSize} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M20 12 H54 Q58 12 58 16 V48 Q58 52 54 52 H20 Q16 52 16 48 V40"
         fill="none"
-        stroke={appSettings.buttonTextColor}
+        stroke={appSettings.remoteButtonTextColor}
         strokeWidth="6"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -74,14 +74,14 @@ const Icons = {
       <path
         d="M6 32 H36"
         fill="none"
-        stroke={appSettings.buttonTextColor}
+        stroke={appSettings.remoteButtonTextColor}
         strokeWidth="6"
         strokeLinecap="round"
       />
       <path
         d="M28 24 L36 32 L28 40"
         fill="none"
-        stroke={appSettings.buttonTextColor}
+        stroke={appSettings.remoteButtonTextColor}
         strokeWidth="6"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -127,19 +127,19 @@ const Icons = {
     </svg>
   ),
 
-  ejectIcon: (appSettings) => (
-    <svg width={appSettings.buttonFontSize} height={appSettings.buttonFontSize} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-      <path d="M32 12L18 30H46L32 12Z" fill={appSettings.buttonTextColor}/>
-      <rect x="16" y="34" width="32" height="5" rx="2" fill={appSettings.buttonTextColor}/>
-      <rect x="14" y="44" width="36" height="8" rx="2" fill={appSettings.buttonTextColor}/>
+  ejectIconVHS: (appSettings) => (
+    <svg width={appSettings.ejectButtonFontSize} height={appSettings.ejectButtonFontSize} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M32 12L18 30H46L32 12Z" fill={appSettings.ejectButtonTextColor}/>
+      <rect x="16" y="34" width="32" height="5" rx="2" fill={appSettings.ejectButtonTextColor}/>
+      <rect x="14" y="44" width="36" height="8" rx="2" fill={appSettings.ejectButtonTextColor}/>
     </svg>
   ),
 
   ejectIconDisc: (appSettings) => (
-    <svg width="3vmin" height="3vmin" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-      <path d="M32 12L18 30H46L32 12Z" fill={appSettings.buttonTextColor}/>
-      <rect x="16" y="34" width="32" height="5" rx="2" fill={appSettings.buttonTextColor}/>
-      <rect x="14" y="44" width="36" height="8" rx="2" fill={appSettings.buttonTextColor}/>
+    <svg width={appSettings.ejectButtonFontSize} height={appSettings.ejectButtonFontSize} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M32 12L18 30H46L32 12Z" fill={appSettings.ejectButtonTextColor}/>
+      <rect x="16" y="34" width="32" height="5" rx="2" fill={appSettings.ejectButtonTextColor}/>
+      <rect x="14" y="44" width="36" height="8" rx="2" fill={appSettings.ejectButtonTextColor}/>
     </svg>
   ),
 
