@@ -3,22 +3,23 @@ export const DEFAULT_APP_SETTINGS = {
   skin: "RETRO_REMOTE",
   actionAfterSolve: "PLAY_VIDEO",
   delayMessage: "3",
-  enableLoopForChannels: true,
-  initialVolume: 0.5,
-  enableInput: true,
-  enableRewindAndForward: true,
-  keepState: true,
-  maxChannelLength: 8,
-  videoContainerPadding: 0,
+  enableLoopForChannels: "TRUE",
+  initialVolume: "0.5",
+  enableInput: "TRUE",
+  inputInitialState: "OUT",
+  enableRewindAndForward: "TRUE",
+  keepState: "TRUE",
+  maxChannelLength: "8",
+  videoContainerPadding: "0",
 
   //Internal
-  showRemote: true,
+  showRemote: "TRUE",
   rewindFactor: 0.4,
 };
 
 export const SKIN_SETTINGS_STANDARD = {
   //Authors settings
-  fuzzyScreen: false,
+  fuzzyScreen: "FALSE",
   //Images
   background: "images/standard/background.png",
   backgroundTV: "images/standard/background_TV.png",
@@ -73,7 +74,7 @@ export const SKIN_SETTINGS_STANDARD = {
 
 export const SKIN_SETTINGS_RETRO_REMOTE = {
   //Authors settings
-  fuzzyScreen: true,
+  fuzzyScreen: "TRUE",
   //Images
   background: "images/retro_remote/background.png",
   backgroundTV: "images/retro_remote/background_TV.png",
@@ -130,8 +131,6 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
 
 export const SKIN_SETTINGS_RETRO = {
 };
-
-
 
 export const ESCAPP_CLIENT_SETTINGS = {
   imagesPath: "./images/",

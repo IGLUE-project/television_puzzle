@@ -2,18 +2,19 @@
 
 export let ESCAPP_APP_SETTINGS = {
   //Settings that can be specified by the authors
-  skin: "RETRO_REMOTE", //skin can be "STANDARD" or "RETRO_REMOTE".
+  skin: "STANDARD", //skin can be "STANDARD" or "RETRO_REMOTE".
   // background: "NONE", //background can be "NONE" or a URL.
   actionAfterSolve: "PLAY_VIDEO", //actionAfterSolve can be "NONE", "SHOW_MESSAGE" or "PLAY_VIDEO".
   // delayMessage: "3", //In seconds. Only for actionAfterSolve="SHOW_MESSAGE"
-  maxChannelLength: 4, //Maximum number of digits in a channel number
-  // videoContainerPadding: 5, //Allow to specify a padding for the video container
-  // enableLoopForChannels: true, //Whether the channel videos will play on a loop
-  // fuzzyScreen: true, //Whether to apply a fuzzy effect to the TV screen
-  initialVolume: 0.5, //Initial volume of the TV
-  enableInput: true, //Enable disc for standard skin or VHS for retro skin
-  enableRewindAndForward: true, //Enable rewinding and fast-forwarding for the input (disc for the standard skin or VHS for the retro skin)
-  keepState: false, //Enable keeping the TV state when the app is closed
+  maxChannelLength: "4", //Maximum number of digits in a channel number
+  // videoContainerPadding: "5", //Allow to specify a padding for the video container
+  // enableLoopForChannels: "TRUE", //Whether the channel videos will play on a loop
+  // fuzzyScreen: "TRUE", //Whether to apply a fuzzy effect to the TV screen
+  initialVolume: "0.5", //Initial volume of the TV
+  enableInput: "TRUE", //Enable disc for standard skin or VHS for retro skin
+  inputInitialState: "OUT", // If "OUT", the input object (disc for the standard skin or VHS for the retro skin) will be outside the TV. If "IN", it will be inside.
+  enableRewindAndForward: "TRUE", //Enable rewinding and fast-forwarding for the input (disc for the standard skin or VHS for the retro skin)
+  keepState: "FALSE", //Enable keeping the TV state when the app is closed
   //List with TV channels
   channels: [
     { 

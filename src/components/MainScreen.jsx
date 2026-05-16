@@ -20,7 +20,7 @@ const MainScreen = forwardRef((props, ref) => {
   const [channel, setChannel] = useState(props.appState?.channel ?? "1");
   const channelRef = useRef(channel);
   const [inputMode, setInputMode] = useState(["channels", "input"].includes(props.appState.inputMode) ? props.appState.inputMode : "channels");
-  const [inputState, setInputState] = useState(["out", "paused", "playing"].includes(props.appState.inputState) ? props.appState.inputState : "out");
+  const [inputState, setInputState] = useState(["out", "paused", "playing"].includes(props.appState.inputState) ? props.appState.inputState : appSettings.inputInitialState);
   const inputStateRef = useRef(inputState);
   const channelsVideoTimeRef = useRef(props.appState?.channelsVideoTime ?? {});
   const [videoError, setVideoError] = useState(false);
@@ -44,7 +44,7 @@ const MainScreen = forwardRef((props, ref) => {
   const rewindIntervalRef = useRef(null);
   const forwardIntervalRef = useRef(null);
 
-  const [volume, setVolume] = useState(props.appState?.volume ?? appSettings.initialVolume); // Volume (0 - 1)
+  const [volume, setVolume] = useState(props.appState?.volume ?? appSettings.initialVolumeNumber); // Volume (0 - 1)
   const [showVolume, setShowVolume] = useState(false);
   const volumeTimeoutRef = useRef(null);
 
@@ -419,12 +419,12 @@ const MainScreen = forwardRef((props, ref) => {
     playRemoteButtonAudio();
     if (processingChannelChangeRef.current || tvState === "off") return;
     let _userSelectedChannel = (userSelectedChannel === null) ? "" : userSelectedChannel;
-    if (_userSelectedChannel.length >= appSettings.maxChannelLength) return;
+    if (_userSelectedChannel.length >= appSettings.maxChannelLengthNumber) return;
     
     let selectedChannel = _userSelectedChannel + value;
     setUserSelectedChannel(selectedChannel);
     setTVHeaderContent(selectedChannel);
-    setShowCursor(appSettings.canShowCursor && selectedChannel.length < appSettings.maxChannelLength);
+    setShowCursor(appSettings.canShowCursor && selectedChannel.length < appSettings.maxChannelLengthNumber);
 
     if (channelTimer) { clearTimeout(channelTimer); }
     const newChannelTimer = setTimeout(() => {
@@ -722,7 +722,7 @@ const MainScreen = forwardRef((props, ref) => {
           <div className={`tvVideoContainer tvScreenContent`} style={{
               zIndex: showVideo ? 1 : 0,
               display: showVideo ? "block" : "none",
-              padding: appSettings.videoContainerPadding ? (appSettings.videoContainerPadding+"%") : "0%"
+              padding: appSettings.videoContainerPaddingNumber ? (appSettings.videoContainerPaddingNumber+"%") : "0%"
             }}>
             <div data-vjs-player style={{ height: "100%", width: "100%" }}>
               <div ref={videoRef} style={{display: "flex", height: "100%", width: "100%", alignItems: "center"}}></div>

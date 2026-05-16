@@ -69,9 +69,58 @@ export default function App() {
     // Merge _appSettings with DEFAULT_APP_SETTINGS_SKIN to obtain final app settings
     _appSettings = Utils.deepMerge(DEFAULT_APP_SETTINGS_SKIN, _appSettings);
 
-    const allowedActions = ["NONE", "SHOW_MESSAGE"];
+    const allowedActions = ["NONE", "SHOW_MESSAGE", "PLAY_VIDEO"];
     if (!allowedActions.includes(_appSettings.actionAfterSolve)) {
-      _appSettings.actionAfterSolve = DEFAULT_APP_SETTINGS.actionAfterSolve;
+      _appSettings.actionAfterSolve = "PLAY_VIDEO";
+    }
+
+    if (typeof _appSettings.delayMessage === "number") {
+      _appSettings.delayMessageNumber = _appSettings.delayMessage;
+    } else {
+      _appSettings.delayMessageNumber = parseFloat(_appSettings.delayMessage);
+    }
+    _appSettings.delayMessageNumber = 1000*_appSettings.delayMessageNumber; //Convert delay to ms
+
+    _appSettings.enableLoopForChannels = (_appSettings.enableLoopForChannels !== "FALSE");
+    _appSettings.enableInput = (_appSettings.enableInput !== "FALSE");
+    _appSettings.enableRewindAndForward = (_appSettings.enableRewindAndForward !== "FALSE");
+    _appSettings.keepState = (_appSettings.keepState !== "FALSE");
+    _appSettings.fuzzyScreen = (_appSettings.fuzzyScreen !== "FALSE");
+
+    _appSettings.disc = _appSettings.enableInput && _appSettings.skin === "STANDARD";
+    _appSettings.vhs = _appSettings.enableInput && _appSettings.skin === "RETRO_REMOTE";
+    _appSettings.showInput = _appSettings.disc || _appSettings.vhs;
+
+    if(_appSettings.vhs){
+      _appSettings.backgroundTV = _appSettings.backgroundTV_VHS;
+    }
+
+    if (typeof _appSettings.initialVolume === "number") {
+      _appSettings.initialVolumeNumber = _appSettings.initialVolume;
+    } else {
+      _appSettings.initialVolumeNumber = parseFloat(_appSettings.initialVolume);
+    }
+
+    if (typeof _appSettings.maxChannelLength === "number") {
+      _appSettings.maxChannelLengthNumber = _appSettings.maxChannelLength;
+    } else {
+      _appSettings.maxChannelLengthNumber = parseInt(_appSettings.maxChannelLength);
+    }
+
+    if (typeof _appSettings.videoContainerPadding === "number") {
+      _appSettings.videoContainerPaddingNumber = _appSettings.videoContainerPadding;
+    } else {
+      _appSettings.videoContainerPaddingNumber = parseInt(_appSettings.videoContainerPadding);
+    }
+
+    const allowedInputInitialStates = ["IN", "OUT"];
+    if (!allowedInputInitialStates.includes(_appSettings.inputInitialState)) {
+      _appSettings.inputInitialState = "OUT";
+    }
+    if(_appSettings.inputInitialState === "IN"){
+      _appSettings.inputInitialState = "paused";
+    } else {
+      _appSettings.inputInitialState = "out";
     }
 
     if(typeof _appSettings.defaultChannelVideo.type === "undefined"){
@@ -80,7 +129,6 @@ export default function App() {
         _appSettings.defaultChannelVideo.type = defaultChannelVideoType;
       }
     }
-
     _appSettings.channelsHash = {};
     if(_appSettings.channels instanceof Array){
       _appSettings.channelsHash = _appSettings.channels.reduce((acc, channel) => {
@@ -98,21 +146,6 @@ export default function App() {
     let validatedInputChannel = _validateChannel(_appSettings.inputChannel,true);
     if(typeof validatedInputChannel !== "undefined"){
       _appSettings.channelsHash["input"] = validatedInputChannel;
-    }
-
-    if (typeof _appSettings.delayMessage === "number") {
-      _appSettings.delayMessageNumber = _appSettings.delayMessage;
-    } else {
-      _appSettings.delayMessageNumber = parseFloat(_appSettings.delayMessage);
-    }
-    _appSettings.delayMessageNumber = 1000*_appSettings.delayMessageNumber; //Convert delay to ms
-
-    _appSettings.disc = _appSettings.enableInput && _appSettings.skin === "STANDARD";
-    _appSettings.vhs = _appSettings.enableInput && _appSettings.skin === "RETRO_REMOTE";
-    _appSettings.showInput = _appSettings.disc || _appSettings.vhs;
-
-    if(_appSettings.vhs){
-      _appSettings.backgroundTV = _appSettings.backgroundTV_VHS;
     }
 
     //Init internacionalization module
