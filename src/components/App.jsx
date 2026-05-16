@@ -107,7 +107,9 @@ export default function App() {
     }
     _appSettings.delayMessageNumber = 1000*_appSettings.delayMessageNumber; //Convert delay to ms
 
+    _appSettings.disc = _appSettings.enableInput && _appSettings.skin === "STANDARD";
     _appSettings.vhs = _appSettings.enableInput && _appSettings.skin === "RETRO_REMOTE";
+    _appSettings.showInput = _appSettings.disc || _appSettings.vhs;
 
     if(_appSettings.vhs){
       _appSettings.backgroundTV = _appSettings.backgroundTV_VHS;
@@ -117,8 +119,15 @@ export default function App() {
     I18n.init(_appSettings);
 
     if(_appSettings.skin === "STANDARD"){
+      _appSettings.delayForSelectChannel = 2000;
+      _appSettings.delayAfterSelectChannel = 0;
+      _appSettings.canShowCursor = false;
       _appSettings.messageNoInput = I18n.getTrans("i.noDisc");
     } else {
+      //RETRO
+      _appSettings.delayForSelectChannel = 4000;
+      _appSettings.delayAfterSelectChannel = 1500;
+      _appSettings.canShowCursor = true;
       _appSettings.messageNoInput = I18n.getTrans("i.noVideoTape");
     }
 

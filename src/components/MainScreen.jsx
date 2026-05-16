@@ -249,6 +249,7 @@ const MainScreen = forwardRef((props, ref) => {
   }
 
   const playRewindAudio = function(){
+    if(appSettings.vhs!==true) return;
     const audio = document.getElementById("audio_vhs_rewind");
     audio.pause();
     audio.currentTime = 0;
@@ -256,6 +257,7 @@ const MainScreen = forwardRef((props, ref) => {
   }
 
   const pauseRewindAudio = function(){
+    if(appSettings.vhs!==true) return;
     const audio = document.getElementById("audio_vhs_rewind");
     audio.pause();
     audio.currentTime = 0;
@@ -384,7 +386,7 @@ const MainScreen = forwardRef((props, ref) => {
         delayMessageNumber = 0; //There is no message to show
       }
       setTimeout(function(){
-          props.onPuzzleSolved(correctSolution.current);
+        props.onPuzzleSolved(correctSolution.current);
       }, delayMessageNumber);
     } else if (appSettings.actionAfterSolve === "PLAY_VIDEO") {
       if (!playerRef.current) return;
@@ -422,12 +424,12 @@ const MainScreen = forwardRef((props, ref) => {
     let selectedChannel = _userSelectedChannel + value;
     setUserSelectedChannel(selectedChannel);
     setTVHeaderContent(selectedChannel);
-    setShowCursor(selectedChannel.length < appSettings.maxChannelLength);
+    setShowCursor(appSettings.canShowCursor && selectedChannel.length < appSettings.maxChannelLength);
 
     if (channelTimer) { clearTimeout(channelTimer); }
     const newChannelTimer = setTimeout(() => {
       handleChannelTimerExpire(selectedChannel,tvState);
-    }, 4000);
+    }, appSettings.delayForSelectChannel);
     setChannelTimer(newChannelTimer);
   }
 
@@ -444,7 +446,7 @@ const MainScreen = forwardRef((props, ref) => {
       } else {
         processingChannelChangeRef.current = false;
       }
-    }, 1500);
+    }, appSettings.delayAfterSelectChannel);
   };
 
   //////////
@@ -705,7 +707,6 @@ const MainScreen = forwardRef((props, ref) => {
     showMessageNoInput = (inputState === "out");
   }
   let showFuzzyScreen = (appSettings.fuzzyScreen && (tvState !== "off"));
-
   return (
     <div id="screen_main" className={"screen_content"} style={{ backgroundImage: 'url(' + appSettings.background + ')' }}>
       <div id="tvContainer" className="tvContainer"
@@ -750,9 +751,12 @@ const MainScreen = forwardRef((props, ref) => {
           <div className="channels">
             {tvHeaderContent && (tvState !== "off") && (<span className={`channel ${showCursor ? "show-cursor" : ""}`} style={{ fontSize: appSettings.tvHeaderFontSize }}>{tvHeaderContent}</span>)}
             {showVolume && tvState!=="off" && tvHeaderContent === null && (
-              <div className='volume_div' style={{ zIndex: 10, }}>
+              <div className='volume_div'>
                 <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
-                  <p className='volume' style={{ fontSize: containerWidth * appSettings.volumeFontSize, color: appSettings.volumeColor }}>vol</p>
+                  {appSettings.skin === "RETRO_REMOTE" ?
+                    <p className='volume' style={{ fontSize: containerWidth * appSettings.volumeFontSize, color: appSettings.volumeColor }}>vol</p>
+                    : Icons.volumeScreenIcon(appSettings)
+                  }
                   <div className='volumeBar' >
                     <div className='volumeBarFilled' style={{ width: `${volume * 100}%`, backgroundColor: appSettings.volumeBarColor }}></div>
                   </div>
@@ -771,18 +775,8 @@ const MainScreen = forwardRef((props, ref) => {
           }}
           onClick={onClickEjectInput}
         >
-          <div
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              display: "flex",
-            }}
-          >
-            <svg width={appSettings.buttonFontSize} height={appSettings.buttonFontSize} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-              <path d="M32 12L18 30H46L32 12Z" fill={appSettings.buttonTextColor}/>
-              <rect x="16" y="34" width="32" height="5" rx="2" fill={appSettings.buttonTextColor}/>
-              <rect x="14" y="44" width="36" height="8" rx="2" fill={appSettings.buttonTextColor}/>
-            </svg>
+          <div style={{justifyContent: "center", alignItems: "center", display: "flex"}}>
+            {appSettings.skin === "STANDARD" ? Icons.ejectIconDisc(appSettings) : Icons.ejectIcon(appSettings)}
           </div>
         </div>
         {appSettings.soundRemoteButton && <audio id="audio_remote_button" src={appSettings.soundRemoteButton} autostart="false" preload="auto"/>}
@@ -801,17 +795,17 @@ const MainScreen = forwardRef((props, ref) => {
          : null
       }
 
-      {appSettings.vhs && (
+      {appSettings.showInput && (
         <>
           {inputState === "out" && (
-            <div className="vhsTapeOut"
+            <div className="inputObjectOut"
               style={{
-                top: appSettings.vhsTop,
+                top: appSettings.inputObjectOutTop,
                 left: "50%",
-                width: containerHeight * appSettings.vhsSize * 6.5,
-                height: containerHeight * appSettings.vhsSize,
-                backgroundImage: `url("${appSettings.vhsOut}")`,
-                '--background-image-hover': 'url(' + appSettings.vhsOutHover + ')', 
+                width: containerHeight * appSettings.inputObjectSize * 6.5,
+                height: containerHeight * appSettings.inputObjectSize,
+                backgroundImage: `url("${appSettings.inputOutImage}")`,
+                '--background-image-hover': 'url(' + appSettings.inputOutImageHover + ')', 
               }}
               onClick={onClickInput}
             />
