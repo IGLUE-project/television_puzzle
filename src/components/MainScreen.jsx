@@ -346,6 +346,7 @@ const MainScreen = forwardRef((props, ref) => {
 
   const checkSolution = (channel) => {
     //Utils.log("Check channel: " + channel);
+    if(appSettings.noLinkedPuzzles) return;
     if((typeof channel !== "string")||(channel.trim()==="")) return;
 
     let solution;
