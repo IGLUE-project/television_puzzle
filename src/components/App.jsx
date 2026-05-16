@@ -84,18 +84,59 @@ export default function App() {
     _appSettings.delayMessageNumber = 1000*_appSettings.delayMessageNumber; //Convert delay to ms
 
     _appSettings.enableLoopForChannels = (_appSettings.enableLoopForChannels !== "FALSE");
-    _appSettings.enableInput = (_appSettings.enableInput !== "FALSE");
-    _appSettings.enableRewindAndForward = (_appSettings.enableRewindAndForward !== "FALSE");
     _appSettings.keepState = (_appSettings.keepState !== "FALSE");
     _appSettings.fuzzyScreen = (_appSettings.fuzzyScreen !== "FALSE");
 
-    _appSettings.disc = _appSettings.enableInput && _appSettings.skin === "STANDARD";
-    _appSettings.vhs = _appSettings.enableInput && _appSettings.skin === "RETRO_REMOTE";
-    _appSettings.showInput = _appSettings.disc || _appSettings.vhs;
-
-    if(_appSettings.vhs){
-      _appSettings.backgroundTV = _appSettings.backgroundTV_VHS;
+    //Input
+    let allowedInputTypes;
+    let ejectableInput = "NONE";
+    switch (_appSettings.skin) {
+      case "STANDARD":
+        allowedInputTypes = ["NONE", "INTERNAL", "DISC"];
+        ejectableInput = "DISC";
+        break;
+      case "RETRO":
+      case "RETRO_REMOTE":
+        allowedInputTypes = ["NONE", "VHS"];
+        ejectableInput = "VHS";
+        break;
+      default:
+        allowedInputTypes = ["NONE", "INTERNAL"];
     }
+    if (!allowedInputTypes.includes(_appSettings.inputType)) {
+      _appSettings.inputType = "NONE";
+    }
+    _appSettings.inputEnabled = (_appSettings.inputType !== "NONE");
+    _appSettings.ejectableInput = ejectableInput;
+    
+    _appSettings.disc = (_appSettings.inputType === "DISC");
+    _appSettings.vhs = (_appSettings.inputType === "VHS");
+    _appSettings.showInputObject = (_appSettings.disc || _appSettings.vhs);
+    _appSettings.ejectEnabled = (_appSettings.disc || _appSettings.vhs);
+
+    if(_appSettings.ejectEnabled){
+      const allowedInputInitialStates = ["IN", "OUT"];
+      if (!allowedInputInitialStates.includes(_appSettings.inputInitialState)) {
+        _appSettings.inputInitialState = "OUT";
+      }
+      if(_appSettings.inputInitialState === "IN"){
+        _appSettings.inputInitialState = "paused";
+      } else {
+        _appSettings.inputInitialState = "out";
+      }
+    } else {
+      if(_appSettings.inputType === "INTERNAL"){
+        _appSettings.inputInitialState = "paused";
+      } else {
+        _appSettings.inputInitialState = "out";
+      }
+    }
+
+    if(!_appSettings.backgroundTVInputOut){
+      _appSettings.backgroundTVInputOut = _appSettings.backgroundTV;
+    }
+
+    _appSettings.enableRewindAndForward = (_appSettings.enableRewindAndForward !== "FALSE");
 
     if (typeof _appSettings.initialVolume === "number") {
       _appSettings.initialVolumeNumber = _appSettings.initialVolume;
@@ -115,15 +156,7 @@ export default function App() {
       _appSettings.videoContainerPaddingNumber = parseInt(_appSettings.videoContainerPadding);
     }
 
-    const allowedInputInitialStates = ["IN", "OUT"];
-    if (!allowedInputInitialStates.includes(_appSettings.inputInitialState)) {
-      _appSettings.inputInitialState = "OUT";
-    }
-    if(_appSettings.inputInitialState === "IN"){
-      _appSettings.inputInitialState = "paused";
-    } else {
-      _appSettings.inputInitialState = "out";
-    }
+
 
     if(typeof _appSettings.defaultChannelVideo.type === "undefined"){
       let defaultChannelVideoType = _getVideoTypeForChannel(_appSettings.defaultChannelVideo);
@@ -170,7 +203,7 @@ export default function App() {
     _appSettings = Utils.checkUrlProtocols(_appSettings);
 
     //Preload resources (if necessary)
-    Utils.preloadImages([_appSettings.backgroundMessage]);
+    Utils.preloadImages([_appSettings.backgroundTV, _appSettings.backgroundTVInputOut, _appSettings.inputOutImage]);
     //Utils.preloadAudios([_appSettings.soundBeep,_appSettings.soundNok,_appSettings.soundOk]); //Preload done through HTML audio tags
     //Utils.preloadVideos(["videos/some_video.mp4"]);
 
@@ -371,7 +404,7 @@ return (
           ? appSettings.skin.toLowerCase()
           : ''
         }
-        ${appSettings?.enableInput ? 'input_enabled' : 'input_disabled'}
+        ${appSettings?.inputEnabled ? 'input_enabled' : 'input_disabled'}
       `}
     >
       {renderScreens(screens)}

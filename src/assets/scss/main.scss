@@ -83,19 +83,6 @@ div.retro div.boxLight {
 	background-repeat: no-repeat;
 	background-size: contain;
 	z-index: 4;
-	&::after { 
-		content: ''; 
-		position: absolute; 
-		top: 0; 
-		left: 0; 
-		width: 100%; 
-		height: 100%; 
-		background-image: var(--background-image-after); 
-		background-position: center; 
-		background-repeat: no-repeat; 
-		background-size: contain; 
-		z-index: 4; 
-	}
 	div.tvScreenContainer {
 		display: flex;
 		flex-direction: column;
@@ -160,7 +147,7 @@ div.retro div.boxLight {
     }
 }
 
-#global_wrapper.retro_remote .shutdown {
+#global_wrapper.retro_remote .shutdown, #global_wrapper.retro .shutdown {
     &::before {
         animation: tv-white-shrink 800ms ease-out;
     }
@@ -202,7 +189,7 @@ div.retro div.boxLight {
     font-style: normal;
 }
 
-#global_wrapper.retro_remote p.volume {
+#global_wrapper.retro_remote p.volume, #global_wrapper.retro p.volume {
 	font-size: 7vmin;
 	color: rgb(15, 167, 15);
 	font-family: "Sixtyfour", sans-serif;
@@ -320,20 +307,99 @@ div.inputPausedScreen.playing {
     background-color: rgba(0, 0, 0, 0.774);
 }
 
+#global_wrapper #tvContainer::after,
+#global_wrapper #tvContainer::before {
+	content: "";
+	position: absolute;
+	top: 0; 
+	left: 0;
+	width: 100%; 
+	height: 100%;
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	z-index: 4;
+	transition: opacity 2.1s ease;
+}
+
+#global_wrapper #tvContainer::before {
+	background-image: var(--background-image-after);
+	opacity: 1;
+}
+
+#global_wrapper #tvContainer::after {
+	background-image: var(--background-image-after-show-input);
+	opacity: 0;
+}
+
+#global_wrapper #tvContainer.showInputObject::after {
+	opacity: 1;
+}
+
+.inputObjectOutWrapper {
+	position: absolute;
+	transform: translateX(-50%);
+	z-index: 4;
+	overflow: hidden;
+}
+
 .inputObjectOut {
 	position: absolute;
-    transform: translateX(-50%);
+	transform: translateX(-50%);
 	z-index: 4;
-	background-size: 100% 85%;
-    background-repeat: no-repeat;
-    background-position: top;
 	cursor: pointer;
-	transition: transform 0.2s ease, filter 0.2s ease;
+	overflow: hidden;
+	transition-property: transform, opacity;
+	transition-timing-function: ease;
+}
+
+.inputObjectOut::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-size: 100% 85%;
+	background-repeat: no-repeat;
+	background-position: top;
+	pointer-events: none;
+	background-image: var(--background-image);
 }
 
 .inputObjectOut:hover {
-    background-image: var(--background-image-hover) !important; 
-	filter: brightness(1.3);
+	filter: brightness(1.2);
+}
+
+.inputObjectOut.visible {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+#global_wrapper.standard .inputObjectOut.visible {
+	transition-duration: 1.7s, 0.0s;
+	transition-delay: 0s, 0s;
+}
+
+#global_wrapper.retro_remote .inputObjectOut.visible, #global_wrapper.retro .inputObjectOut.visible {
+	transition-duration: 1.2s, 0.0s;
+	transition-delay: 0s, 0s;
+}
+
+.inputObjectOut.hidden {
+	opacity: 0;
+	pointer-events: none;
+	transition-duration: 2.0s, 0.5s;
+	transition-delay: 0.0s, 1.1s;
+	transform: translateX(-50%) translateY(-30px) scaleX(0.95);
+}
+
+#global_wrapper.standard .inputObjectOut.hidden {
+	transition-duration: 2.8s, 0s;
+	transition-delay: 0.0s, 2.8s;
+	filter: brightness(1.0);
+}
+
+#global_wrapper.retro_remote .inputObjectOut.hidden, #global_wrapper.retro .inputObjectOut.hidden {
+	transition-duration: 2.0s, 0.5s;
+	transition-delay: 0.0s, 1.1s;
 }
 
 div.ejectButton {
@@ -351,7 +417,7 @@ div.ejectButton {
     right: 38.9%;
 }
 
-#global_wrapper.retro_remote div.ejectButton {
+#global_wrapper.retro_remote div.ejectButton, #global_wrapper.retro div.ejectButton {
     top: 71%;
     right: 20.5%;
 }
@@ -363,7 +429,7 @@ div.tvMessageContainer {
     justify-content: center;
 }
 
-#global_wrapper.retro_remote .tvMessage {
+#global_wrapper.retro_remote .tvMessage, #global_wrapper.retro .tvMessage {
 	color: rgb(15, 167, 15);
 	font-family: "Sixtyfour", sans-serif;
 	font-optical-sizing: auto;
@@ -470,7 +536,7 @@ body {
 	}
 }
 
-#global_wrapper.retro_remote span.channel {
+#global_wrapper.retro_remote span.channel, #global_wrapper.retro span.channel {
 	font-size: 7vmin;
 	z-index: 10;
 	color: rgb(15, 167, 15);

@@ -2,12 +2,11 @@ import React, { useState, useEffect, useContext, useRef, forwardRef, useImperati
 import { GlobalContext } from "./GlobalContext";
 import './../assets/scss/main.scss';
 import './../assets/scss/fonts.css';
-import RemoteBoxButton from './RemoteBoxButton.jsx';
+import "video.js/dist/video-js.css";
 import Remote from './Remote.jsx';
+import ButtonPanel from './ButtonPanel.jsx';
 import Icons from './Icons.jsx';
 import videojs from 'video.js';
-import "video.js/dist/video-js.css";
-
 
 const MainScreen = forwardRef((props, ref) => {
   const { escapp, appSettings, Utils, I18n, Storage } = useContext(GlobalContext);
@@ -147,8 +146,8 @@ const MainScreen = forwardRef((props, ref) => {
 
     switch (appSettings.skin) {
       case "RETRO":
-        _containerWidth = size.width * 0.9;
-        _containerHeight = size.height * 0.9;
+        _containerWidth = size.width * 0.8;
+        _containerHeight = size.height * 0.8;
         break;
       case "RETRO_REMOTE":
         _containerWidth = size.width * 0.8;
@@ -571,13 +570,15 @@ const MainScreen = forwardRef((props, ref) => {
     if (inputState !== "out") {
       if(appSettings.vhs){
         audio = document.getElementById("audio_vhs_tape_out");
-      } else {
+      } else if (appSettings.disc){
         audio = document.getElementById("audio_disc_out");
+      } else if (appSettings.inputType === "INTERNAL"){
+        audio = document.getElementById("audio_remote_button");
       }
-      if(appSettings.enableInput){
+      if(appSettings.ejectEnabled){
         setTimeout(function(){
           setInputState("out");
-        }, 1000);
+        }, 300);
       }
     } else {
       if(appSettings.vhs){
@@ -586,7 +587,6 @@ const MainScreen = forwardRef((props, ref) => {
         audio = document.getElementById("audio_remote_button");
       }
     }
-
     if(typeof audio !== "undefined"){
       audio.pause();
       audio.currentTime = 0;
@@ -708,11 +708,13 @@ const MainScreen = forwardRef((props, ref) => {
     showMessageNoInput = (inputState === "out");
   }
   let showFuzzyScreen = (appSettings.fuzzyScreen && (tvState !== "off"));
+  let showInputObject = (appSettings.showInputObject && inputState === "out");
   return (
     <div id="screen_main" className={"screen_content"} style={{ backgroundImage: 'url(' + appSettings.background + ')' }}>
-      <div id="tvContainer" className="tvContainer"
+      <div id="tvContainer" className={`tvContainer ${showInputObject ? 'showInputObject' : ''}`}
         style={{
-          '--background-image-after': 'url(' + appSettings.backgroundTV + ')', 
+          '--background-image-after': 'url(' + appSettings.backgroundTV + ')',
+          '--background-image-after-show-input': 'url(' + appSettings.backgroundTVInputOut + ')',  
           width: props.size.width,
           height: props.size.height, 
         }}>
@@ -754,7 +756,7 @@ const MainScreen = forwardRef((props, ref) => {
             {showVolume && tvState!=="off" && tvHeaderContent === null && (
               <div className='volume_div'>
                 <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
-                  {appSettings.skin === "RETRO_REMOTE" ?
+                  {appSettings.skin !== "STANDARD" ?
                     <p className='volume' style={{ fontSize: containerWidth * appSettings.volumeFontSize, color: appSettings.volumeColor }}>vol</p>
                     : Icons.volumeScreenIcon(appSettings)
                   }
@@ -793,26 +795,27 @@ const MainScreen = forwardRef((props, ref) => {
       
       {appSettings.showRemote ?
          <Remote containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButton} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickPlayPause={onClickPlayPause} onClickInputButton={onClickInputButton} onClickRewind={onClickRewind} onClickForward={onClickForward} />
-         : null
+         : <ButtonPanel containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButton} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickInputButton={onClickInputButton} />
       }
 
-      {appSettings.showInput && (
-        <>
-          {inputState === "out" && (
-            <div className="inputObjectOut"
-              style={{
-                top: appSettings.inputObjectOutTop,
-                left: "50%",
-                width: containerHeight * appSettings.inputObjectSize * 6.5,
-                height: containerHeight * appSettings.inputObjectSize,
-                backgroundImage: `url("${appSettings.inputOutImage}")`,
-                '--background-image-hover': 'url(' + appSettings.inputOutImageHover + ')', 
-              }}
-              onClick={onClickInput}
-            />
-          )}
-        </>
-      )}
+      <div className={`inputObjectOutWrapper`}
+          style={{
+          top: appSettings.inputObjectOutTop,
+          left: "50%",
+          width: containerHeight * appSettings.inputObjectSize * 6.5,
+          height: containerHeight * appSettings.inputObjectSize,
+      }}>
+          <div className={`inputObjectOut ${showInputObject ? "visible" : "hidden"}`}
+            style={{
+            top: "0%",
+            left: "50%",
+            width: "100%",
+            height: "100%",
+            "--background-image": `url("${appSettings.inputOutImage}")`,
+            }}
+            onClick={onClickInput}
+          ></div>
+      </div>
 
     </div>);
 });
