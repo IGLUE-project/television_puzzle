@@ -804,7 +804,7 @@ const MainScreen = forwardRef((props, ref) => {
               display: showVideo ? "flex" : "none",
               padding: appSettings.videoContainerPadding,
             }}>
-            <div style={{ aspectRatio: appSettings.aspectRatio, height: "auto", width: "100%" }}>
+            <div style={{ height: "100%", width: "100%" }}>
               <div ref={videoRef} style={{display: "flex", height: "100%", width: "100%", alignItems: "center"}}></div>
             </div>
           </div>

@@ -204,7 +204,7 @@ export default function App() {
       parsedVideoContainerPaddingLeft = 0;
     }
     _appSettings.videoContainerPadding =  parsedVideoContainerPaddingTop + "% " + parsedVideoContainerPaddingRight + "% " + parsedVideoContainerPaddingBottom + "% " + parsedVideoContainerPaddingLeft + "%";
-
+    
     if(typeof _appSettings.defaultChannelVideo.type === "undefined"){
       let defaultChannelVideoType = _getVideoTypeForChannel(_appSettings.defaultChannelVideo);
       if(defaultChannelVideoType !== null){
