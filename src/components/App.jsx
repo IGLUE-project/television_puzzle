@@ -14,7 +14,6 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [screen, setScreen] = useState(MAIN_SCREEN);
   const [appState, setAppState] = useState({});
-  const prevScreen = useRef(screen);
   const solution = useRef(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const html5VideoTypes = {
@@ -44,7 +43,7 @@ export default function App() {
   }, []);
 
   function processAppSettings(_appSettings,_escappSettings){
-    if (typeof _appSettings !== "object") {
+    if (!_appSettings || typeof _appSettings !== "object"){
       _appSettings = {};
     }
     if ((typeof _appSettings.skin === "undefined") && (typeof DEFAULT_APP_SETTINGS.skin === "string")) {
@@ -54,10 +53,6 @@ export default function App() {
     let skinSettings;
     let skinSettings43;
     switch (_appSettings.skin) {
-      case "STANDARD":
-        skinSettings = SKIN_SETTINGS_STANDARD;
-        skinSettings43 = SKIN_SETTINGS_STANDARD_43;
-        break;
       case "RETRO":
         skinSettings = SKIN_SETTINGS_RETRO;
         skinSettings43 = SKIN_SETTINGS_RETRO_43;
@@ -66,8 +61,11 @@ export default function App() {
         skinSettings = SKIN_SETTINGS_RETRO_REMOTE;
         skinSettings43 = SKIN_SETTINGS_RETRO_REMOTE_43;
         break;
+      case "STANDARD":
       default:
-        skinSettings = {};
+        _appSettings.skin = "STANDARD";
+        skinSettings = SKIN_SETTINGS_STANDARD;
+        skinSettings43 = SKIN_SETTINGS_STANDARD_43;
     }
     let DEFAULT_APP_SETTINGS_SKIN = Utils.deepMerge(DEFAULT_APP_SETTINGS, skinSettings);
 
@@ -111,6 +109,15 @@ export default function App() {
       _appSettings.delayMessageNumber = parseFloat(_appSettings.delayMessage);
     }
     _appSettings.delayMessageNumber = 1000*_appSettings.delayMessageNumber; //Convert delay to ms
+
+    let parsedMessageFontSize = Utils.parseNumberFromSetting(_appSettings.messageFontSize);
+    if(parsedMessageFontSize === null){
+      _appSettings.messageFontSize = DEFAULT_APP_SETTINGS_SKIN.messageFontSize;
+    }
+    let parsedTvFontSize = Utils.parseNumberFromSetting(_appSettings.tvFontSize);
+    if(parsedTvFontSize === null){
+      _appSettings.tvFontSize = DEFAULT_APP_SETTINGS_SKIN.tvFontSize;
+    }
 
     _appSettings.enableLoopForChannels = (_appSettings.enableLoopForChannels !== "FALSE");
     _appSettings.keepState = (_appSettings.keepState !== "FALSE");
@@ -172,6 +179,8 @@ export default function App() {
       } else {
         _appSettings.inputPlayerInitialState = _appSettings.inputPlayerInitialState.toLowerCase();
       }
+    } else {
+      _appSettings.inputPlayerInitialState = "on";
     }
 
     if(!_appSettings.backgroundTVInputOut){
@@ -189,7 +198,7 @@ export default function App() {
     if (typeof _appSettings.maxChannelLength === "number") {
       _appSettings.maxChannelLengthNumber = _appSettings.maxChannelLength;
     } else {
-      _appSettings.maxChannelLengthNumber = parseInt(_appSettings.maxChannelLength);
+      _appSettings.maxChannelLengthNumber = parseInt(_appSettings.maxChannelLength, 10);
     }
 
     let parsedVideoContainerPaddingTop = Utils.parseNumberFromSetting(_appSettings.videoContainerPaddingTop);
@@ -210,18 +219,20 @@ export default function App() {
     }
     _appSettings.videoContainerPadding =  parsedVideoContainerPaddingTop + "% " + parsedVideoContainerPaddingRight + "% " + parsedVideoContainerPaddingBottom + "% " + parsedVideoContainerPaddingLeft + "%";
 
-    if(typeof _appSettings.defaultChannelVideo.type === "undefined"){
+    if((typeof _appSettings.defaultChannelVideo !== "undefined")&&(typeof _appSettings.defaultChannelVideo.type === "undefined")){
       let defaultChannelVideoType = _getVideoTypeForChannel(_appSettings.defaultChannelVideo);
       if(defaultChannelVideoType !== null){
         _appSettings.defaultChannelVideo.type = defaultChannelVideoType;
       }
     }
+
     _appSettings.channelsHash = {};
     if(_appSettings.channels instanceof Array){
       _appSettings.channelsHash = _appSettings.channels.reduce((acc, channel) => {
         let validatedChannel = _validateChannel(channel);
         if(typeof validatedChannel !== "undefined"){
-          acc[channel.id] = validatedChannel;
+          const parsedChannelId = Utils.parseChannelId(channel.id);
+          acc[parsedChannelId] = validatedChannel;
         }
         return acc;
       }, {});
@@ -262,24 +273,27 @@ export default function App() {
     return _appSettings;
   }
 
-  function _validateChannel(channel,ignoreId=false){
+  function _validateChannel(channel, ignoreId = false) {
+    if (!channel || typeof channel !== "object") return;
+    const parsedId = Utils.parseChannelId(channel.id);
+    if (!ignoreId && typeof parsedId === "undefined") return;
+
     let validatedChannel;
-    if(((typeof channel === "object")&&(typeof channel.id === "string")&&(/^\d+$/.test(channel.id)))||(ignoreId)){
-      if (typeof channel.src === "string"){
-        validatedChannel = {src: channel.src};
-        let channelVideoType = _getVideoTypeForChannel(channel);
-        if(channelVideoType !== null){
-          validatedChannel.type = channelVideoType;
-        }
-      } else if (typeof channel.message === "string"){
-          validatedChannel = {message: channel.message};
+    if (typeof channel.src === "string" && channel.src.trim() !== "") {
+      validatedChannel = { src: channel.src };
+      let channelVideoType = _getVideoTypeForChannel(channel);
+      if (channelVideoType !== null) {
+        validatedChannel.type = channelVideoType;
       }
+    } else if (typeof channel.message === "string" && channel.message.trim() !== "") {
+      validatedChannel = { message: channel.message };
     }
+
     return validatedChannel;
   }
 
   function _getVideoTypeForChannel(channel){
-    if((typeof channel.type === "string")&&(html5VideoTypes.includes(channel.type))){
+    if((typeof channel.type === "string")&&(Object.values(html5VideoTypes).includes(channel.type))){
       return channel.type;
     } else {
       return _getVideoTypeFromSource(channel.src);
@@ -288,13 +302,8 @@ export default function App() {
 
   function _getVideoTypeFromSource(source) {
     if (typeof source !== "string") return null;
-    const extension = source.split('.').pop().toLowerCase();
-    const html5VideoTypes = {
-      mp4: "video/mp4",
-      webm: "video/webm",
-      ogg: "video/ogg",
-      ogv: "video/ogg"
-    };
+    const cleanSource = source.split('?')[0].split('#')[0];
+    const extension = cleanSource.split('.').pop().toLowerCase();
     return html5VideoTypes[extension] || null;
   }
 
@@ -384,6 +393,10 @@ export default function App() {
     if (typeof Storage === "undefined") return;
     let stateToRestore = Storage.getSetting("state");
     if (stateToRestore) {
+      if(stateToRestore.skin !== appSettingsRef.current.skin){
+        Storage.removeSetting("state");
+        return;
+      }
       Utils.log("Restore app state", stateToRestore);
       setAppState(stateToRestore);
     }

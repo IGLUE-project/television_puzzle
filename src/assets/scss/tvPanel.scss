@@ -65,6 +65,8 @@ div.tvButton div.tvButtonImage {
 	object-fit: fill;
 	padding: 5%;
 	box-sizing: content-box;
+	user-select: none;
+	-webkit-user-drag: none;
 }
 
 div.tvButton div.tvButtonImage:active {

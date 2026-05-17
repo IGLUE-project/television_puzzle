@@ -187,3 +187,16 @@ export function parseNumberFromSetting(value){
   }
   return null;
 };
+
+export function parseChannelId(channelId) {
+  if (typeof channelId === "string") {
+    if (channelId === "input") return channelId;
+    if (!/^\d+$/.test(channelId)) return;
+    return String(parseInt(channelId, 10));
+  }
+
+  if (typeof channelId === "number") {
+    if (!Number.isInteger(channelId) || channelId < 0) return;
+    return String(channelId);
+  }
+}

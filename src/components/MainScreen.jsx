@@ -12,6 +12,20 @@ import videojs from 'video.js';
 const MainScreen = forwardRef((props, ref) => {
   const { escapp, appSettings, Utils, I18n, Storage } = useContext(GlobalContext);
   
+  //Restore state based on props
+  const parsedRestoredChannel = Utils.parseChannelId(props.appState?.channel);
+  let restoredChannel = parsedRestoredChannel ?? "1";
+
+  const restoredInputMode = ["channels", "input"].includes(props.appState.inputMode) ? props.appState.inputMode : "channels";
+
+  let restoredInputState = (["out", "paused", "playing"].includes(props.appState.inputState) ? props.appState.inputState : appSettings.inputInitialState);
+  if(!appSettings.inputEnabled){
+    restoredInputState = "out";
+  } else if((!appSettings.ejectEnabled)&&(restoredInputState ==="out")){
+    restoredInputState = "paused";
+  }
+
+
   const [containerWidth, setContainerWidth] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
   const [tvScreenWidth, setTvScreenWidth] = useState(0);
@@ -19,10 +33,10 @@ const MainScreen = forwardRef((props, ref) => {
 
   const [tvState, setTVState] = useState("off"); // possible values: "off", "channels", "input". Start with "off" to force the TV to be switched on to allow autoplay
   const tvStateRef = useRef(tvState);
-  const [channel, setChannel] = useState(props.appState?.channel ?? "1");
+  const [channel, setChannel] = useState(restoredChannel);
   const channelRef = useRef(channel);
-  const [inputMode, setInputMode] = useState(["channels", "input"].includes(props.appState.inputMode) ? props.appState.inputMode : "channels");
-  const [inputState, setInputState] = useState(["out", "paused", "playing"].includes(props.appState.inputState) ? props.appState.inputState : appSettings.inputInitialState);
+  const [inputMode, setInputMode] = useState(restoredInputMode);
+  const [inputState, setInputState] = useState(restoredInputState);
   const inputStateRef = useRef(inputState);
   const channelsVideoTimeRef = useRef(props.appState?.channelsVideoTime ?? {});
   const [videoError, setVideoError] = useState(false);
@@ -60,10 +74,11 @@ const MainScreen = forwardRef((props, ref) => {
         inputStateValue = "paused";
       }
       const inputModeValue = (channelRef.current === "input" ? "input" : "channels");
-      if((tvState !== "off")&&(playerRef)){
+      if((tvStateRef.current !== "off")&&(playerRef.current)){
         storeChannelVideoTime(channelRef.current);
       }
       return {
+        skin: appSettings.skin,
         tvState: tvStateRef.current,
         inputPlayerState: inputPlayerStateRef.current,
         inputMode: inputModeValue,
@@ -231,6 +246,8 @@ const MainScreen = forwardRef((props, ref) => {
 
   const storeChannelVideoTime = function(_channel){
     if (!playerRef.current) return;
+    _channel = Utils.parseChannelId(_channel);
+    if(typeof _channel !== "string") return;
     let channelData = appSettings.channelsHash[_channel];
     if ((!channelData) || (!channelData.src)) return;
     channelsVideoTimeRef.current[_channel] = playerRef.current.currentTime();
@@ -313,8 +330,10 @@ const MainScreen = forwardRef((props, ref) => {
 
   useEffect(() => {
     //Utils.log("Channel change", channel);
-    channelRef.current = channel;
-    playChannel(channel);
+    let _channel = Utils.parseChannelId(channel);
+    if(typeof _channel !== "string") return; 
+    channelRef.current = _channel;
+    playChannel(_channel);
   }, [channel]);
 
   const playChannel = (_channel) => {
@@ -322,7 +341,8 @@ const MainScreen = forwardRef((props, ref) => {
 
     if (!playerRef.current) return;
     if (tvState === "off") return;
-    if (!(/^\d+$/.test(_channel)) && (_channel !== "input")) return;
+    _channel = Utils.parseChannelId(_channel);
+    if(typeof _channel !== "string") return;
 
     processingChannelChangeRef.current = false;
 
@@ -379,6 +399,8 @@ const MainScreen = forwardRef((props, ref) => {
   }
 
   const playAndUpdateChannel = function(_channel){
+    _channel = Utils.parseChannelId(_channel);
+    if(typeof _channel !== "string") return;
     if(channel === _channel){
       playChannel(_channel);
     } else {
@@ -386,24 +408,25 @@ const MainScreen = forwardRef((props, ref) => {
     }
   }
 
-  const checkSolution = (channel) => {
-    //Utils.log("Check channel: " + channel);
+  const checkSolution = (_channel) => {
+    //Utils.log("Check channel: " + _channel);
     if(appSettings.noLinkedPuzzles) return;
-    if((typeof channel !== "string")||(channel.trim()==="")) return;
+    _channel = Utils.parseChannelId(_channel);
+    if(typeof _channel !== "string") return;
 
     let solution;
     let solutionLength;
-    if(channel !== "input"){
-      let solutionArray = channel.split("");
+    if(_channel !== "input"){
+      let solutionArray = _channel.split("");
       solutionLength = solutionArray.length;
       solution = solutionArray.join(";");
     } else {
-      solution = channel;
+      solution = _channel;
       solutionLength = solution.length;
     }
     if(solutionLength !== appSettings.solutionLength) return;
     
-    if(incorrectSolutions.current.has(channel)) return;
+    if(incorrectSolutions.current.has(_channel)) return;
     if((typeof correctChannel.current === "string") && escapp.getAllPuzzlesSolved() && (escapp.getSolvedPuzzles().length > 0)) return;
 
     //Utils.log("Check solution: " + solution);
@@ -411,10 +434,10 @@ const MainScreen = forwardRef((props, ref) => {
       //Utils.log("Check solution Escapp response", success, erState);
       if(success === true){
         correctSolution.current = solution;
-        correctChannel.current = channel;
+        correctChannel.current = _channel;
         afterFirstSuccesfullCheck();
       } else {
-        incorrectSolutions.current.add(channel);
+        incorrectSolutions.current.add(_channel);
       }
     });
   };
@@ -478,6 +501,8 @@ const MainScreen = forwardRef((props, ref) => {
 
   const handleChannelTimerExpire = (selectedChannel,tvStateWhenChannelWasSelected) => {
     if(tvState === "off") return;
+    selectedChannel = Utils.parseChannelId(selectedChannel);
+    if(typeof selectedChannel !== "string") return;
     processingChannelChangeRef.current = true;
     setShowCursor(false);
     setTimeout(() => {
@@ -737,6 +762,7 @@ const MainScreen = forwardRef((props, ref) => {
       if (!player) return;
       const currentTime = player.currentTime();
       const duration = player.duration();
+      if (!Number.isFinite(duration)) return;
       const newTime = Math.min(currentTime + appSettings.rewindFactor, duration);
       player.currentTime(newTime);
       channelsVideoTimeRef.current["input"] = newTime;
@@ -810,12 +836,12 @@ const MainScreen = forwardRef((props, ref) => {
           </div>
           {tvMessage && tvMessage.trim()!=="" && tvState!=="off" &&
             <div className='tvScreenContent tvMessageContainer'>
-              <p className='tvMessage' style={{ fontSize: containerWidth * appSettings.messageFontSize }}>{tvMessage}</p>
+              <p className='tvMessage' style={{ fontSize: (appSettings.messageFontSize+"vmin"), color: appSettings.messageFontColor }}>{tvMessage}</p>
             </div>
           }
           {showMessageNoInput &&
             <div className='tvScreenContent tvMessageContainer'>
-              <p className='tvMessage' style={{ fontSize: containerWidth * appSettings.messageFontSize }}>{appSettings.messageNoInput}</p>
+              <p className='tvMessage' style={{ fontSize: (appSettings.tvFontSize+"vmin"), color: appSettings.tvFontColor }}>{appSettings.messageNoInput}</p>
             </div>
           }
           {showPausedInput &&
@@ -861,18 +887,18 @@ const MainScreen = forwardRef((props, ref) => {
         {appSettings.showTvPanel ?
           <TvPanel containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButtonTV} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickInputButton={onClickInputButton} /> : null
         }
-        {appSettings.soundRemoteButton && <audio id="audio_remote_button" src={appSettings.soundRemoteButton} autostart="false" preload="auto"/>}
-        {appSettings.soundTVButton && <audio id="audio_tv_button" src={appSettings.soundTVButton} autostart="false" preload="auto"/>}
-        {appSettings.soundTvOn && <audio id="audio_tv_on" src={appSettings.soundTvOn} autostart="false" preload="auto"/>}
-        {appSettings.soundTvOff && <audio id="audio_tv_off" src={appSettings.soundTvOff} autostart="false" preload="auto"/>}
-        {appSettings.soundDiscIn && <audio id="audio_disc_in" src={appSettings.soundDiscIn} autostart="false" preload="auto"/>}
-        {appSettings.soundDiscOut && <audio id="audio_disc_out" src={appSettings.soundDiscOut} autostart="false" preload="auto"/>}
-        {appSettings.soundVHSIn && <audio id="audio_vhs_tape_in" src={appSettings.soundVHSIn} autostart="false" preload="auto"/>}
-        {appSettings.soundVHSOut && <audio id="audio_vhs_tape_out" src={appSettings.soundVHSOut} autostart="false" preload="auto"/>}
-        {appSettings.soundVHSOutNoTape && <audio id="audio_vhs_eject_notape" src={appSettings.soundVHSOutNoTape} autostart="false" preload="auto"/>}
-        {appSettings.soundVHSRewind && <audio id="audio_vhs_rewind" src={appSettings.soundVHSRewind} autostart="false" preload="auto" />}
-        {appSettings.soundVideoOn && <audio id="audio_video_on" src={appSettings.soundVideoOn} autostart="false" preload="auto"/>}
-        {appSettings.soundVideoOff && <audio id="audio_video_off" src={appSettings.soundVideoOff} autostart="false" preload="auto"/>}
+        {appSettings.soundRemoteButton && <audio id="audio_remote_button" src={appSettings.soundRemoteButton} preload="auto"/>}
+        {appSettings.soundTVButton && <audio id="audio_tv_button" src={appSettings.soundTVButton} preload="auto"/>}
+        {appSettings.soundTvOn && <audio id="audio_tv_on" src={appSettings.soundTvOn} preload="auto"/>}
+        {appSettings.soundTvOff && <audio id="audio_tv_off" src={appSettings.soundTvOff} preload="auto"/>}
+        {appSettings.soundDiscIn && <audio id="audio_disc_in" src={appSettings.soundDiscIn} preload="auto"/>}
+        {appSettings.soundDiscOut && <audio id="audio_disc_out" src={appSettings.soundDiscOut} preload="auto"/>}
+        {appSettings.soundVHSIn && <audio id="audio_vhs_tape_in" src={appSettings.soundVHSIn} preload="auto"/>}
+        {appSettings.soundVHSOut && <audio id="audio_vhs_tape_out" src={appSettings.soundVHSOut} preload="auto"/>}
+        {appSettings.soundVHSOutNoTape && <audio id="audio_vhs_eject_notape" src={appSettings.soundVHSOutNoTape} preload="auto"/>}
+        {appSettings.soundVHSRewind && <audio id="audio_vhs_rewind" src={appSettings.soundVHSRewind} preload="auto" />}
+        {appSettings.soundVideoOn && <audio id="audio_video_on" src={appSettings.soundVideoOn} preload="auto"/>}
+        {appSettings.soundVideoOff && <audio id="audio_video_off" src={appSettings.soundVideoOff} preload="auto"/>}
 
       </div>
       

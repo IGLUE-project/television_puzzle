@@ -141,6 +141,8 @@ div.standard .remote:hover {
 	background-repeat: no-repeat;
 	background-size: contain;
 	z-index: 4;
+	user-select: none;
+	-webkit-user-drag: none;
 	div.tvScreenContainer {
 		display: flex;
 		flex-direction: column;
@@ -493,7 +495,6 @@ div.tvMessageContainer {
 }
 
 #global_wrapper.retro_remote .tvMessage, #global_wrapper.retro .tvMessage {
-	color: rgb(15, 167, 15);
 	font-family: "Sixtyfour", sans-serif;
 	font-optical-sizing: auto;
 	text-align: center;

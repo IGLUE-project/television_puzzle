@@ -26,6 +26,8 @@ export const SKIN_SETTINGS_STANDARD = {
   fuzzyScreen: "FALSE",
   inputType: "DISC",
   inputInitialState: "OUT",
+  messageFontSize: "9",
+  messageFontColor: "white",
   //Internal
   showRemote: true,
   showTvPanel: false,
@@ -60,8 +62,9 @@ export const SKIN_SETTINGS_STANDARD = {
   volumeFontSize: 0.07,
   volumeBarColor: "white",
   volumeColor: "white",
-  //Message
-  messageFontSize: "0.05",
+  //Font
+  tvFontSize: "9",
+  tvFontColor: "white",
   //Remote
   remoteBottom: "-63%",
   remoteHeight: 0.75,
@@ -91,7 +94,8 @@ export const SKIN_SETTINGS_STANDARD_43 = {
   tvScreenMarginBottom: 12.5,
   backgroundTV: "images/standard/background_TV_4_3.png",
   inputObjectSize: 0.034,
-  messageFontSize: "0.04",
+  messageFontSize: "8",
+  tvFontSize: "8",
   tvHeaderFontSize: "4.7vmin",
   ejectButtonTvWidth: 0.033,
   ejectButtonTvHeight: 0.045,
@@ -105,6 +109,8 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   fuzzyScreen: "TRUE",
   inputType: "VHS",
   inputInitialState: "OUT",
+  messageFontSize: "6",
+  messageFontColor: "rgb(15, 167, 15)",
   //Internal
   showRemote: true,
   showTvPanel: false,
@@ -139,10 +145,11 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   tvHeaderFontSize: "6vmin",
   //Volume
   volumeFontSize: 0.07,
-  volumeBarColor: "rgba(15, 167, 15, 0.76)", // Color of the volume bar
-  volumeColor: "rgb(15, 167, 15)", // Color of the volume text
-  //Message
-  messageFontSize: "0.05",
+  volumeBarColor: "rgba(15, 167, 15, 0.76)",
+  volumeColor: "rgb(15, 167, 15)",
+  //Font
+  tvFontSize: "7",
+  tvFontColor: "rgb(15, 167, 15)",
   //Remote
   remoteBottom: "-65%",
   remoteHeight: 0.98,
@@ -173,7 +180,8 @@ export const SKIN_SETTINGS_RETRO_REMOTE_43 = {
   backgroundTV: "images/retro_remote/background_TV_4_3.png",
   backgroundTVInputOut: "images/retro_remote/background_TV_VHS_out_4_3.png",
   inputObjectSize: 0.099,
-  messageFontSize: "0.04",
+  messageFontSize: "5",
+  tvFontSize: "6",
   tvHeaderFontSize: "4.7vmin",
   ejectButtonTvWidth: 0.065,
   ejectButtonTvHeight: 0.09,
@@ -187,6 +195,8 @@ export const SKIN_SETTINGS_RETRO = {
   fuzzyScreen: "TRUE",
   inputType: "VHS",
   inputInitialState: "OUT",
+  messageFontSize: "6",
+  messageFontColor: "rgb(15, 167, 15)",
   //Internal
   showRemote: false,
   showTvPanel: true,
@@ -225,8 +235,9 @@ export const SKIN_SETTINGS_RETRO = {
   volumeFontSize: 0.07,
   volumeBarColor: "rgba(15, 167, 15, 0.76)", // Color of the volume bar
   volumeColor: "rgb(15, 167, 15)", // Color of the volume text
-  //Message
-  messageFontSize: "0.05",
+  //Font
+  tvFontSize: "7",
+  tvFontColor: "rgb(15, 167, 15)",
   //Panel button
   panelButtonWidth: 0.085, 
   panelButtonHeight: 0.100,
@@ -249,7 +260,8 @@ export const SKIN_SETTINGS_RETRO_43 = {
   backgroundTV: "images/retro/background_TV_4_3.png",
   backgroundTVInputOut: "images/retro/background_TV_4_3_VHS_out.png",
   inputObjectSize: 0.076,
-  messageFontSize: "0.04",
+  messageFontSize: "5",
+  tvFontSize: "6",
   tvHeaderFontSize: "4.7vmin",
   defaultChannelVideo: {
     src: "videos/TV_Noise_4-3.mp4" 
