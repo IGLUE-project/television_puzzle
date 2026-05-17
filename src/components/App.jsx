@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useContext } from 'react';
 import { GlobalContext } from "./GlobalContext";
 import './../assets/scss/app.scss';
 
-import { DEFAULT_APP_SETTINGS, SKIN_SETTINGS_STANDARD, SKIN_SETTINGS_RETRO, SKIN_SETTINGS_RETRO_REMOTE, ESCAPP_CLIENT_SETTINGS, MAIN_SCREEN } from '../constants/constants.jsx';
+import { DEFAULT_APP_SETTINGS, SKIN_SETTINGS_STANDARD, SKIN_SETTINGS_STANDARD_43, SKIN_SETTINGS_RETRO, SKIN_SETTINGS_RETRO_43, SKIN_SETTINGS_RETRO_REMOTE, SKIN_SETTINGS_RETRO_REMOTE_43, ESCAPP_CLIENT_SETTINGS, MAIN_SCREEN } from '../constants/constants.jsx';
 import MainScreen from './MainScreen.jsx';
 
 export default function App() {
@@ -52,15 +52,19 @@ export default function App() {
     }
 
     let skinSettings;
+    let skinSettings43;
     switch (_appSettings.skin) {
       case "STANDARD":
         skinSettings = SKIN_SETTINGS_STANDARD;
+        skinSettings43 = SKIN_SETTINGS_STANDARD_43;
         break;
       case "RETRO":
         skinSettings = SKIN_SETTINGS_RETRO;
+        skinSettings43 = SKIN_SETTINGS_RETRO_43;
         break;
       case "RETRO_REMOTE":
         skinSettings = SKIN_SETTINGS_RETRO_REMOTE;
+        skinSettings43 = SKIN_SETTINGS_RETRO_REMOTE_43;
         break;
       default:
         skinSettings = {};
@@ -69,6 +73,21 @@ export default function App() {
 
     // Merge _appSettings with DEFAULT_APP_SETTINGS_SKIN to obtain final app settings
     _appSettings = Utils.deepMerge(DEFAULT_APP_SETTINGS_SKIN, _appSettings);
+
+    // Check the aspect ratio and include specific settings for it if necessary
+    const allowedAspectRatio = ["16:9", "4:3"];
+    if (!allowedAspectRatio.includes(_appSettings.aspectRatio)) {
+      _appSettings.aspectRatio = "16:9";
+    }
+    if(_appSettings.aspectRatio === "16:9"){
+      _appSettings.aspectRatioNumber = 16/9;
+    } else {
+      _appSettings.aspectRatioNumber = 4/3;
+    } 
+    
+    if((_appSettings.aspectRatio === "4:3")&&(typeof skinSettings43 !== "undefined")){
+      _appSettings = Utils.deepMerge(_appSettings, skinSettings43);
+    }
 
     _appSettings.noLinkedPuzzles = (!_escappSettings.linkedPuzzleIds || _escappSettings.linkedPuzzleIds.length === 0);
 
@@ -307,8 +326,7 @@ export default function App() {
       const windowHeight = window.innerHeight;
 
       let contentPercentage = 1;
-
-      const aspectRatio = 16 / 9;
+      const aspectRatio = 16/9;
       let width = windowWidth * contentPercentage;
       let height = width / aspectRatio;
 
@@ -368,15 +386,7 @@ export default function App() {
       return;
     }
     solution.current = _solution;
-
-    switch (appSettings.actionAfterSolve) {
-      case "SHOW_MESSAGE":
-        //TO DO
-        return;
-      case "NONE":
-      default:
-        return submitPuzzleSolution();
-    }
+    submitPuzzleSolution();
   }
 
   function submitPuzzleSolution() {
@@ -418,12 +428,10 @@ export default function App() {
 return (
     <div id="global_wrapper"
       className={`
-        ${(appSettings !== null && typeof appSettings.skin === "string")
-          ? appSettings.skin.toLowerCase()
-          : ''
-        }
+        ${(appSettings !== null && typeof appSettings.skin === "string") ? appSettings.skin.toLowerCase() : ''}
         ${appSettings?.inputEnabled ? 'input_enabled' : 'input_disabled'}
       `}
+      data-aspect-ratio={appSettings?.aspectRatio || ''}
     >
       {renderScreens(screens)}
     </div>

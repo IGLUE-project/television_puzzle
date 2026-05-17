@@ -70,3 +70,19 @@ div.videoPowerIndicator {
     justify-content: center;
     align-items: center;
 }
+
+#global_wrapper.retro[data-aspect-ratio="4:3"] {
+    div.videoPanel {
+        top: 18.2% !important;
+        left: 30.6% !important;
+        width: 27.2% !important;
+        height: 4.8% !important;
+    }
+    div.videoPowerIndicator {
+        top: 4.8% !important;
+        left: 30.6% !important;
+        width: 2% !important;
+        height: 4% !important;
+    }
+}
+

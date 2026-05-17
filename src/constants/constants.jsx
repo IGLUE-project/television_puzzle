@@ -1,6 +1,7 @@
 export const DEFAULT_APP_SETTINGS = {
   //Authors settings
   skin: "RETRO_REMOTE",
+  aspectRatio: "16:9",
   actionAfterSolve: "PLAY_VIDEO",
   delayMessage: "3",
   enableLoopForChannels: "TRUE",
@@ -28,7 +29,7 @@ export const SKIN_SETTINGS_STANDARD = {
   showVideoPanel: false,
   //Images
   background: "images/standard/background.png",
-  backgroundTV: "images/standard/background_TV.png",
+  backgroundTV: "images/standard/background_TV_16_9.png",
   backgroundRemote: "images/standard/background_remote.png",
   backgroundButtonRemote: "images/standard/background_button_remote.png",
   backgroundPowerButton: "images/standard/background_power_button.png",
@@ -81,6 +82,18 @@ export const SKIN_SETTINGS_STANDARD = {
   ejectButtonTvHeight: 0.05,
 };
 
+export const SKIN_SETTINGS_STANDARD_43 = {
+  backgroundTV: "images/standard/background_TV_4_3.png",
+  inputObjectSize: 0.034,
+  messageFontSize: "0.04",
+  tvHeaderFontSize: "4.7vmin",
+  ejectButtonTvWidth: 0.033,
+  ejectButtonTvHeight: 0.045,
+  defaultChannelVideo: {
+    src: "videos/TV_NoSignal_4_3.mp4" 
+  },
+}
+
 export const SKIN_SETTINGS_RETRO_REMOTE = {
   //Authors settings
   fuzzyScreen: "TRUE",
@@ -92,8 +105,8 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   showVideoPanel: false,
   //Images
   background: "images/retro_remote/background.png",
-  backgroundTV: "images/retro_remote/background_TV.png",
-  backgroundTVInputOut: "images/retro_remote/background_TV_VHS_out.png",
+  backgroundTV: "images/retro_remote/background_TV_16_9.png",
+  backgroundTVInputOut: "images/retro_remote/background_TV_VHS_out_16_9.png",
   backgroundRemote: "images/retro_remote/background_remote.png",
   backgroundButtonRemote: "images/retro_remote/background_button_remote.png",
   backgroundPowerButton: "images/retro_remote/background_power_button.png",
@@ -146,6 +159,19 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   ejectButtonTvWidth: 0.09,
   ejectButtonTvHeight: 0.1,
 };
+
+export const SKIN_SETTINGS_RETRO_REMOTE_43 = {
+  backgroundTV: "images/retro_remote/background_TV_4_3.png",
+  backgroundTVInputOut: "images/retro_remote/background_TV_VHS_out_4_3.png",
+  inputObjectSize: 0.099,
+  messageFontSize: "0.04",
+  tvHeaderFontSize: "4.7vmin",
+  ejectButtonTvWidth: 0.065,
+  ejectButtonTvHeight: 0.09,
+  defaultChannelVideo: {
+    src: "videos/TV_Noise_4-3.mp4" 
+  },
+}
 
 export const SKIN_SETTINGS_RETRO = {
   //Authors settings
@@ -206,6 +232,17 @@ export const SKIN_SETTINGS_RETRO = {
   ejectButtonTvWidth: 0.06,
   ejectButtonTvHeight: 0.06,
 };
+
+export const SKIN_SETTINGS_RETRO_43 = {
+  backgroundTV: "images/retro/background_TV_4_3.png",
+  backgroundTVInputOut: "images/retro/background_TV_4_3_VHS_out.png",
+  inputObjectSize: 0.076,
+  messageFontSize: "0.04",
+  tvHeaderFontSize: "4.7vmin",
+  defaultChannelVideo: {
+    src: "videos/TV_Noise_4-3.mp4" 
+  },
+}
 
 export const ESCAPP_CLIENT_SETTINGS = {
   imagesPath: "./images/",
