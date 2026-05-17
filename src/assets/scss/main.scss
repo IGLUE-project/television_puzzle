@@ -147,7 +147,6 @@ div.standard .remote:hover {
 		align-items: center;
 		justify-content: flex-start;
 		z-index: 3;
-		aspect-ratio: 16 / 9;
         position: relative;
         overflow: hidden;
 	}
@@ -774,13 +773,7 @@ div.row {
     }
 }
 
-#global_wrapper.standard[data-aspect-ratio="4:3"] {
-	div.tvScreenContainer {
-		aspect-ratio: 4/3 !important;
-		height: 64.9% !important;
-    	margin-left: 0.2% !important;
-    	margin-bottom: 12.3% !important;
-	}
+#global_wrapper.standard[data-aspect-ratio="4/3"] {
 	div.inputObjectOutWrapper {
     	top: 79.5% !important;
     	transform: translateX(-49.5%) !important;
@@ -791,13 +784,7 @@ div.row {
 	}
 }
 
-#global_wrapper.retro[data-aspect-ratio="4:3"] {
-	div.tvScreenContainer {
-		aspect-ratio: 4/3 !important;
-		height: 50.6% !important;
-    	margin-left: -14.3% !important;
-    	margin-bottom: -8.5% !important;
-	}
+#global_wrapper.retro[data-aspect-ratio="4/3"] {
 	div.inputObjectOutWrapper {
     	top: 11.7% !important;
     	transform: translateX(-93%) !important;
@@ -809,13 +796,7 @@ div.row {
 	}
 }
 
-#global_wrapper.retro_remote[data-aspect-ratio="4:3"] {
-	div.tvScreenContainer {
-		aspect-ratio: 4/3 !important;
-		height: 54.6% !important;
-    	margin-left: 0.1% !important;
-    	margin-bottom: 13.8% !important;
-	}
+#global_wrapper.retro_remote[data-aspect-ratio="4/3"] {
 	div.inputObjectOutWrapper {
     	top: 73.1% !important;
     	transform: translateX(-49.5%) !important;

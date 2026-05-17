@@ -1,7 +1,7 @@
 export const DEFAULT_APP_SETTINGS = {
   //Authors settings
   skin: "RETRO_REMOTE",
-  aspectRatio: "16:9",
+  aspectRatio: "16/9",
   actionAfterSolve: "PLAY_VIDEO",
   delayMessage: "3",
   enableLoopForChannels: "TRUE",
@@ -12,7 +12,10 @@ export const DEFAULT_APP_SETTINGS = {
   enableRewindAndForward: "TRUE",
   keepState: "TRUE",
   maxChannelLength: "8",
-  videoContainerPadding: "0",
+  videoContainerPaddingTop: "0",
+  videoContainerPaddingRight: "0",
+  videoContainerPaddingBottom: "0",
+  videoContainerPaddingLeft: "0",
 
   //Internal
   rewindFactor: 0.4,
@@ -47,9 +50,10 @@ export const SKIN_SETTINGS_STANDARD = {
   soundDiscIn: "sounds/disc_in.wav",
   soundDiscOut: "sounds/disc_out.wav",
   //TV screen
-  tvScreenHeight: "65%",
-  tvScreenMarginLeft: "0%",
-  tvScreenMarginBottom: "12.5%",
+  containerSize: 1,
+  tvScreenHeight: 64.7,
+  tvScreenMarginLeft: 0.1,
+  tvScreenMarginBottom: 12.4,
   //Header
   tvHeaderFontSize: "5vmin",
   //Volume
@@ -83,6 +87,8 @@ export const SKIN_SETTINGS_STANDARD = {
 };
 
 export const SKIN_SETTINGS_STANDARD_43 = {
+  tvScreenMarginLeft: 0.1,
+  tvScreenMarginBottom: 12.5,
   backgroundTV: "images/standard/background_TV_4_3.png",
   inputObjectSize: 0.034,
   messageFontSize: "0.04",
@@ -125,9 +131,10 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   soundVHSOutNoTape: "sounds/vhs_eject_notape.mp3",
   soundVHSRewind: "sounds/vhs_tape_rewind.wav",
   //TV screen
-  tvScreenHeight: "56%",
-  tvScreenMarginLeft: "0%",
-  tvScreenMarginBottom: "14%",
+  containerSize: 0.8,
+  tvScreenHeight: 56,
+  tvScreenMarginLeft: 0.2,
+  tvScreenMarginBottom: 13.5,
   //Header
   tvHeaderFontSize: "6vmin",
   //Volume
@@ -161,6 +168,8 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
 };
 
 export const SKIN_SETTINGS_RETRO_REMOTE_43 = {
+  tvScreenMarginLeft: 0.1,
+  tvScreenMarginBottom: 13.9,
   backgroundTV: "images/retro_remote/background_TV_4_3.png",
   backgroundTVInputOut: "images/retro_remote/background_TV_VHS_out_4_3.png",
   inputObjectSize: 0.099,
@@ -206,9 +215,10 @@ export const SKIN_SETTINGS_RETRO = {
   soundVHSOutNoTape: "sounds/vhs_eject_notape.mp3",
   soundVHSRewind: "sounds/vhs_tape_rewind.wav",
   //TV screen
-  tvScreenHeight: "51%",
-  tvScreenMarginLeft: "-19%",
-  tvScreenMarginBottom: "-9%",
+  containerSize: 0.8,
+  tvScreenHeight: 51,
+  tvScreenMarginLeft: -19.3,
+  tvScreenMarginBottom: -8.6,
   //Header
   tvHeaderFontSize: "6vmin",
   //Volume
@@ -234,6 +244,8 @@ export const SKIN_SETTINGS_RETRO = {
 };
 
 export const SKIN_SETTINGS_RETRO_43 = {
+  tvScreenMarginLeft: -14.3,
+  tvScreenMarginBottom: -8.5,
   backgroundTV: "images/retro/background_TV_4_3.png",
   backgroundTVInputOut: "images/retro/background_TV_4_3_VHS_out.png",
   inputObjectSize: 0.076,

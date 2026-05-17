@@ -14,6 +14,8 @@ const MainScreen = forwardRef((props, ref) => {
   
   const [containerWidth, setContainerWidth] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
+  const [tvScreenWidth, setTvScreenWidth] = useState(0);
+  const [tvScreenHeight, setTvScreenHeight] = useState(0);
 
   const [tvState, setTVState] = useState("off"); // possible values: "off", "channels", "input". Start with "off" to force the TV to be switched on to allow autoplay
   const tvStateRef = useRef(tvState);
@@ -80,14 +82,15 @@ const MainScreen = forwardRef((props, ref) => {
 
     if (playerRef.current === null) {
       const videoElement = document.createElement("video-js");
+      videoElement.style.maxHeight = "100%";
       videoElement.classList.add('vjs-big-play-centered');
       videoRef.current.appendChild(videoElement);
 
       const playerOptions = {
         autoplay: false,
         controls: false,
-        responsive: true,
-        fluid: true,
+        responsive: false,
+        fluid: false,
         loop: appSettings.enableLoopForChannels,
         muted: false,
         techOrder: ["html5"],
@@ -145,28 +148,16 @@ const MainScreen = forwardRef((props, ref) => {
     if ((size.height === 0) || (size.width === 0)) {
       return;
     }
-
-    let _containerWidth;
-    let _containerHeight;
-
-    switch (appSettings.skin) {
-      case "RETRO":
-        _containerWidth = size.width * 0.8;
-        _containerHeight = size.height * 0.8;
-        break;
-      case "RETRO_REMOTE":
-        _containerWidth = size.width * 0.8;
-        _containerHeight = size.height * 0.8;
-        break;
-      case "STANDARD":
-      default:
-        _containerWidth = size.width * 1;
-        _containerHeight = size.height * 1;
-        break;
-    }
+    let _containerWidth = size.width * appSettings.containerSize;
+    let _containerHeight = size.height * appSettings.containerSize;
+    let _tvScreenHeight = (size.height * appSettings.tvScreenHeight);
+    let _tvScreenWidth = (_tvScreenHeight*appSettings.aspectRatioNumber);
 
     setContainerWidth(_containerWidth);
     setContainerHeight(_containerHeight);
+
+    setTvScreenWidth(_tvScreenWidth);
+    setTvScreenHeight(_tvScreenHeight);
   }
 
 
@@ -800,19 +791,20 @@ const MainScreen = forwardRef((props, ref) => {
           height: props.size.height, 
         }}>
         <div className='tvScreenContainer' style={{ 
-          height: appSettings.tvScreenHeight, 
-          marginLeft: appSettings.tvScreenMarginLeft, 
-          marginBottom: appSettings.tvScreenMarginBottom,
+          height: tvScreenHeight,
+          width: tvScreenWidth,
+          marginLeft: (appSettings.tvScreenMarginLeft+"%"),
+          marginBottom: (appSettings.tvScreenMarginBottom+"%"),
         }}>
           {!showVideo && (
             <div className={`tvScreenBlack tvScreenContent ${isShuttingDown ? "shutdown" : ""}`}></div>
           )}
           <div className={`tvVideoContainer tvScreenContent`} style={{
               zIndex: showVideo ? 1 : 0,
-              display: showVideo ? "block" : "none",
-              padding: appSettings.videoContainerPaddingNumber ? (appSettings.videoContainerPaddingNumber+"%") : "0%"
+              display: showVideo ? "flex" : "none",
+              padding: appSettings.videoContainerPadding,
             }}>
-            <div data-vjs-player style={{ height: "100%", width: "100%" }}>
+            <div style={{ aspectRatio: appSettings.aspectRatio, height: "auto", width: "100%" }}>
               <div ref={videoRef} style={{display: "flex", height: "100%", width: "100%", alignItems: "center"}}></div>
             </div>
           </div>

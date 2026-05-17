@@ -3,12 +3,15 @@
 export let ESCAPP_APP_SETTINGS = {
   //Settings that can be specified by the authors
   skin: "STANDARD", //skin can be "STANDARD" or "RETRO_REMOTE".
-  aspectRatio: "16:9", //Specify the aspect ratio for the TV screen. Possible values: "16:9", "4:3".
+  aspectRatio: "16/9", //Specify the aspect ratio for the TV screen. Possible values: "16/9", "4/3".
   // background: "NONE", //background can be "NONE" or a URL.
   actionAfterSolve: "PLAY_VIDEO", //actionAfterSolve can be "NONE", "SHOW_MESSAGE" or "PLAY_VIDEO".
   // delayMessage: "3", //In seconds. Only for actionAfterSolve="SHOW_MESSAGE"
   maxChannelLength: "4", //Maximum number of digits in a channel number
-  // videoContainerPadding: "5", //Allow to specify a padding for the video container
+  // videoContainerPaddingTop: "0", //Allow to specify top padding for the video container
+  // videoContainerPaddingRight: "0", //Allow to specify right padding for the video container
+  // videoContainerPaddingBottom: "0", //Allow to specify bottom padding for the video container
+  // videoContainerPaddingLeft: "0", //Allow to specify left padding for the video container
   // enableLoopForChannels: "TRUE", //Whether the channel videos will play on a loop
   // fuzzyScreen: "TRUE", //Whether to apply a fuzzy effect to the TV screen
   initialVolume: "0.5", //Initial volume of the TV

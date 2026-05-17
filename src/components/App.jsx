@@ -75,18 +75,22 @@ export default function App() {
     _appSettings = Utils.deepMerge(DEFAULT_APP_SETTINGS_SKIN, _appSettings);
 
     // Check the aspect ratio and include specific settings for it if necessary
-    const allowedAspectRatio = ["16:9", "4:3"];
+    const allowedAspectRatio = ["16/9", "4/3"];
     if (!allowedAspectRatio.includes(_appSettings.aspectRatio)) {
-      _appSettings.aspectRatio = "16:9";
+      _appSettings.aspectRatio = "16/9";
     }
-    if(_appSettings.aspectRatio === "16:9"){
+    if(_appSettings.aspectRatio === "16/9"){
       _appSettings.aspectRatioNumber = 16/9;
     } else {
       _appSettings.aspectRatioNumber = 4/3;
     } 
     
-    if((_appSettings.aspectRatio === "4:3")&&(typeof skinSettings43 !== "undefined")){
+    if((_appSettings.aspectRatio === "4/3")&&(typeof skinSettings43 !== "undefined")){
       _appSettings = Utils.deepMerge(_appSettings, skinSettings43);
+    }
+
+    if(typeof _appSettings.tvScreenHeight === "number"){
+      _appSettings.tvScreenHeight = (_appSettings.tvScreenHeight/100);
     }
 
     _appSettings.noLinkedPuzzles = (!_escappSettings.linkedPuzzleIds || _escappSettings.linkedPuzzleIds.length === 0);
@@ -183,13 +187,23 @@ export default function App() {
       _appSettings.maxChannelLengthNumber = parseInt(_appSettings.maxChannelLength);
     }
 
-    if (typeof _appSettings.videoContainerPadding === "number") {
-      _appSettings.videoContainerPaddingNumber = _appSettings.videoContainerPadding;
-    } else {
-      _appSettings.videoContainerPaddingNumber = parseInt(_appSettings.videoContainerPadding);
+    let parsedVideoContainerPaddingTop = Utils.parseNumberFromSetting(_appSettings.videoContainerPaddingTop);
+    if(parsedVideoContainerPaddingTop === null){
+      parsedVideoContainerPaddingTop = 0;
     }
-
-
+    let parsedVideoContainerPaddingRight = Utils.parseNumberFromSetting(_appSettings.videoContainerPaddingRight);
+    if(parsedVideoContainerPaddingRight === null){
+      parsedVideoContainerPaddingRight = 0;
+    }
+    let parsedVideoContainerPaddingBottom = Utils.parseNumberFromSetting(_appSettings.videoContainerPaddingBottom);
+    if(parsedVideoContainerPaddingBottom === null){
+      parsedVideoContainerPaddingBottom = 0;
+    }
+    let parsedVideoContainerPaddingLeft = Utils.parseNumberFromSetting(_appSettings.videoContainerPaddingLeft);
+    if(parsedVideoContainerPaddingLeft === null){
+      parsedVideoContainerPaddingLeft = 0;
+    }
+    _appSettings.videoContainerPadding =  parsedVideoContainerPaddingTop + "% " + parsedVideoContainerPaddingRight + "% " + parsedVideoContainerPaddingBottom + "% " + parsedVideoContainerPaddingLeft + "%";
 
     if(typeof _appSettings.defaultChannelVideo.type === "undefined"){
       let defaultChannelVideoType = _getVideoTypeForChannel(_appSettings.defaultChannelVideo);
@@ -226,8 +240,8 @@ export default function App() {
       _appSettings.messageNoInput = I18n.getTrans("i.noDisc");
     } else {
       //RETRO
-      _appSettings.delayForSelectChannel = 4000;
-      _appSettings.delayAfterSelectChannel = 1500;
+      _appSettings.delayForSelectChannel = 2500;
+      _appSettings.delayAfterSelectChannel = 800;
       _appSettings.canShowCursor = true;
       _appSettings.messageNoInput = I18n.getTrans("i.noVideoTape");
     }
