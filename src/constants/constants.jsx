@@ -7,6 +7,7 @@ export const DEFAULT_APP_SETTINGS = {
   initialVolume: "0.5",
   inputType: "NONE",
   inputInitialState: "OUT",
+  inputPlayerInitialState: "TRUE",
   enableRewindAndForward: "TRUE",
   keepState: "TRUE",
   maxChannelLength: "8",
@@ -23,7 +24,8 @@ export const SKIN_SETTINGS_STANDARD = {
   inputInitialState: "OUT",
   //Internal
   showRemote: true,
-  showButtonPanel: false,
+  showTvPanel: false,
+  showVideoPanel: false,
   //Images
   background: "images/standard/background.png",
   backgroundTV: "images/standard/background_TV.png",
@@ -86,7 +88,8 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   inputInitialState: "OUT",
   //Internal
   showRemote: true,
-  showButtonPanel: false,
+  showTvPanel: false,
+  showVideoPanel: false,
   //Images
   background: "images/retro_remote/background.png",
   backgroundTV: "images/retro_remote/background_TV.png",
@@ -151,7 +154,8 @@ export const SKIN_SETTINGS_RETRO = {
   inputInitialState: "OUT",
   //Internal
   showRemote: false,
-  showButtonPanel: true,
+  showTvPanel: true,
+  showVideoPanel: true,
   //Images
   background: "images/retro/background.png",
   backgroundTV: "images/retro/background_TV_16_9.png",
@@ -169,6 +173,8 @@ export const SKIN_SETTINGS_RETRO = {
   soundTVButton: "sounds/tv_button_click.mp3",
   soundTvOn: "sounds/retro_tv_on.wav",
   soundTvOff: "sounds/retro_tv_off.wav",
+  soundVideoOn: "sounds/retro_video_on.mp3",
+  soundVideoOff: "sounds/retro_video_off.mp3",
   soundVHSIn: "sounds/vhs_tape_in.wav",
   soundVHSOut: "sounds/vhs_tape_out.wav",
   soundVHSOutNoTape: "sounds/vhs_eject_notape.mp3",

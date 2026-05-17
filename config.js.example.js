@@ -13,6 +13,7 @@ export let ESCAPP_APP_SETTINGS = {
   initialVolume: "0.5", //Initial volume of the TV
   enableInput: "TRUE", //Enable disc for standard skin or VHS for retro skin
   inputInitialState: "OUT", // If "OUT", the input object (disc for the standard skin or VHS for the retro skin) will be outside the TV. If "IN", it will be inside.
+  // inputPlayerInitialState: "ON", // For skins with a player (e.g. a VHS player) that can be switched on and off, specifies whether the player is initially turned on. Possible values: "ON", "OFF".
   enableRewindAndForward: "TRUE", //Enable rewinding and fast-forwarding for the input (disc for the standard skin or VHS for the retro skin)
   keepState: "FALSE", //Enable keeping the TV state when the app is closed
   //List with TV channels

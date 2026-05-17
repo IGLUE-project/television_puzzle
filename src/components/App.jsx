@@ -9,6 +9,7 @@ export default function App() {
   const { escapp, setEscapp, appSettings, setAppSettings, Storage, setStorage, Utils, I18n } = useContext(GlobalContext);
   const mainScreenRef = useRef(null);
   const storageRef = useRef(null);
+  const appSettingsRef = useRef(null);
   const hasExecutedEscappValidation = useRef(false);
   const [loading, setLoading] = useState(true);
   const [screen, setScreen] = useState(MAIN_SCREEN);
@@ -133,6 +134,15 @@ export default function App() {
         _appSettings.inputInitialState = "paused";
       } else {
         _appSettings.inputInitialState = "out";
+      }
+    }
+
+    if(_appSettings.inputPlayerInitialState){
+      const allowedInputPlayerInitialState = ["ON", "OFF"];
+      if (!allowedInputPlayerInitialState.includes(_appSettings.inputPlayerInitialState)) {
+        _appSettings.inputPlayerInitialState = "on";
+      } else {
+        _appSettings.inputPlayerInitialState = _appSettings.inputPlayerInitialState.toLowerCase();
       }
     }
 
@@ -324,6 +334,10 @@ export default function App() {
 
   }, []);
 
+  useEffect(() => {
+    appSettingsRef.current = appSettings;
+  }, [appSettings]);
+
   function restoreAppState(erState) {
     restoreAppStateFromLocalStorage(erState);
   }
@@ -339,7 +353,7 @@ export default function App() {
   }
 
   function saveAppState() {
-    if (appSettings.keepState!==true) return;
+    if (appSettingsRef.current?.keepState !== true) return;
     if (!storageRef.current) return;
     const currentAppState = mainScreenRef.current?.getState?.();
     if (!currentAppState) return;
@@ -397,7 +411,7 @@ export default function App() {
   let screens = [
     {
       id: MAIN_SCREEN,
-      content: <MainScreen ref={mainScreenRef} appState={appState} size={size} onPuzzleSolved={onPuzzleSolved} />
+      content: <MainScreen ref={mainScreenRef} appState={appState} saveAppState={saveAppState} size={size} onPuzzleSolved={onPuzzleSolved} />
     }
   ];
 

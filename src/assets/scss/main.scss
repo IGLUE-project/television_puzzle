@@ -386,6 +386,11 @@ div.inputPausedScreen.playing {
 	transition-timing-function: ease;
 }
 
+.inputObjectOut.inputPlayerUnavailable {
+	cursor: default !important;
+	pointer-events: none !important;
+}
+
 .inputObjectOut::before {
 	content: "";
 	position: absolute;
@@ -471,26 +476,9 @@ div.ejectButton {
     right: 20.5%;
 }
 
-#global_wrapper.retro div.ejectButton {
-    top: 11.1%;
-    right: 42.5%;
-}
-
-#global_wrapper.retro div.ejectButton svg {
-	width: 75%;
-    margin-top: -7%;
-}
-
 #global_wrapper.standard div.ejectButton:active {
 	transform: translateY(0px) scaleY(0.85) scaleX(0.85);
 	filter: brightness(0.95);
-}
-
-#global_wrapper.retro div.ejectButton:active {
-	filter: brightness(0.95);
-	box-shadow:
-		inset 0 3px 6px rgba(0,0,0,0.7),
-		inset 0 1px 1px rgba(255,255,255,0.05);
 }
 
 #global_wrapper.retro_remote div.ejectButton:active {

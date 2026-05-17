@@ -1,21 +1,21 @@
 import React, { useContext } from 'react';
 import { GlobalContext } from "./GlobalContext";
 
-const PanelButton = (props) => {
+const TvButton = (props) => {
   const { appSettings } = useContext(GlobalContext);
   return (
     <div
-      className={"panelButton panelButton" + props.position}
+      className={"tvButton tvButton" + props.position}
       style={props.hidden ? { visibility: "hidden" } : {}}
     >
-      {props.text ? <div className="panelButtonText">
+      {props.text ? <div className="tvButtonText">
         <p>{props.text}</p>
       </div> : null}
-      <div className="panelButtonImage" onClick={() => props.onClick(props.value)}>
+      <div className="tvButtonImage" onClick={() => props.onClick(props.value)}>
         <img src={props.image || appSettings.backgroundButtonTv}/>
       </div>
     </div>
   );
 };
 
-export default PanelButton;
+export default TvButton;

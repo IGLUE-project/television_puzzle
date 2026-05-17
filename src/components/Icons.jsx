@@ -41,7 +41,7 @@ const Icons = {
         cy="540"
         r="250"
         fill="none"
-        stroke="#f0eadc"
+        stroke="#0FA70F"
         strokeWidth="24"
       />
       <rect
@@ -49,14 +49,14 @@ const Icons = {
         y="365"
         width="78"
         height="350"
-        fill="#f0eadc"
+        fill="#0FA70F"
       />
       <rect
         x="1002"
         y="365"
         width="78"
         height="350"
-        fill="#f0eadc"
+        fill="#0FA70F"
       />
     </svg>
   ),
@@ -150,6 +150,61 @@ const Icons = {
       <path d="M32 12L18 30H46L32 12Z" fill={appSettings.ejectButtonTextColor}/>
       <rect x="16" y="34" width="32" height="5" rx="2" fill={appSettings.ejectButtonTextColor}/>
       <rect x="14" y="44" width="36" height="8" rx="2" fill={appSettings.ejectButtonTextColor}/>
+    </svg>
+  ),
+
+  powerIconOff: (appSettings) => (
+    <svg width="2.5vmin" height="2.5vmin" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M32 28 A30 30 0 1 0 68 28"
+        fill="none"
+        stroke="#000"
+        strokeWidth="10"
+        strokeLinecap="round"
+      />
+      <line
+        x1="50"
+        y1="14"
+        x2="50"
+        y2="50"
+        stroke="#000"
+        strokeWidth="10"
+        strokeLinecap="round"
+      />
+    </svg>
+  ),
+
+  powerIconOn: (appSettings) => (
+    <svg width="2.5vmin" height="2.5vmin" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M32 28 A30 30 0 1 0 68 28"
+        fill="none"
+        stroke="#0B7A0E"
+        strokeWidth="10"
+        strokeLinecap="round"
+      />
+      <line
+        x1="50"
+        y1="14"
+        x2="50"
+        y2="50"
+        stroke="#0B7A0E"
+        strokeWidth="10"
+        strokeLinecap="round"
+      />
+    </svg>
+  ),
+
+  circleOn: (appSettings) => (
+    <svg width="2.5vmin" height="2.5vmin" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="48" fill="#222e35"/>
+      <circle cx="50" cy="50" r="40" fill="#0f8610"/>
+    </svg>
+  ),
+
+  circleOff: (appSettings) => (
+    <svg width="2.5vmin" height="2.5vmin" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="48" fill="#222e35"/>
     </svg>
   ),
 

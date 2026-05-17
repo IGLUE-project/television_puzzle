@@ -1,4 +1,4 @@
-div.buttonPanel {
+div.tvPanel {
     position: absolute;
     z-index: 20;
     display: flex;
@@ -12,13 +12,13 @@ div.buttonPanel {
     height: 28%;
 }
 
-div.panelButtonPower {
+div.tvButtonPower {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: contain;
 }
 
-div.buttonPanelRow {
+div.tvPanelRow {
     flex: 1 1 0;
     display: flex;
     flex-direction: row;
@@ -27,7 +27,7 @@ div.buttonPanelRow {
     min-height: 0;
 }
 
-div.panelButton {
+div.tvButton {
 	display: flex;
 	flex-direction: column;
 	flex: 1;
@@ -37,7 +37,7 @@ div.panelButton {
 	overflow: hidden;
 }
 
-div.panelButton div.panelButtonText {
+div.tvButton div.tvButtonText {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -50,7 +50,7 @@ div.panelButton div.panelButtonText {
 	min-height: 0;
 }
 
-div.panelButton div.panelButtonImage {
+div.tvButton div.tvButtonImage {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -59,7 +59,7 @@ div.panelButton div.panelButtonImage {
 	min-height: 0;
 }
 
-.panelButtonImage img {
+.tvButtonImage img {
 	width: 100%;
 	height: 100%;
 	object-fit: fill;
@@ -67,24 +67,24 @@ div.panelButton div.panelButtonImage {
 	box-sizing: content-box;
 }
 
-div.panelButton div.panelButtonImage:active {
+div.tvButton div.tvButtonImage:active {
 	transform: scale(0.97);
 }
 
-div.panelButton div.panelButtonImage:active:hover {
+div.tvButton div.tvButtonImage:active:hover {
 	filter: brightness(0.8);
 }
 
 /* Power on */
-div.panelButton.panelButton1 div.panelButtonImage {
+div.tvButton.tvButton1 div.tvButtonImage {
 	flex: 0 0 100%;
 }
 
-div.panelButton.panelButton1 div.panelButtonImage:active {
+div.tvButton.tvButton1 div.tvButtonImage:active {
 	transform: scaleX(0.99) scaleY(0.98);
 }
 
-div.panelButton.panelButton1 div.panelButtonImage img {
+div.tvButton.tvButton1 div.tvButtonImage img {
     width: 100%;
     height: 100%;
     object-fit: fill;
@@ -92,13 +92,17 @@ div.panelButton.panelButton1 div.panelButtonImage img {
     box-sizing: border-box;
 }
 
-div.panelButtonVolumeIcon {
+div.tvButtonVolumeIcon {
 	flex: 2;
 }
 
-div.panelButtonVolumeIcon svg {
+div.tvButtonVolumeIcon svg {
 	width: 100%;
     height: 100%;
     padding: 5% 0% 0% 0%;
     box-sizing: border-box;
+}
+
+div.tvButton.tvButton12 div.tvButtonText {
+    font-size: 2.5vmin;
 }

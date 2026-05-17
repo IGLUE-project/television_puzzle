@@ -4,7 +4,8 @@ import './../assets/scss/main.scss';
 import './../assets/scss/fonts.css';
 import "video.js/dist/video-js.css";
 import Remote from './Remote.jsx';
-import ButtonPanel from './ButtonPanel.jsx';
+import TvPanel from './TvPanel.jsx';
+import VideoPanel from './VideoPanel.jsx';
 import Icons from './Icons.jsx';
 import videojs from 'video.js';
 
@@ -25,6 +26,9 @@ const MainScreen = forwardRef((props, ref) => {
   const [videoError, setVideoError] = useState(false);
   const [tvMessage, setTVMessage] = useState("");
   const [isShuttingDown, setIsShuttingDown] = useState(false);
+
+  const [inputPlayerState, setInputPlayerState] = useState(props.appState?.inputPlayerState ?? appSettings.inputPlayerInitialState); // possible values: "off", "on". Only used with retro skin.
+  const inputPlayerStateRef = useRef(inputPlayerState);
 
   const [userSelectedChannel, setUserSelectedChannel] = useState(null);
   const [tvHeaderContent, setTVHeaderContent] = useState(null);
@@ -59,6 +63,7 @@ const MainScreen = forwardRef((props, ref) => {
       }
       return {
         tvState: tvStateRef.current,
+        inputPlayerState: inputPlayerStateRef.current,
         inputMode: inputModeValue,
         channel: channelRef.current,
         inputState: inputStateValue,
@@ -211,7 +216,7 @@ const MainScreen = forwardRef((props, ref) => {
       }
     }
 
-    if(typeof audio !== "undefined"){
+    if (audio != null) {
       setTimeout(() => {
         audio.currentTime = 0;
         audio.play();
@@ -222,7 +227,7 @@ const MainScreen = forwardRef((props, ref) => {
     tvStateRef.current = tvState;
   }, [tvState]);
 
-  const onClickPowerButton = () => {
+  const onClickPowerButtonTV = () => {
     playButtonAudio();
     setTimeout(() => {
       if(tvState === "off"){
@@ -267,8 +272,50 @@ const MainScreen = forwardRef((props, ref) => {
     audio.currentTime = 0;
   }
 
-  
+  ////////////
+  // Video on/off
+  ////////////
 
+  useEffect(() => {
+    // Utils.log("Previous inputPlayerState:", inputPlayerStateRef.current);
+    // Utils.log("New inputPlayerState:", inputPlayerState);
+
+    let audio;
+    if((inputPlayerStateRef.current === "off")&&(inputPlayerState !== "off")){
+      //Video has been turned on
+      audio = document.getElementById("audio_video_on");
+    } else if((inputPlayerStateRef.current !== "off")&&(inputPlayerState === "off")){
+      //Video has been turned off
+      if(tvState === "input"){
+        if(inputState !== "out"){
+          setInputState("paused");
+        }
+      }
+      audio = document.getElementById("audio_video_off");
+    }
+
+    if (audio != null) {
+      setTimeout(() => {
+        audio.currentTime = 0;
+        audio.play();
+      }, 0);
+    }
+
+    //Update previous value
+    inputPlayerStateRef.current = inputPlayerState;
+  }, [inputPlayerState]);
+
+  const onClickPowerButtonVideo = () => {
+    playButtonAudio();
+    setTimeout(() => {
+      if(inputPlayerState === "off"){
+        setInputPlayerState("on");
+      } else {
+        setInputPlayerState("off");
+      }
+    }, 500);
+  }
+  
   /////////
   // Channels
   ////////
@@ -562,6 +609,8 @@ const MainScreen = forwardRef((props, ref) => {
   }, [inputState]);
 
   const onClickInput = () => {
+    if(isInputPlayerUnavailable()) return;
+
     let audio;
     if (inputState === "out") {
       if(appSettings.vhs){
@@ -572,7 +621,7 @@ const MainScreen = forwardRef((props, ref) => {
       setInputState("inserting");
     }
 
-    if(typeof audio !== "undefined"){
+    if (audio != null) {
       audio.pause();
       audio.currentTime = 0;
       audio.play();
@@ -580,6 +629,11 @@ const MainScreen = forwardRef((props, ref) => {
   }
 
   const onClickEjectInput = () => {
+    if(isInputPlayerUnavailable()){
+      playButtonAudio();
+      return;
+    }
+
     let audio;
     if (inputState !== "out") {
       if(appSettings.vhs){
@@ -601,7 +655,7 @@ const MainScreen = forwardRef((props, ref) => {
         audio = document.getElementById("audio_remote_button");
       }
     }
-    if(typeof audio !== "undefined"){
+    if (audio != null) {
       audio.pause();
       audio.currentTime = 0;
       audio.play();
@@ -621,6 +675,7 @@ const MainScreen = forwardRef((props, ref) => {
   const onClickPlayPause = () => {
     playButtonAudio();
     if(tvState === "off") return;
+    if(isInputPlayerUnavailable()) return;
     setTimeout(() => {
       if(tvState === "input"){
         if(inputState==="out"){
@@ -638,6 +693,7 @@ const MainScreen = forwardRef((props, ref) => {
     playButtonAudio();
     if (!playerRef.current || tvState !== "input" || inputState === "out" || inputState === "rewinding") return;
     if (rewindIntervalRef.current) return;
+    if(isInputPlayerUnavailable()) return;
     if(inputState === "forwarding") stopForward();
 
     setInputState("rewinding");
@@ -675,7 +731,8 @@ const MainScreen = forwardRef((props, ref) => {
     playButtonAudio();
     if (!playerRef.current || tvState !== "input" || inputState === "out" || inputState === "forwarding") return;
     if (forwardIntervalRef.current) return;
-    if(inputState === "rewinding") stopRewind(); 
+    if(isInputPlayerUnavailable()) return;
+    if(inputState === "rewinding") stopRewind();
     setInputState("forwarding");
     setTVHeaderContent("▶▶");
     setTimeout(function(){
@@ -712,17 +769,27 @@ const MainScreen = forwardRef((props, ref) => {
     stopForward();
   };
 
+  const isInputPlayerUnavailable = () => {
+    if(appSettings.showVideoPanel){
+      return (inputPlayerState==="off");
+    } else {
+      return (!appSettings.disc)&&(tvState==="off");
+    }
+  };
+
   let showVideo = ((tvState !== "off")&&(videoError === false));
   let showMessageNoInput = false;
   let showPausedInput = false;
   let showPausedInputForVideo = false;
+  let inputPlayerUnavailable = isInputPlayerUnavailable();
   if(tvState === "input"){
-    showVideo = (showVideo && (inputState!=="out"));
-    showPausedInput = (inputState==="paused");
-    showMessageNoInput = ((inputState === "out")||(inputState === "inserting"));
+    showVideo = (showVideo && (inputState!=="out") && !inputPlayerUnavailable);
+    showPausedInput = ((inputState==="paused") && !inputPlayerUnavailable);
+    showMessageNoInput = ((inputState === "out")||(inputState === "inserting")||(inputPlayerUnavailable));
   }
   let showFuzzyScreen = (appSettings.fuzzyScreen && (tvState !== "off"));
   let showInputObject = (appSettings.showInputObject && inputState === "out");
+  
   return (
     <div id="screen_main" className={"screen_content"} style={{ backgroundImage: 'url(' + appSettings.background + ')' }}>
       <div id="tvContainer" className={`tvContainer ${showInputObject ? 'showInputObject' : ''}`}
@@ -786,7 +853,7 @@ const MainScreen = forwardRef((props, ref) => {
             )}
           </div>
         </div>
-        <div
+        {!appSettings.showVideoPanel ? <div
           className="ejectButton"
           style={{
             width: containerWidth * appSettings.ejectButtonTvWidth,
@@ -798,9 +865,9 @@ const MainScreen = forwardRef((props, ref) => {
           <div style={{justifyContent: "center", alignItems: "center", display: "flex"}}>
             {appSettings.skin === "STANDARD" ? Icons.ejectIconDisc(appSettings) : Icons.ejectIconVHS(appSettings)}
           </div>
-        </div>
-        {appSettings.showButtonPanel ?
-          <ButtonPanel containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButton} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickInputButton={onClickInputButton} /> : null
+        </div> : <VideoPanel containerWidth={containerWidth} containerHeight={containerHeight} inputPlayerState={inputPlayerState} onClickPowerButton={onClickPowerButtonVideo} onClickEjectInput={onClickEjectInput} onClickPlayPause={onClickPlayPause} onClickRewind={onClickRewind} onClickForward={onClickForward} />}
+        {appSettings.showTvPanel ?
+          <TvPanel containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButtonTV} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickInputButton={onClickInputButton} /> : null
         }
         {appSettings.soundRemoteButton && <audio id="audio_remote_button" src={appSettings.soundRemoteButton} autostart="false" preload="auto"/>}
         {appSettings.soundTVButton && <audio id="audio_tv_button" src={appSettings.soundTVButton} autostart="false" preload="auto"/>}
@@ -812,10 +879,13 @@ const MainScreen = forwardRef((props, ref) => {
         {appSettings.soundVHSOut && <audio id="audio_vhs_tape_out" src={appSettings.soundVHSOut} autostart="false" preload="auto"/>}
         {appSettings.soundVHSOutNoTape && <audio id="audio_vhs_eject_notape" src={appSettings.soundVHSOutNoTape} autostart="false" preload="auto"/>}
         {appSettings.soundVHSRewind && <audio id="audio_vhs_rewind" src={appSettings.soundVHSRewind} autostart="false" preload="auto" />}
+        {appSettings.soundVideoOn && <audio id="audio_video_on" src={appSettings.soundVideoOn} autostart="false" preload="auto"/>}
+        {appSettings.soundVideoOff && <audio id="audio_video_off" src={appSettings.soundVideoOff} autostart="false" preload="auto"/>}
+
       </div>
       
       {appSettings.showRemote ?
-         <Remote containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButton} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickPlayPause={onClickPlayPause} onClickInputButton={onClickInputButton} onClickRewind={onClickRewind} onClickForward={onClickForward} />
+         <Remote containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButtonTV} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickPlayPause={onClickPlayPause} onClickInputButton={onClickInputButton} onClickRewind={onClickRewind} onClickForward={onClickForward} />
          : null
       }
 
@@ -826,7 +896,7 @@ const MainScreen = forwardRef((props, ref) => {
           width: containerHeight * appSettings.inputObjectSize * 6.5,
           height: containerHeight * appSettings.inputObjectSize,
       }}>
-          <div className={`inputObjectOut ${showInputObject ? "visible" : "hidden"}`}
+          <div className={`inputObjectOut ${showInputObject ? "visible" : "hidden"} ${inputPlayerUnavailable ? "inputPlayerUnavailable" : ""}`}
             style={{
             top: "0%",
             left: "50%",
