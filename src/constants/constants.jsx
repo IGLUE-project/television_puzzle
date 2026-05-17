@@ -1,6 +1,6 @@
 export const DEFAULT_APP_SETTINGS = {
   //Authors settings
-  skin: "RETRO_REMOTE",
+  skin: "STANDARD",
   aspectRatio: "16/9",
   actionAfterSolve: "PLAY_VIDEO",
   delayMessage: "3",

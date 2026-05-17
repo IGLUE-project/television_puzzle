@@ -5,6 +5,22 @@ export function log (...args) {
 };
 
 export function deepMerge(h1,h2){
+  let _h1;
+  let _h2;
+  if(typeof h1 === "object"){
+    _h1 = JSON.parse(JSON.stringify(h1));
+  } else {
+    _h1 = h1;
+  }
+  if(typeof h2 === "object"){
+    _h2 = JSON.parse(JSON.stringify(h2));
+  } else {
+    _h2 = h2;
+  }
+  return _deepMerge(_h1,_h2);
+};
+
+let _deepMerge = function(h1,h2){
   if((typeof h1 === "object")&&(typeof h2 === "object")&&(!(h1 instanceof Array))){
     let keys = Object.keys(Object.assign({},h1,h2));
     let keysL = keys.length;

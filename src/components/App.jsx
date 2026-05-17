@@ -72,6 +72,7 @@ export default function App() {
     let DEFAULT_APP_SETTINGS_SKIN = Utils.deepMerge(DEFAULT_APP_SETTINGS, skinSettings);
 
     // Merge _appSettings with DEFAULT_APP_SETTINGS_SKIN to obtain final app settings
+    let _appSettingsUnmerged = JSON.parse(JSON.stringify(_appSettings));
     _appSettings = Utils.deepMerge(DEFAULT_APP_SETTINGS_SKIN, _appSettings);
 
     // Check the aspect ratio and include specific settings for it if necessary
@@ -79,14 +80,18 @@ export default function App() {
     if (!allowedAspectRatio.includes(_appSettings.aspectRatio)) {
       _appSettings.aspectRatio = "16/9";
     }
+
+    if((_appSettings.aspectRatio === "4/3")&&(typeof skinSettings43 !== "undefined")){
+      //Apply specific default settings for aspect ratio 4/3
+      let DEFAULT_APP_SETTINGS_SKIN43 = Utils.deepMerge(DEFAULT_APP_SETTINGS_SKIN, skinSettings43);
+      _appSettingsUnmerged.aspectRatio = _appSettings.aspectRatio;
+      _appSettings = Utils.deepMerge(DEFAULT_APP_SETTINGS_SKIN43, _appSettingsUnmerged);
+    }
+
     if(_appSettings.aspectRatio === "16/9"){
       _appSettings.aspectRatioNumber = 16/9;
     } else {
       _appSettings.aspectRatioNumber = 4/3;
-    } 
-    
-    if((_appSettings.aspectRatio === "4/3")&&(typeof skinSettings43 !== "undefined")){
-      _appSettings = Utils.deepMerge(_appSettings, skinSettings43);
     }
 
     if(typeof _appSettings.tvScreenHeight === "number"){
@@ -204,7 +209,7 @@ export default function App() {
       parsedVideoContainerPaddingLeft = 0;
     }
     _appSettings.videoContainerPadding =  parsedVideoContainerPaddingTop + "% " + parsedVideoContainerPaddingRight + "% " + parsedVideoContainerPaddingBottom + "% " + parsedVideoContainerPaddingLeft + "%";
-    
+
     if(typeof _appSettings.defaultChannelVideo.type === "undefined"){
       let defaultChannelVideoType = _getVideoTypeForChannel(_appSettings.defaultChannelVideo);
       if(defaultChannelVideoType !== null){
