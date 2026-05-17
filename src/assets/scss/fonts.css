@@ -16,3 +16,8 @@
 	font-weight: 100 900;
 	font-style: italic;
 }
+
+@font-face {
+	font-family: "Audiowide";
+	src: url("../fonts/Audiowide/Audiowide-Regular.ttf") format("truetype");
+}

@@ -90,15 +90,18 @@ export default function App() {
     //Input
     let allowedInputTypes;
     let ejectableInput = "NONE";
+    let onClickInputTimeout = 0;
     switch (_appSettings.skin) {
       case "STANDARD":
         allowedInputTypes = ["NONE", "INTERNAL", "DISC"];
         ejectableInput = "DISC";
+        onClickInputTimeout = 2000;
         break;
       case "RETRO":
       case "RETRO_REMOTE":
         allowedInputTypes = ["NONE", "VHS"];
         ejectableInput = "VHS";
+        onClickInputTimeout = 2000;
         break;
       default:
         allowedInputTypes = ["NONE", "INTERNAL"];
@@ -108,6 +111,7 @@ export default function App() {
     }
     _appSettings.inputEnabled = (_appSettings.inputType !== "NONE");
     _appSettings.ejectableInput = ejectableInput;
+    _appSettings.onClickInputTimeout = onClickInputTimeout;
     
     _appSettings.disc = (_appSettings.inputType === "DISC");
     _appSettings.vhs = (_appSettings.inputType === "VHS");

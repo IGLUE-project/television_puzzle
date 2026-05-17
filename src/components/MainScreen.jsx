@@ -223,7 +223,7 @@ const MainScreen = forwardRef((props, ref) => {
   }, [tvState]);
 
   const onClickPowerButton = () => {
-    playRemoteButtonAudio();
+    playButtonAudio();
     setTimeout(() => {
       if(tvState === "off"){
         setTVState(inputMode);
@@ -240,11 +240,16 @@ const MainScreen = forwardRef((props, ref) => {
     channelsVideoTimeRef.current[_channel] = playerRef.current.currentTime();
   }
 
-  const playRemoteButtonAudio = function(){
-    const remoteButtonAudio = document.getElementById("audio_remote_button");
-    remoteButtonAudio.pause();
-    remoteButtonAudio.currentTime = 0;
-    remoteButtonAudio.play();
+  const playButtonAudio = function(){
+    let audio;
+    if(appSettings.showRemote){
+      audio = document.getElementById("audio_remote_button");
+    } else {
+      audio = document.getElementById("audio_tv_button");
+    }
+    audio.pause();
+    audio.currentTime = 0;
+    audio.play();
   }
 
   const playRewindAudio = function(){
@@ -416,7 +421,7 @@ const MainScreen = forwardRef((props, ref) => {
   }
 
   const onClickChannelButton = (value) => {
-    playRemoteButtonAudio();
+    playButtonAudio();
     if (processingChannelChangeRef.current || tvState === "off") return;
     let _userSelectedChannel = (userSelectedChannel === null) ? "" : userSelectedChannel;
     if (_userSelectedChannel.length >= appSettings.maxChannelLengthNumber) return;
@@ -454,7 +459,7 @@ const MainScreen = forwardRef((props, ref) => {
   /////////
 
   const onClickIncreaseVolume = () => {
-    playRemoteButtonAudio();
+    playButtonAudio();
     if(tvState === "off") return;
     if((tvState === "input")&&((inputState === "rewinding")||(inputState === "forwarding"))) return;
     displayVolume();
@@ -465,7 +470,7 @@ const MainScreen = forwardRef((props, ref) => {
   };
 
   const onClickDecreaseVolume = () => {
-    playRemoteButtonAudio();
+    playButtonAudio();
     if(tvState === "off") return;
     if((tvState === "input")&&((inputState === "rewinding")||(inputState === "forwarding"))) return;
     displayVolume();
@@ -517,6 +522,15 @@ const MainScreen = forwardRef((props, ref) => {
     // Utils.log("Previous inputState:", inputStateRef.current);
     // Utils.log("New inputState:", inputState);
 
+    if((inputStateRef.current === "out")&&(inputState === "inserting")){
+      //From "out" to "inserting"
+      setTimeout(function(){
+        setInputState("paused");
+      }, appSettings.onClickInputTimeout);
+      inputStateRef.current = inputState;
+      return;
+    }
+
     if (tvState !== "input"){
       inputStateRef.current = inputState;
       return;
@@ -555,7 +569,7 @@ const MainScreen = forwardRef((props, ref) => {
       } else {
         audio = document.getElementById("audio_disc_in");
       }
-      setInputState("paused");
+      setInputState("inserting");
     }
 
     if(typeof audio !== "undefined"){
@@ -595,7 +609,7 @@ const MainScreen = forwardRef((props, ref) => {
   }
 
   const onClickInputButton = () => {
-    playRemoteButtonAudio();
+    playButtonAudio();
     if(tvState === "off") return;
     setTimeout(() => {
       if(tvState !== "input"){
@@ -605,7 +619,7 @@ const MainScreen = forwardRef((props, ref) => {
   }
 
   const onClickPlayPause = () => {
-    playRemoteButtonAudio();
+    playButtonAudio();
     if(tvState === "off") return;
     setTimeout(() => {
       if(tvState === "input"){
@@ -621,7 +635,7 @@ const MainScreen = forwardRef((props, ref) => {
   }
 
   const onClickRewind = () => {
-    playRemoteButtonAudio();
+    playButtonAudio();
     if (!playerRef.current || tvState !== "input" || inputState === "out" || inputState === "rewinding") return;
     if (rewindIntervalRef.current) return;
     if(inputState === "forwarding") stopForward();
@@ -658,7 +672,7 @@ const MainScreen = forwardRef((props, ref) => {
   };
 
   const onClickForward = () => {
-    playRemoteButtonAudio();
+    playButtonAudio();
     if (!playerRef.current || tvState !== "input" || inputState === "out" || inputState === "forwarding") return;
     if (forwardIntervalRef.current) return;
     if(inputState === "rewinding") stopRewind(); 
@@ -705,7 +719,7 @@ const MainScreen = forwardRef((props, ref) => {
   if(tvState === "input"){
     showVideo = (showVideo && (inputState!=="out"));
     showPausedInput = (inputState==="paused");
-    showMessageNoInput = (inputState === "out");
+    showMessageNoInput = ((inputState === "out")||(inputState === "inserting"));
   }
   let showFuzzyScreen = (appSettings.fuzzyScreen && (tvState !== "off"));
   let showInputObject = (appSettings.showInputObject && inputState === "out");
@@ -772,8 +786,7 @@ const MainScreen = forwardRef((props, ref) => {
             )}
           </div>
         </div>
-
-      <div
+        <div
           className="ejectButton"
           style={{
             width: containerWidth * appSettings.ejectButtonTvWidth,
@@ -786,7 +799,11 @@ const MainScreen = forwardRef((props, ref) => {
             {appSettings.skin === "STANDARD" ? Icons.ejectIconDisc(appSettings) : Icons.ejectIconVHS(appSettings)}
           </div>
         </div>
+        {appSettings.showButtonPanel ?
+          <ButtonPanel containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButton} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickInputButton={onClickInputButton} /> : null
+        }
         {appSettings.soundRemoteButton && <audio id="audio_remote_button" src={appSettings.soundRemoteButton} autostart="false" preload="auto"/>}
+        {appSettings.soundTVButton && <audio id="audio_tv_button" src={appSettings.soundTVButton} autostart="false" preload="auto"/>}
         {appSettings.soundTvOn && <audio id="audio_tv_on" src={appSettings.soundTvOn} autostart="false" preload="auto"/>}
         {appSettings.soundTvOff && <audio id="audio_tv_off" src={appSettings.soundTvOff} autostart="false" preload="auto"/>}
         {appSettings.soundDiscIn && <audio id="audio_disc_in" src={appSettings.soundDiscIn} autostart="false" preload="auto"/>}
@@ -799,7 +816,7 @@ const MainScreen = forwardRef((props, ref) => {
       
       {appSettings.showRemote ?
          <Remote containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButton} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickPlayPause={onClickPlayPause} onClickInputButton={onClickInputButton} onClickRewind={onClickRewind} onClickForward={onClickForward} />
-         : <ButtonPanel containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButton} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickInputButton={onClickInputButton} />
+         : null
       }
 
       <div className={`inputObjectOutWrapper`}

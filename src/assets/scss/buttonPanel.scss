@@ -1,0 +1,104 @@
+div.buttonPanel {
+    position: absolute;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    overflow: hidden;
+    top: 47.5%;
+    right: 15.7%;
+    width: 13.2%;
+    height: 28%;
+}
+
+div.panelButtonPower {
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+div.buttonPanelRow {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 3%;
+    min-height: 0;
+}
+
+div.panelButton {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	width: 100%;
+	height: 100%;
+	min-height: 0;
+	overflow: hidden;
+}
+
+div.panelButton div.panelButtonText {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 66%;
+	color: black;
+	font-size: 3.4vmin;
+	font-family: "Audiowide", sans-serif;
+	text-align: center;
+	user-select: none;
+	min-height: 0;
+}
+
+div.panelButton div.panelButtonImage {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 33%;
+	cursor: pointer;
+	min-height: 0;
+}
+
+.panelButtonImage img {
+	width: 100%;
+	height: 100%;
+	object-fit: fill;
+	padding: 5%;
+	box-sizing: content-box;
+}
+
+div.panelButton div.panelButtonImage:active {
+	transform: scale(0.97);
+}
+
+div.panelButton div.panelButtonImage:active:hover {
+	filter: brightness(0.8);
+}
+
+/* Power on */
+div.panelButton.panelButton1 div.panelButtonImage {
+	flex: 0 0 100%;
+}
+
+div.panelButton.panelButton1 div.panelButtonImage:active {
+	transform: scaleX(0.99) scaleY(0.98);
+}
+
+div.panelButton.panelButton1 div.panelButtonImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    padding: 2% 5% 4% 5%;
+    box-sizing: border-box;
+}
+
+div.panelButtonVolumeIcon {
+	flex: 2;
+}
+
+div.panelButtonVolumeIcon svg {
+	width: 100%;
+    height: 100%;
+    padding: 5% 0% 0% 0%;
+    box-sizing: border-box;
+}

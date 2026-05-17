@@ -1,4 +1,4 @@
-import RemoteBoxButton from "./RemoteBoxButton";
+import RemoteButton from "./RemoteButton";
 import { GlobalContext } from "./GlobalContext";
 import React, { useContext } from 'react';
 import Icons from './Icons.jsx';
@@ -27,48 +27,48 @@ const boxHeight = props.containerHeight*appSettings.remoteButtonHeight;
             }
         </div>
         <div id="remoteRow2" className="remoteRow" style={{ top: appSettings.remoteButtonsTop[1], left: appSettings.remoteButtonsLeft}}>
-            <RemoteBoxButton value={"1"} position={1} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} button={props.button}/>
-            <RemoteBoxButton value={"2"} position={2} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} button={props.button}/>
-            <RemoteBoxButton value={"3"} position={3} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} button={props.button}/>
+            <RemoteButton value={"1"} position={1} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} buttonClass="remoteBoxButton" buttonBackground={appSettings.backgroundButtonRemote} buttonColor={appSettings.remoteButtonTextColor} buttonFontSize={appSettings.remoteButtonFontSize} />
+            <RemoteButton value={"2"} position={2} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} buttonClass="remoteBoxButton" buttonBackground={appSettings.backgroundButtonRemote} buttonColor={appSettings.remoteButtonTextColor} buttonFontSize={appSettings.remoteButtonFontSize} />
+            <RemoteButton value={"3"} position={3} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} buttonClass="remoteBoxButton" buttonBackground={appSettings.backgroundButtonRemote} buttonColor={appSettings.remoteButtonTextColor} buttonFontSize={appSettings.remoteButtonFontSize} />
         </div>
         <div id="remoteRow3" className="remoteRow" style={{ top: appSettings.remoteButtonsTop[2], left: appSettings.remoteButtonsLeft}} >
-            <RemoteBoxButton value={"4"} position={4} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} button={props.button}/>
-            <RemoteBoxButton value={"5"} position={5} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} button={props.button}/>
-            <RemoteBoxButton value={"6"} position={6} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} button={props.button}/>
+            <RemoteButton value={"4"} position={4} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} buttonClass="remoteBoxButton" buttonBackground={appSettings.backgroundButtonRemote} buttonColor={appSettings.remoteButtonTextColor} buttonFontSize={appSettings.remoteButtonFontSize} />
+            <RemoteButton value={"5"} position={5} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} buttonClass="remoteBoxButton" buttonBackground={appSettings.backgroundButtonRemote} buttonColor={appSettings.remoteButtonTextColor} buttonFontSize={appSettings.remoteButtonFontSize} />
+            <RemoteButton value={"6"} position={6} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} buttonClass="remoteBoxButton" buttonBackground={appSettings.backgroundButtonRemote} buttonColor={appSettings.remoteButtonTextColor} buttonFontSize={appSettings.remoteButtonFontSize} />
         </div>
         <div id="remoteRow4" className="remoteRow" style={{ top: appSettings.remoteButtonsTop[3] , left: appSettings.remoteButtonsLeft}}>
-            <RemoteBoxButton value={"7"} position={7} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} button={props.button}/>
-            <RemoteBoxButton value={"8"} position={8} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} button={props.button}/>
-            <RemoteBoxButton value={"9"} position={9} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} button={props.button}/>
+            <RemoteButton value={"7"} position={7} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} buttonClass="remoteBoxButton" buttonBackground={appSettings.backgroundButtonRemote} buttonColor={appSettings.remoteButtonTextColor} buttonFontSize={appSettings.remoteButtonFontSize} />
+            <RemoteButton value={"8"} position={8} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} buttonClass="remoteBoxButton" buttonBackground={appSettings.backgroundButtonRemote} buttonColor={appSettings.remoteButtonTextColor} buttonFontSize={appSettings.remoteButtonFontSize} />
+            <RemoteButton value={"9"} position={9} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} buttonClass="remoteBoxButton" buttonBackground={appSettings.backgroundButtonRemote} buttonColor={appSettings.remoteButtonTextColor} buttonFontSize={appSettings.remoteButtonFontSize} />
         </div>
         <div id="remoteRow5" className="remoteRow" style={{top: appSettings.remoteButtonsTop[4], left: appSettings.remoteButtonsLeft}}>
             <div style={{width:boxWidth, height:boxHeight,}}/>
-            <RemoteBoxButton value={"0"} position={11} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} button={props.button}/>
+            <RemoteButton value={"0"} position={11} onClick={props.onClickChannelButton} boxHeight={boxHeight} boxWidth={boxWidth} buttonClass="remoteBoxButton" buttonBackground={appSettings.backgroundButtonRemote} buttonColor={appSettings.remoteButtonTextColor} buttonFontSize={appSettings.remoteButtonFontSize} />
             <div style={{width:boxWidth, height:boxHeight,}}/>
         </div>
         <div id="remoteRow6" className="remoteRow" style={{top: appSettings.remoteButtonsTop[5], left: appSettings.remoteButtonsLeft}}>
-            <RemoteBoxButton value={"-"} position={12} onClick={props.onClickDecreaseVolume} boxHeight={boxHeight} boxWidth={boxWidth} button={props.button}/>
+            <RemoteButton value={"-"} position={12} onClick={props.onClickDecreaseVolume} boxHeight={boxHeight} boxWidth={boxWidth} buttonClass="remoteBoxButton" buttonBackground={appSettings.backgroundButtonRemote} buttonColor={appSettings.remoteButtonTextColor} buttonFontSize={appSettings.remoteButtonFontSize} />
             <div className="remoteRowVolumeIcon" style={{width:boxWidth, height:boxHeight, display:"inline-block"}}>
                 <div style={{ justifyContent:"center", alignItems:"center", display:"flex"}}>
                     {Icons.volumeRemoteIcon(appSettings)}
                 </div>
             </div>
-            <RemoteBoxButton value={"+"} position={13} onClick={props.onClickIncreaseVolume} boxHeight={boxHeight} boxWidth={boxWidth} button={props.button}/>
+            <RemoteButton value={"+"} position={13} onClick={props.onClickIncreaseVolume} boxHeight={boxHeight} boxWidth={boxWidth} buttonClass="remoteBoxButton" buttonBackground={appSettings.backgroundButtonRemote} buttonColor={appSettings.remoteButtonTextColor} buttonFontSize={appSettings.remoteButtonFontSize} />
         </div>
         {appSettings.remoteButtonsInput &&        
         <div id="remoteRow7" className="remoteRow" style={{top: appSettings.remoteButtonsTop[6], left: appSettings.remoteButtonsLeft}}>
             { appSettings.enableRewindAndForward && <div className="remoteBoxButton" onClick={props.onClickRewind} style={{width:boxWidth, height:boxHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButtonRemote + '")',}}>
-                <div className="remoteRowRewind" style={{ justifyContent:"center", alignItems:"center", display:"flex" }}>    
+                <div className="remoteButtonRewind" style={{ justifyContent:"center", alignItems:"center", display:"flex" }}>    
                     {Icons.rewindRemoteIcon(appSettings)}
                 </div>
             </div> }
             <div className="remoteBoxButton" onClick={props.onClickPlayPause} style={{width:boxWidth, height:boxHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButtonRemote + '")',}}>
-                <div className="remoteRowPlayPause" style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>                    
+                <div className="remoteButtonPlayPause" style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>                    
                     {Icons.playPauseRemoteIcon(appSettings)}
                 </div>
             </div>            
             { appSettings.enableRewindAndForward && <div className="remoteBoxButton" onClick={props.onClickForward} style={{width:boxWidth, height:boxHeight, display:"inline-block",backgroundImage: 'url("' + appSettings.backgroundButtonRemote + '")',}}>
-                <div className="remoteRowForward" style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>    
+                <div className="remoteButtonForward" style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>    
                     {Icons.forwardRemoteIcon(appSettings)}
                 </div>
             </div> }

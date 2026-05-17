@@ -23,6 +23,7 @@ export const SKIN_SETTINGS_STANDARD = {
   inputInitialState: "OUT",
   //Internal
   showRemote: true,
+  showButtonPanel: false,
   //Images
   background: "images/standard/background.png",
   backgroundTV: "images/standard/background_TV.png",
@@ -85,6 +86,7 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   inputInitialState: "OUT",
   //Internal
   showRemote: true,
+  showButtonPanel: false,
   //Images
   background: "images/retro_remote/background.png",
   backgroundTV: "images/retro_remote/background_TV.png",
@@ -128,7 +130,7 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   remoteButtonHeight: 0.07,
   remoteButtonSize: "6vmin", 
   remoteButtonColor: "#000000",
-  remoteButtonFontSize: "5vmin", 
+  remoteButtonFontSize: "4vmin", 
   remoteButtonTextColor: "#000000",
   remoteButtonsInput: true,
   //Input
@@ -149,19 +151,22 @@ export const SKIN_SETTINGS_RETRO = {
   inputInitialState: "OUT",
   //Internal
   showRemote: false,
+  showButtonPanel: true,
   //Images
   background: "images/retro/background.png",
   backgroundTV: "images/retro/background_TV_16_9.png",
   backgroundTVInputOut: "images/retro/background_TV_16_9_VHS_out.png",
   backgroundPowerButton: "images/retro/background_power_button.png",
-  backgroundEjectButton: "images/retro/background_eject_button.png",
+  backgroundEjectButton: "images/retro/background_button_video.png",
   backgroundButtonTv: "images/retro/background_button_tv.png",
+  backgroundButtonVideo: "images/retro/background_button_video.png",
   inputOutImage: "images/retro_remote/vhs_out.png",
   //Videos
   defaultChannelVideo: {
     src: "videos/TV_Noise_16-9.mp4" 
   },
   //Sounds
+  soundTVButton: "sounds/tv_button_click.mp3",
   soundTvOn: "sounds/retro_tv_on.wav",
   soundTvOff: "sounds/retro_tv_off.wav",
   soundVHSIn: "sounds/vhs_tape_in.wav",
@@ -180,6 +185,11 @@ export const SKIN_SETTINGS_RETRO = {
   volumeColor: "rgb(15, 167, 15)", // Color of the volume text
   //Message
   messageFontSize: "0.05",
+  //Panel button
+  panelButtonWidth: 0.085, 
+  panelButtonHeight: 0.100,
+  panelButtonColor: "black",
+  panelButtonFontSize: "5vmin",
   //Input
   inputObjectOutTop: "11.3%",
   inputObjectOutLeft: "50.0%",

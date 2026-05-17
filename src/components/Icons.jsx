@@ -97,6 +97,16 @@ const Icons = {
     </svg>
   ),
 
+  volumeTVIcon: (appSettings) => (
+    <svg width="5vmin" height="5vmin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <rect x="14" y="38" width="18" height="24" rx="3" fill="black"/>
+      <path d="M38 36 L64 18 Q68 16 68 22 V78 Q68 84 64 82 L38 64 Z" fill="black"/>
+      <path d="M76 32 L88 22 Q91 20 93 23 Q95 26 92 28 L80 38 Q77 40 75 37 Q73 34 76 32 Z" fill="black"/>
+      <rect x="76" y="47" width="20" height="6" rx="3" fill="black"/>
+      <path d="M76 68 L88 78 Q91 80 93 77 Q95 74 92 72 L80 62 Q77 60 75 63 Q73 66 76 68 Z" fill="black"/>
+    </svg>
+  ),
+
   volumeScreenIcon: (appSettings) => (
     <svg width="5vmin" height="5vmin" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
       <path d="M8 24v16h12l16 14V10L20 24H8z" fill="white"/>
