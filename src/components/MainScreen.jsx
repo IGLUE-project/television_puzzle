@@ -118,9 +118,12 @@ const MainScreen = forwardRef((props, ref) => {
         playerRef.current = player;
         playerRef.current.pause();
         player.on('canplay', () => {
-          // Utils.log('Video ready to play');
-          // canPlayVideoMapRef.current[playerRef.current.currentSrc()] = true;
-          setVideoError(false);
+          //Utils.log('Video ready to play', playerRef.current.currentSrc());
+          let error = playerRef.current.error();
+          if(error == null){
+            // canPlayVideoMapRef.current[playerRef.current.currentSrc()] = true;
+            setVideoError(false);
+          }
         });
         player.on('ended', () => {
           handleVideoEnded();
@@ -149,9 +152,10 @@ const MainScreen = forwardRef((props, ref) => {
   }, []);
 
   const handleVideoError = () => {
-    if(playerRef.current != null){
+    if(playerRef.current !== null){
       Utils.log("Video error", playerRef.current.error());
     }
+    playerRef.current.pause();
     setVideoError(true);
   }
 
@@ -719,7 +723,7 @@ const MainScreen = forwardRef((props, ref) => {
 
   const onClickRewind = () => {
     playButtonAudio();
-    if (!playerRef.current || tvState !== "input" || inputState === "out" || inputState === "rewinding") return;
+    if (!playerRef.current || tvState !== "input" || inputState === "out" || inputState === "rewinding" || videoError) return;
     if((typeof appSettings.channelsHash["input"] === "undefined")||(typeof appSettings.channelsHash["input"].src !== "string")) return;
     if (rewindIntervalRef.current) return;
     if(isInputPlayerUnavailable()) return;
@@ -765,7 +769,7 @@ const MainScreen = forwardRef((props, ref) => {
 
   const onClickForward = () => {
     playButtonAudio();
-    if (!playerRef.current || tvState !== "input" || inputState === "out" || inputState === "forwarding") return;
+    if (!playerRef.current || tvState !== "input" || inputState === "out" || inputState === "forwarding" || videoError) return;
     if((typeof appSettings.channelsHash["input"] === "undefined")||(typeof appSettings.channelsHash["input"].src !== "string")) return;
     if (forwardIntervalRef.current) return;
     if(isInputPlayerUnavailable()) return;
