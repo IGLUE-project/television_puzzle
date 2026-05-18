@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef, forwardRef, useImperativeHandle } from 'react';
 import { GlobalContext } from "./GlobalContext";
 import './../assets/scss/main.scss';
+import './../assets/scss/fontsizes.scss';
 import './../assets/scss/fonts.css';
 import "video.js/dist/video-js.css";
 import Remote from './Remote.jsx';
@@ -868,13 +869,13 @@ const MainScreen = forwardRef((props, ref) => {
             </div>
           </div>
           {showTVMessage &&
-            <div className='tvScreenContent tvMessageContainer'>
-              <p className='tvMessage' style={{ fontSize: (appSettings.messageFontSize+"vmin"), color: appSettings.messageFontColor }}>{tvMessage}</p>
+            <div className='tvScreenContent tvMessageContainer tvCustomMessage'>
+              <p className='tvMessage'>{tvMessage}</p>
             </div>
           }
           {showMessageNoInput &&
             <div className='tvScreenContent tvMessageContainer'>
-              <p className='tvMessage' style={{ fontSize: (appSettings.tvFontSize+"vmin"), color: appSettings.tvFontColor }}>{appSettings.messageNoInput}</p>
+              <p className='tvMessage'>{appSettings.messageNoInput}</p>
             </div>
           }
           {showPausedInput &&
@@ -888,7 +889,7 @@ const MainScreen = forwardRef((props, ref) => {
             </div>
           }
           <div className="channels">
-            {tvHeaderContent && (tvState !== "off") && (<span className={`channel ${showCursor ? "show-cursor" : ""}`} style={{ fontSize: appSettings.tvHeaderFontSize }}>{tvHeaderContent}</span>)}
+            {tvHeaderContent && (tvState !== "off") && (<span className={`channel ${showCursor ? "show-cursor" : ""}`}>{tvHeaderContent}</span>)}
             {showVolume && tvState!=="off" && tvHeaderContent === null && (
               <div className='volume_div'>
                 <div style={{ display: "flex", alignItems: "center", width: "100%" }}>

@@ -7,7 +7,6 @@ export let ESCAPP_APP_SETTINGS = {
   // background: "NONE", //background can be "NONE" or a URL.
   actionAfterSolve: "PLAY_VIDEO", //actionAfterSolve can be "NONE", "SHOW_MESSAGE" or "PLAY_VIDEO".
   // delayMessage: "3", //Delay for the message (in seconds). Only for actionAfterSolve="SHOW_MESSAGE".
-  //messageFontSize: "5", //Font size for the message (in vmin). Only for actionAfterSolve="SHOW_MESSAGE".
   maxChannelLength: "4", //Maximum number of digits in a channel number
   // videoContainerPaddingTop: "0", //Allow to specify top padding for the video container
   // videoContainerPaddingRight: "0", //Allow to specify right padding for the video container

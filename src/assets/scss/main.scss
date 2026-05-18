@@ -613,7 +613,6 @@ body {
 }
 
 #global_wrapper.retro_remote span.channel, #global_wrapper.retro span.channel {
-	font-size: 7vmin;
 	z-index: 10;
 	color: rgb(15, 167, 15);
 	font-family: "Sixtyfour", sans-serif;
@@ -934,12 +933,6 @@ div.row {
       font-size: 2.0vmin !important;
     }
   }
-  #global_wrapper.retro p.tvMessage, #global_wrapper.retro_remote p.tvMessage {
-    font-size: 5.2vmin !important;
-  }
-  #global_wrapper.standard p.tvMessage {
-    font-size: 7vmin !important;
-  }
 }
 
 @media (max-aspect-ratio: 1.5) {
@@ -950,12 +943,6 @@ div.row {
     div.tvButton.tvButton12 div.tvButtonText {
       font-size: 1.7vmin !important;
     }
-  }
-  #global_wrapper.retro p.tvMessage, #global_wrapper.retro_remote p.tvMessage {
-    font-size: 4.5vmin !important;
-  }
-  #global_wrapper.standard p.tvMessage {
-    font-size: 6vmin !important;
   }
 }
 
@@ -968,12 +955,6 @@ div.row {
       font-size: 1.5vmin !important;
     }
   }
-  #global_wrapper.retro p.tvMessage, #global_wrapper.retro_remote p.tvMessage {
-    font-size: 3.5vmin !important;
-  }
-  #global_wrapper.standard p.tvMessage {
-    font-size: 5vmin !important;
-  }
 }
 
 @media (max-aspect-ratio: 1.1) {
@@ -984,11 +965,5 @@ div.row {
     div.tvButton.tvButton12 div.tvButtonText {
       font-size: 1.2vmin !important;
     }
-  }
-  #global_wrapper.retro p.tvMessage, #global_wrapper.retro_remote p.tvMessage {
-    font-size: 3.0vmin !important;
-  }
-  #global_wrapper.standard p.tvMessage {
-    font-size: 4vmin !important;
   }
 }

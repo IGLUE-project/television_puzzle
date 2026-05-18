@@ -110,15 +110,6 @@ export default function App() {
     }
     _appSettings.delayMessageNumber = 1000*_appSettings.delayMessageNumber; //Convert delay to ms
 
-    let parsedMessageFontSize = Utils.parseNumberFromSetting(_appSettings.messageFontSize);
-    if(parsedMessageFontSize === null){
-      _appSettings.messageFontSize = DEFAULT_APP_SETTINGS_SKIN.messageFontSize;
-    }
-    let parsedTvFontSize = Utils.parseNumberFromSetting(_appSettings.tvFontSize);
-    if(parsedTvFontSize === null){
-      _appSettings.tvFontSize = DEFAULT_APP_SETTINGS_SKIN.tvFontSize;
-    }
-
     _appSettings.enableLoopForChannels = (_appSettings.enableLoopForChannels !== "FALSE");
     _appSettings.keepState = (_appSettings.keepState !== "FALSE");
     _appSettings.fuzzyScreen = (_appSettings.fuzzyScreen !== "FALSE");
