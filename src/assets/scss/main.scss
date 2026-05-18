@@ -837,3 +837,96 @@ div.row {
 .hidden_video {
 	opacity: 0;
 }
+
+@media (max-aspect-ratio: 1.5) {
+  .remoteBoxButton p {
+    font-size: 3.5vmin !important;
+  }
+}
+
+@media (max-aspect-ratio: 1.3) {
+  .remoteBoxButton p {
+    font-size: 3vmin !important;
+  }
+}
+
+@media (max-aspect-ratio: 1.9) {
+  #global_wrapper.standard div.remote.remote_buttons_input {
+  	bottom: -60% !important;
+  	&:hover {
+  		bottom: -14% !important;
+  	}
+  }
+}
+@media (max-aspect-ratio: 1.6) {
+  #global_wrapper.standard div.remote.remote_buttons_input {
+  	bottom: -65% !important;
+  	&:hover {
+  		bottom: -22% !important;
+  	}
+  }
+}
+@media (max-aspect-ratio: 1.4) {
+  #global_wrapper.standard div.remote.remote_buttons_input {
+  	bottom: -72% !important;
+  	&:hover {
+  		bottom: -30% !important;
+  	}
+  }
+}
+@media (max-aspect-ratio: 1.2) {
+  #global_wrapper.standard div.remote.remote_buttons_input {
+  	bottom: -72% !important;
+  	&:hover {
+  		bottom: -40% !important;
+  	}
+  }
+}
+@media (max-aspect-ratio: 1.0) {
+  #global_wrapper.standard div.remote.remote_buttons_input {
+  	bottom: -60% !important;
+  	&:hover {
+  		bottom: -60% !important;
+  	}
+  }
+}
+
+@media (max-aspect-ratio: 1.6) {
+  #global_wrapper.retro_remote div.remote.remote_buttons_input {
+  	bottom: -69% !important;
+  	&:hover {
+  		bottom: -22% !important;
+  	}
+  }
+}
+@media (max-aspect-ratio: 1.4) {
+  #global_wrapper.retro_remote div.remote.remote_buttons_input {
+  	bottom: -72% !important;
+  	&:hover {
+  		bottom: -30% !important;
+  	}
+  }
+}
+@media (max-aspect-ratio: 1.2) {
+  #global_wrapper.retro_remote div.remote.remote_buttons_input {
+  	bottom: -72% !important;
+  	&:hover {
+  		bottom: -40% !important;
+  	}
+  }
+}
+@media (max-aspect-ratio: 1.0) {
+  #global_wrapper.retro_remote div.remote.remote_buttons_input {
+  	&:hover {
+  		bottom: -56% !important;
+  	}
+  }
+}
+@media (max-aspect-ratio: 0.82) {
+  #global_wrapper.retro_remote div.remote.remote_buttons_input {
+  	bottom: -72% !important;
+  	&:hover {
+  		bottom: -72% !important;
+  	}
+  }
+}

@@ -918,6 +918,10 @@ const MainScreen = forwardRef((props, ref) => {
               onClick={onClickInput}
             ></div>
         </div>
+        {appSettings.showRemote ?
+           <Remote containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButtonTV} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickPlayPause={onClickPlayPause} onClickInputButton={onClickInputButton} onClickRewind={onClickRewind} onClickForward={onClickForward} />
+           : null
+        }
         {appSettings.soundRemoteButton && <audio id="audio_remote_button" src={appSettings.soundRemoteButton} preload="auto"/>}
         {appSettings.soundTVButton && <audio id="audio_tv_button" src={appSettings.soundTVButton} preload="auto"/>}
         {appSettings.soundTvOn && <audio id="audio_tv_on" src={appSettings.soundTvOn} preload="auto"/>}
@@ -930,14 +934,7 @@ const MainScreen = forwardRef((props, ref) => {
         {appSettings.soundVHSRewind && <audio id="audio_vhs_rewind" src={appSettings.soundVHSRewind} preload="auto" />}
         {appSettings.soundVideoOn && <audio id="audio_video_on" src={appSettings.soundVideoOn} preload="auto"/>}
         {appSettings.soundVideoOff && <audio id="audio_video_off" src={appSettings.soundVideoOff} preload="auto"/>}
-
       </div>
-      
-      {appSettings.showRemote ?
-         <Remote containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButtonTV} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickPlayPause={onClickPlayPause} onClickInputButton={onClickInputButton} onClickRewind={onClickRewind} onClickForward={onClickForward} />
-         : null
-      }
-
     </div>);
 });
 
