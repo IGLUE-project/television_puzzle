@@ -719,7 +719,7 @@ const MainScreen = forwardRef((props, ref) => {
   const onClickRewind = () => {
     playButtonAudio();
     if (!playerRef.current || tvState !== "input" || inputState === "out" || inputState === "rewinding") return;
-    if((typeof appSettings.channelsHash["input"] === "undefned")||(typeof appSettings.channelsHash["input"].src !== "string")) return;
+    if((typeof appSettings.channelsHash["input"] === "undefined")||(typeof appSettings.channelsHash["input"].src !== "string")) return;
     if (rewindIntervalRef.current) return;
     if(isInputPlayerUnavailable()) return;
     if(inputState === "forwarding") stopForward();
@@ -758,7 +758,7 @@ const MainScreen = forwardRef((props, ref) => {
   const onClickForward = () => {
     playButtonAudio();
     if (!playerRef.current || tvState !== "input" || inputState === "out" || inputState === "forwarding") return;
-    if((typeof appSettings.channelsHash["input"] === "undefned")||(typeof appSettings.channelsHash["input"].src !== "string")) return;
+    if((typeof appSettings.channelsHash["input"] === "undefined")||(typeof appSettings.channelsHash["input"].src !== "string")) return;
     if (forwardIntervalRef.current) return;
     if(isInputPlayerUnavailable()) return;
     if(inputState === "rewinding") stopRewind();
