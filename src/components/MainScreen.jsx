@@ -822,8 +822,8 @@ const MainScreen = forwardRef((props, ref) => {
     <div id="screen_main" className={"screen_content"} style={{ backgroundImage: 'url(' + appSettings.background + ')' }}>
       <div id="tvContainer" className={`tvContainer ${showInputObject ? 'showInputObject' : ''}`}
         style={{
-          '--background-image-after': 'url(' + appSettings.backgroundTV + ')',
-          '--background-image-after-show-input': 'url(' + appSettings.backgroundTVInputOut + ')',  
+          "--background-image-after": `url("${appSettings.backgroundTVCSSVar}")`,
+          "--background-image-after-show-input": `url("${appSettings.backgroundTVInputOutCSSVar}")`,  
           width: props.size.width,
           height: props.size.height, 
         }}>
@@ -931,7 +931,7 @@ const MainScreen = forwardRef((props, ref) => {
             left: "50%",
             width: "100%",
             height: "100%",
-            "--background-image": `url("${appSettings.inputOutImage}")`,
+            "--background-image": `url("${appSettings.inputOutImageCSSVar}")`
             }}
             onClick={onClickInput}
           ></div>

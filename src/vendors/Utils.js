@@ -200,3 +200,9 @@ export function parseChannelId(channelId) {
     return String(channelId);
   }
 }
+
+export function parseImagePathForCSSVar(imagePath){
+  if (!import.meta.env.PROD) return imagePath;
+  if(typeof imagePath !== "string") return imagePath;
+  return imagePath.replace(/^\.?\/?images\//, "../images/");
+}

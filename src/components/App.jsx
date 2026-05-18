@@ -183,10 +183,6 @@ export default function App() {
       _appSettings.inputPlayerInitialState = "on";
     }
 
-    if(!_appSettings.backgroundTVInputOut){
-      _appSettings.backgroundTVInputOut = _appSettings.backgroundTV;
-    }
-
     _appSettings.enableRewindAndForward = (_appSettings.enableRewindAndForward !== "FALSE");
 
     if (typeof _appSettings.initialVolume === "number") {
@@ -219,6 +215,13 @@ export default function App() {
     }
     _appSettings.videoContainerPadding =  parsedVideoContainerPaddingTop + "% " + parsedVideoContainerPaddingRight + "% " + parsedVideoContainerPaddingBottom + "% " + parsedVideoContainerPaddingLeft + "%";
 
+    if(!_appSettings.backgroundTVInputOut){
+      _appSettings.backgroundTVInputOut = _appSettings.backgroundTV;
+    }
+    //CSS vars
+    _appSettings.backgroundTVCSSVar = Utils.parseImagePathForCSSVar(_appSettings.backgroundTV);
+    _appSettings.backgroundTVInputOutCSSVar = Utils.parseImagePathForCSSVar(_appSettings.backgroundTVInputOut);
+    _appSettings.inputOutImageCSSVar = Utils.parseImagePathForCSSVar(_appSettings.inputOutImage);
 
     if((typeof _appSettingsUnmerged.defaultChannelContent !== "undefined")&&(typeof _appSettingsUnmerged.defaultChannelContent.message === "string")&&(typeof _appSettingsUnmerged.defaultChannelContent.src !== "string")){
       if((typeof _appSettings.defaultChannelContent !== "undefined")&&(typeof _appSettings.defaultChannelContent.message === "string")){
