@@ -11,9 +11,9 @@ const { escapp, appSettings, Utils, I18n } = useContext(GlobalContext);
       <div className="videoPanel">
         <VideoButton position={1} icon={Icons.powerIconOff(appSettings)} onClick={props.onClickPowerButton} />
         <VideoButton position={2} icon={Icons.ejectIconVHS(appSettings)} onClick={props.onClickEjectInput} />
-        <VideoButton position={3} icon={Icons.rewindRemoteIcon(appSettings)} onClick={props.onClickRewind} />
+        { appSettings.enableRewindAndForward ? <VideoButton position={3} icon={Icons.rewindRemoteIcon(appSettings)} onClick={props.onClickRewind}/> : null}
         <VideoButton position={4} icon={Icons.playPauseRemoteIcon(appSettings)} onClick={props.onClickPlayPause} />
-        <VideoButton position={5} icon={Icons.forwardRemoteIcon(appSettings)} onClick={props.onClickForward} />
+        { appSettings.enableRewindAndForward ? <VideoButton position={5} icon={Icons.forwardRemoteIcon(appSettings)} onClick={props.onClickForward}/>: null}
       </div>
       <div className="videoPowerIndicator">
         <div>

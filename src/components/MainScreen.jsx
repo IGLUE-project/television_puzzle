@@ -385,7 +385,7 @@ const MainScreen = forwardRef((props, ref) => {
       }
       
       if((_channel !== "input")||(inputState === "playing")){
-        if (playerRef.current.paused()) {
+        if (playerRef.current.paused() && !playerRef.current.ended()) {
           playerRef.current.play();
         }
       }
@@ -442,7 +442,7 @@ const MainScreen = forwardRef((props, ref) => {
 
     //Utils.log("Check solution: " + solution);
     escapp.checkNextPuzzle(solution, {}, (success, erState) => {
-      //Utils.log("Check solution Escapp response", success, erState);
+      // Utils.log("Check solution Escapp response", success, erState);
       if(success === true){
         correctSolution.current = solution;
         correctChannel.current = _channel;
@@ -459,7 +459,7 @@ const MainScreen = forwardRef((props, ref) => {
     } else if(appSettings.actionAfterSolve === "SHOW_MESSAGE"){
       let delayMessageNumber = appSettings.delayMessageNumber;
       let correctChannelData = appSettings.channelsHash[correctChannel.current];
-      if((typeof correctChannelData !== "object")||(correctChannelData.src === "string")||(correctChannelData.message !== "string")){
+      if((typeof correctChannelData !== "object")||(typeof correctChannelData.src === "string")||(typeof correctChannelData.message !== "string")){
         delayMessageNumber = 0; //There is no message to show
       }
       setTimeout(function(){
@@ -724,8 +724,15 @@ const MainScreen = forwardRef((props, ref) => {
     if(isInputPlayerUnavailable()) return;
     if(inputState === "forwarding") stopForward();
 
-    setInputState("rewinding");
     setTVHeaderContent("◀◀");
+    if(playerRef.current.currentTime()===0){
+      setTimeout(function(){
+        setTVHeaderContent(null);
+      },1000);
+      return;
+    }
+
+    setInputState("rewinding");
     setTimeout(function(){
       playRewindAudio();
     },500);
@@ -762,8 +769,16 @@ const MainScreen = forwardRef((props, ref) => {
     if (forwardIntervalRef.current) return;
     if(isInputPlayerUnavailable()) return;
     if(inputState === "rewinding") stopRewind();
-    setInputState("forwarding");
+    
     setTVHeaderContent("▶▶");
+    if(playerRef.current.ended()){
+      setTimeout(function(){
+        setTVHeaderContent(null);
+      },1000);
+      return;
+    }
+
+    setInputState("forwarding");
     setTimeout(function(){
       playRewindAudio();
     },500);
@@ -781,6 +796,7 @@ const MainScreen = forwardRef((props, ref) => {
       channelsVideoTimeRef.current["input"] = newTime;
       if (newTime >= duration) {
         stopForward();
+        setInputState("playing");
       }
     }, 200);
   };
