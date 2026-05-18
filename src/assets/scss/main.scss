@@ -91,20 +91,13 @@ div.retro_remote div.remote:not(.remote_buttons_input) #remoteRow1 {
     justify-content: flex-start;
 }
 
-div.standard div.remoteBoxButton12, div.standard div.remoteBoxButton13 {
-    margin-top: -6%;
-}
-
-div.standard div.remoteBoxButton12 div, div.standard div.remoteBoxButton13 div {
-    margin-top: -3px;
-}
-
 div.standard div.remoteRowVolumeIcon {
-    margin-top: -4%;
+    cursor: default;
+    pointer-events: none;
 }
 
-div.retro_remote div.remoteBoxButton12, div.retro_remote div.remoteBoxButton13, div.retro_remote div.remoteRowVolumeIcon {
-    margin-top: -8%;
+div.standard div.remoteRowVolumeIcon svg {
+    max-width: 100%;
 }
 
 div.retro_remote div.remoteRow {
@@ -121,6 +114,7 @@ div.remoteButtonForward svg {
 
 div.retro_remote div.remoteButtonRewind svg, div.retro_remote div.remoteButtonForward svg, div.retro_remote div.remoteButtonPlayPause svg {
 	height: 80%;
+	max-width: 100%;
 }
 
 div.retro_remote .remote:hover {
@@ -928,5 +922,73 @@ div.row {
   	&:hover {
   		bottom: -72% !important;
   	}
+  }
+}
+
+@media (max-aspect-ratio: 1.6) {
+  #global_wrapper.retro {
+    div.tvButton div.tvButtonText {
+      font-size: 2.4vmin !important;
+    }
+    div.tvButton.tvButton12 div.tvButtonText {
+      font-size: 2.0vmin !important;
+    }
+  }
+  #global_wrapper.retro p.tvMessage, #global_wrapper.retro_remote p.tvMessage {
+    font-size: 5.2vmin !important;
+  }
+  #global_wrapper.standard p.tvMessage {
+    font-size: 7vmin !important;
+  }
+}
+
+@media (max-aspect-ratio: 1.5) {
+  #global_wrapper.retro {
+    div.tvButton div.tvButtonText {
+      font-size: 2.2vmin !important;
+    }
+    div.tvButton.tvButton12 div.tvButtonText {
+      font-size: 1.7vmin !important;
+    }
+  }
+  #global_wrapper.retro p.tvMessage, #global_wrapper.retro_remote p.tvMessage {
+    font-size: 4.5vmin !important;
+  }
+  #global_wrapper.standard p.tvMessage {
+    font-size: 6vmin !important;
+  }
+}
+
+@media (max-aspect-ratio: 1.3) {
+  #global_wrapper.retro {
+    div.tvButton div.tvButtonText {
+      font-size: 2.0vmin !important;
+    }
+    div.tvButton.tvButton12 div.tvButtonText {
+      font-size: 1.5vmin !important;
+    }
+  }
+  #global_wrapper.retro p.tvMessage, #global_wrapper.retro_remote p.tvMessage {
+    font-size: 3.5vmin !important;
+  }
+  #global_wrapper.standard p.tvMessage {
+    font-size: 5vmin !important;
+  }
+}
+
+@media (max-aspect-ratio: 1.1) {
+  #global_wrapper.retro {
+    div.tvButton div.tvButtonText {
+      font-size: 1.7vmin !important;
+    }
+    div.tvButton.tvButton12 div.tvButtonText {
+      font-size: 1.2vmin !important;
+    }
+  }
+  #global_wrapper.retro p.tvMessage, #global_wrapper.retro_remote p.tvMessage {
+    font-size: 3.0vmin !important;
+  }
+  #global_wrapper.standard p.tvMessage {
+    font-size: 4vmin !important;
   }
 }

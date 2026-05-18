@@ -2,7 +2,7 @@
 
 export let ESCAPP_APP_SETTINGS = {
   //Settings that can be specified by the authors
-  skin: "STANDARD", //skin can be "STANDARD" or "RETRO_REMOTE".
+  skin: "STANDARD", //skin can be "STANDARD", "RETRO_REMOTE" or "RETRO".
   aspectRatio: "16/9", //Specify the aspect ratio for the TV screen. Possible values: "16/9", "4/3".
   // background: "NONE", //background can be "NONE" or a URL.
   actionAfterSolve: "PLAY_VIDEO", //actionAfterSolve can be "NONE", "SHOW_MESSAGE" or "PLAY_VIDEO".

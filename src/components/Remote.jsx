@@ -48,11 +48,12 @@ const boxHeight = props.containerHeight*appSettings.remoteButtonHeight;
         </div>
         <div id="remoteRow6" className="remoteRow" style={{top: appSettings.remoteButtonsTop[5], left: appSettings.remoteButtonsLeft}}>
             <RemoteButton value={"-"} position={12} onClick={props.onClickDecreaseVolume} boxHeight={boxHeight} boxWidth={boxWidth} buttonClass="remoteBoxButton" buttonBackground={appSettings.backgroundButtonRemote} buttonColor={appSettings.remoteButtonTextColor} buttonFontSize={appSettings.remoteButtonFontSize} />
-            <div className="remoteRowVolumeIcon" style={{width:boxWidth, height:boxHeight, display:"inline-block"}}>
-                <div style={{ justifyContent:"center", alignItems:"center", display:"flex"}}>
+            <div className="remoteBoxButton" style={{width:boxWidth, height:boxHeight, display:"inline-block"}}>
+                <div className="remoteRowVolumeIcon" style={{ justifyContent:"center", alignItems:"center", display:"flex", }}>                    
                     {Icons.volumeRemoteIcon(appSettings)}
                 </div>
-            </div>
+            </div> 
+
             <RemoteButton value={"+"} position={13} onClick={props.onClickIncreaseVolume} boxHeight={boxHeight} boxWidth={boxWidth} buttonClass="remoteBoxButton" buttonBackground={appSettings.backgroundButtonRemote} buttonColor={appSettings.remoteButtonTextColor} buttonFontSize={appSettings.remoteButtonFontSize} />
         </div>
         {appSettings.remoteButtonsInput &&        
