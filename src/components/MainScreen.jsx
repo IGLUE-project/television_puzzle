@@ -882,22 +882,42 @@ const MainScreen = forwardRef((props, ref) => {
             )}
           </div>
         </div>
-        {!appSettings.showVideoPanel ? <div
-          className="ejectButton"
-          style={{
-            width: containerWidth * appSettings.ejectButtonTvWidth,
-            height: containerHeight * appSettings.ejectButtonTvHeight,
-            backgroundImage: `url("${appSettings.backgroundEjectButton}")`,
-          }}
-          onClick={onClickEjectInput}
-        >
-          <div style={{justifyContent: "center", alignItems: "center", display: "flex"}}>
-            {appSettings.skin === "STANDARD" ? Icons.ejectIconDisc(appSettings) : Icons.ejectIconVHS(appSettings)}
-          </div>
-        </div> : <VideoPanel containerWidth={containerWidth} containerHeight={containerHeight} inputPlayerState={inputPlayerState} onClickPowerButton={onClickPowerButtonVideo} onClickEjectInput={onClickEjectInput} onClickPlayPause={onClickPlayPause} onClickRewind={onClickRewind} onClickForward={onClickForward} />}
+        {!appSettings.showVideoPanel ? 
+          <div className="ejectButton"
+            style={{
+              width: containerWidth * appSettings.ejectButtonTvWidth,
+              height: containerHeight * appSettings.ejectButtonTvHeight,
+              backgroundImage: `url("${appSettings.backgroundEjectButton}")`,
+            }}
+            onClick={onClickEjectInput}
+          >
+            <div className="ejectButtonIconWrapper">
+              {appSettings.skin === "STANDARD" ? Icons.ejectIconDisc(appSettings) : Icons.ejectIconVHS(appSettings)}
+            </div>
+          </div> : 
+          <VideoPanel containerWidth={containerWidth} containerHeight={containerHeight} inputPlayerState={inputPlayerState} onClickPowerButton={onClickPowerButtonVideo} onClickEjectInput={onClickEjectInput} onClickPlayPause={onClickPlayPause} onClickRewind={onClickRewind} onClickForward={onClickForward} />
+        }
         {appSettings.showTvPanel ?
           <TvPanel containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButtonTV} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickInputButton={onClickInputButton} /> : null
         }
+        <div className={`inputObjectOutWrapper`}
+            style={{
+            top: appSettings.inputObjectOutTop,
+            left: appSettings.inputObjectOutLeft,
+            width: containerHeight * appSettings.inputObjectSize * 6.5,
+            height: containerHeight * appSettings.inputObjectSize,
+        }}>
+            <div className={`inputObjectOut ${showInputObject ? "visible" : "hidden"} ${inputPlayerUnavailable ? "inputPlayerUnavailable" : ""}`}
+              style={{
+              top: "0%",
+              left: "50%",
+              width: "100%",
+              height: "100%",
+              "--background-image": `url("${appSettings.inputOutImageCSSVar}")`
+              }}
+              onClick={onClickInput}
+            ></div>
+        </div>
         {appSettings.soundRemoteButton && <audio id="audio_remote_button" src={appSettings.soundRemoteButton} preload="auto"/>}
         {appSettings.soundTVButton && <audio id="audio_tv_button" src={appSettings.soundTVButton} preload="auto"/>}
         {appSettings.soundTvOn && <audio id="audio_tv_on" src={appSettings.soundTvOn} preload="auto"/>}
@@ -917,25 +937,6 @@ const MainScreen = forwardRef((props, ref) => {
          <Remote containerWidth={containerWidth} containerHeight={containerHeight} onClickPowerButton={onClickPowerButtonTV} onClickChannelButton={onClickChannelButton} onClickDecreaseVolume={onClickDecreaseVolume} onClickIncreaseVolume={onClickIncreaseVolume} onClickPlayPause={onClickPlayPause} onClickInputButton={onClickInputButton} onClickRewind={onClickRewind} onClickForward={onClickForward} />
          : null
       }
-
-      <div className={`inputObjectOutWrapper`}
-          style={{
-          top: appSettings.inputObjectOutTop,
-          left: appSettings.inputObjectOutLeft,
-          width: containerHeight * appSettings.inputObjectSize * 6.5,
-          height: containerHeight * appSettings.inputObjectSize,
-      }}>
-          <div className={`inputObjectOut ${showInputObject ? "visible" : "hidden"} ${inputPlayerUnavailable ? "inputPlayerUnavailable" : ""}`}
-            style={{
-            top: "0%",
-            left: "50%",
-            width: "100%",
-            height: "100%",
-            "--background-image": `url("${appSettings.inputOutImageCSSVar}")`
-            }}
-            onClick={onClickInput}
-          ></div>
-      </div>
 
     </div>);
 });

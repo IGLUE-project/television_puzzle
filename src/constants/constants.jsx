@@ -171,7 +171,7 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   ejectButtonFontSize: "5vmin", 
   ejectButtonTextColor: "#000000",
   ejectButtonTvWidth: 0.09,
-  ejectButtonTvHeight: 0.1,
+  ejectButtonTvHeight: 0.08,
 };
 
 export const SKIN_SETTINGS_RETRO_REMOTE_43 = {
@@ -184,7 +184,7 @@ export const SKIN_SETTINGS_RETRO_REMOTE_43 = {
   tvFontSize: "6",
   tvHeaderFontSize: "4.7vmin",
   ejectButtonTvWidth: 0.065,
-  ejectButtonTvHeight: 0.09,
+  ejectButtonTvHeight: 0.07,
   defaultChannelContent: {
     src: "videos/TV_Noise_4-3.mp4" 
   },
