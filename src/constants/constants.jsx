@@ -5,7 +5,7 @@ export const DEFAULT_APP_SETTINGS = {
   actionAfterSolve: "PLAY_VIDEO",
   delayMessage: "3",
   enableLoopForChannels: "TRUE",
-  initialVolume: "0.5",
+  initialVolume: "50",
   inputType: "NONE",
   inputInitialState: "OUT",
   inputPlayerInitialState: "TRUE",

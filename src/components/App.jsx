@@ -185,11 +185,11 @@ export default function App() {
 
     _appSettings.enableRewindAndForward = (_appSettings.enableRewindAndForward !== "FALSE");
 
-    if (typeof _appSettings.initialVolume === "number") {
-      _appSettings.initialVolumeNumber = _appSettings.initialVolume;
-    } else {
-      _appSettings.initialVolumeNumber = parseFloat(_appSettings.initialVolume);
+    let initialVolume = Utils.parseNumberFromSetting(_appSettings.initialVolume);
+    if(initialVolume === null){
+      initialVolume = 50;
     }
+    _appSettings.initialVolumeNumber = Math.min(1,Math.max(0,initialVolume/100));
 
     if (typeof _appSettings.maxChannelLength === "number") {
       _appSettings.maxChannelLengthNumber = _appSettings.maxChannelLength;

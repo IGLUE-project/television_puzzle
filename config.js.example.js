@@ -15,7 +15,7 @@ export let ESCAPP_APP_SETTINGS = {
   // videoContainerPaddingLeft: "0", //Allow to specify left padding for the video container
   // enableLoopForChannels: "TRUE", //Whether the channel videos will play on a loop
   // fuzzyScreen: "TRUE", //Whether to apply a fuzzy effect to the TV screen
-  initialVolume: "0.5", //Initial volume of the TV
+  initialVolume: "50", //Initial volume of the TV (0-100)
   inputType: "DISC", //Allows enabling an input source based on the skin (e.g., disc, VHS, internal storage). Possible values: "NONE", "INTERNAL", "VHS", "DISC".
   inputInitialState: "OUT", //For items that can be inserted and removed, specify whether the item is inside or outside the TV. Possible values: "IN", "OUT".
   inputPlayerInitialState: "ON", // For skins with a player (e.g. a VHS player) that can be switched on and off, specifies whether the player is initially turned on. Possible values: "ON", "OFF".
