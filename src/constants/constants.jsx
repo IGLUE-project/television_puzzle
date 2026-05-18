@@ -45,6 +45,9 @@ export const SKIN_SETTINGS_STANDARD = {
   defaultChannelContent: {
     src: "videos/TV_NoSignal_16_9.mp4"
   },
+  inputChannel: {
+    src: "videos/TV_BlackScreen_16_9.mp4"
+  },
   //Sounds
   soundRemoteButton: "sounds/tv_remote_click.mp3",
   soundTvOn: "sounds/smart_tv_on.wav",
@@ -102,6 +105,9 @@ export const SKIN_SETTINGS_STANDARD_43 = {
   defaultChannelContent: {
     src: "videos/TV_NoSignal_4_3.mp4" 
   },
+  inputChannel: {
+    src: "videos/TV_BlackScreen_4_3.mp4"
+  },
 }
 
 export const SKIN_SETTINGS_RETRO_REMOTE = {
@@ -127,6 +133,9 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   //Videos
   defaultChannelContent: {
     src: "videos/TV_Noise_16-9.mp4" 
+  },
+  inputChannel: {
+    src: "videos/TV_BlackScreen_16_9.mp4"
   },
   //Sounds
   soundRemoteButton: "sounds/tv_remote_click.mp3",
@@ -188,6 +197,9 @@ export const SKIN_SETTINGS_RETRO_REMOTE_43 = {
   defaultChannelContent: {
     src: "videos/TV_Noise_4-3.mp4" 
   },
+  inputChannel: {
+    src: "videos/TV_BlackScreen_4_3.mp4"
+  },
 }
 
 export const SKIN_SETTINGS_RETRO = {
@@ -213,6 +225,9 @@ export const SKIN_SETTINGS_RETRO = {
   //Videos
   defaultChannelContent: {
     src: "videos/TV_Noise_16-9.mp4" 
+  },
+  inputChannel: {
+    src: "videos/TV_BlackScreen_16_9.mp4"
   },
   //Sounds
   soundTVButton: "sounds/tv_button_click.mp3",
@@ -265,6 +280,9 @@ export const SKIN_SETTINGS_RETRO_43 = {
   tvHeaderFontSize: "4.7vmin",
   defaultChannelContent: {
     src: "videos/TV_Noise_4-3.mp4" 
+  },
+  inputChannel: {
+    src: "videos/TV_BlackScreen_4_3.mp4"
   },
 }
 

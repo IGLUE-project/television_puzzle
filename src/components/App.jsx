@@ -231,6 +231,14 @@ export default function App() {
       }
     }
 
+    if((typeof _appSettingsUnmerged.inputChannel !== "undefined")&&(typeof _appSettingsUnmerged.inputChannel.message === "string")&&(typeof _appSettingsUnmerged.inputChannel.src !== "string")){
+      if((typeof _appSettings.inputChannel !== "undefined")&&(typeof _appSettings.inputChannel.message === "string")){
+        //Remove default src to enable custom message
+        delete _appSettings.inputChannel.src;
+        delete _appSettings.inputChannel.type;
+      }
+    }
+
     if((typeof _appSettings.defaultChannelContent !== "undefined")&&(typeof _appSettings.defaultChannelContent.src === "string")){
       if(typeof _appSettings.defaultChannelContent.type === "undefined"){
         let defaultChannelVideoType = _getVideoTypeForChannel(_appSettings.defaultChannelContent);

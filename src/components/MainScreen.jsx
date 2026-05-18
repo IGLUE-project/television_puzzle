@@ -719,6 +719,7 @@ const MainScreen = forwardRef((props, ref) => {
   const onClickRewind = () => {
     playButtonAudio();
     if (!playerRef.current || tvState !== "input" || inputState === "out" || inputState === "rewinding") return;
+    if((typeof appSettings.channelsHash["input"] === "undefned")||(typeof appSettings.channelsHash["input"].src !== "string")) return;
     if (rewindIntervalRef.current) return;
     if(isInputPlayerUnavailable()) return;
     if(inputState === "forwarding") stopForward();
@@ -757,6 +758,7 @@ const MainScreen = forwardRef((props, ref) => {
   const onClickForward = () => {
     playButtonAudio();
     if (!playerRef.current || tvState !== "input" || inputState === "out" || inputState === "forwarding") return;
+    if((typeof appSettings.channelsHash["input"] === "undefned")||(typeof appSettings.channelsHash["input"].src !== "string")) return;
     if (forwardIntervalRef.current) return;
     if(isInputPlayerUnavailable()) return;
     if(inputState === "rewinding") stopRewind();
@@ -806,14 +808,18 @@ const MainScreen = forwardRef((props, ref) => {
   };
 
   let showVideo = ((tvState !== "off")&&(videoError === false));
+  let availableTVMessage = ((tvMessage) && (tvMessage.trim()!==""));
+  let showTVMessage = availableTVMessage && (tvState!=="off");
   let showMessageNoInput = false;
   let showPausedInput = false;
   let showPausedInputForVideo = false;
   let inputPlayerUnavailable = isInputPlayerUnavailable();
   if(tvState === "input"){
-    showVideo = (showVideo && (inputState!=="out") && !inputPlayerUnavailable);
     showPausedInput = ((inputState==="paused") && !inputPlayerUnavailable);
-    showMessageNoInput = ((inputState === "out")||(inputState === "inserting")||(inputPlayerUnavailable));
+    let playerCanShowContent = ((inputState!=="out") && (inputState !== "inserting") && !inputPlayerUnavailable);
+    showTVMessage = showTVMessage && playerCanShowContent && !showPausedInput;
+    showVideo = (showVideo && playerCanShowContent && !availableTVMessage);
+    showMessageNoInput = !showVideo && ((inputState === "out")||(inputState === "inserting")||(inputPlayerUnavailable));
   }
   let showFuzzyScreen = (appSettings.fuzzyScreen && (tvState !== "off"));
   let showInputObject = (appSettings.showInputObject && inputState === "out");
@@ -845,7 +851,7 @@ const MainScreen = forwardRef((props, ref) => {
               <div ref={videoRef} style={{display: "flex", height: "100%", width: "100%", alignItems: "center"}}></div>
             </div>
           </div>
-          {tvMessage && tvMessage.trim()!=="" && tvState!=="off" &&
+          {showTVMessage &&
             <div className='tvScreenContent tvMessageContainer'>
               <p className='tvMessage' style={{ fontSize: (appSettings.messageFontSize+"vmin"), color: appSettings.messageFontColor }}>{tvMessage}</p>
             </div>
