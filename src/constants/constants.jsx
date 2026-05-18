@@ -42,7 +42,7 @@ export const SKIN_SETTINGS_STANDARD = {
   inputOutImage: "images/standard/disc_out.png",
 
   //Videos
-  defaultChannelVideo: {
+  defaultChannelContent: {
     src: "videos/TV_NoSignal_16_9.mp4"
   },
   //Sounds
@@ -99,7 +99,7 @@ export const SKIN_SETTINGS_STANDARD_43 = {
   tvHeaderFontSize: "4.7vmin",
   ejectButtonTvWidth: 0.033,
   ejectButtonTvHeight: 0.045,
-  defaultChannelVideo: {
+  defaultChannelContent: {
     src: "videos/TV_NoSignal_4_3.mp4" 
   },
 }
@@ -125,7 +125,7 @@ export const SKIN_SETTINGS_RETRO_REMOTE = {
   backgroundEjectButton: "images/retro_remote/background_eject_button.png",
   inputOutImage: "images/retro_remote/vhs_out.png",
   //Videos
-  defaultChannelVideo: {
+  defaultChannelContent: {
     src: "videos/TV_Noise_16-9.mp4" 
   },
   //Sounds
@@ -185,7 +185,7 @@ export const SKIN_SETTINGS_RETRO_REMOTE_43 = {
   tvHeaderFontSize: "4.7vmin",
   ejectButtonTvWidth: 0.065,
   ejectButtonTvHeight: 0.09,
-  defaultChannelVideo: {
+  defaultChannelContent: {
     src: "videos/TV_Noise_4-3.mp4" 
   },
 }
@@ -211,7 +211,7 @@ export const SKIN_SETTINGS_RETRO = {
   backgroundButtonVideo: "images/retro/background_button_video.png",
   inputOutImage: "images/retro_remote/vhs_out.png",
   //Videos
-  defaultChannelVideo: {
+  defaultChannelContent: {
     src: "videos/TV_Noise_16-9.mp4" 
   },
   //Sounds
@@ -263,7 +263,7 @@ export const SKIN_SETTINGS_RETRO_43 = {
   messageFontSize: "5",
   tvFontSize: "6",
   tvHeaderFontSize: "4.7vmin",
-  defaultChannelVideo: {
+  defaultChannelContent: {
     src: "videos/TV_Noise_4-3.mp4" 
   },
 }

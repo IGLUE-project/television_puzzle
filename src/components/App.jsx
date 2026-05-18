@@ -219,10 +219,21 @@ export default function App() {
     }
     _appSettings.videoContainerPadding =  parsedVideoContainerPaddingTop + "% " + parsedVideoContainerPaddingRight + "% " + parsedVideoContainerPaddingBottom + "% " + parsedVideoContainerPaddingLeft + "%";
 
-    if((typeof _appSettings.defaultChannelVideo !== "undefined")&&(typeof _appSettings.defaultChannelVideo.type === "undefined")){
-      let defaultChannelVideoType = _getVideoTypeForChannel(_appSettings.defaultChannelVideo);
-      if(defaultChannelVideoType !== null){
-        _appSettings.defaultChannelVideo.type = defaultChannelVideoType;
+
+    if((typeof _appSettingsUnmerged.defaultChannelContent !== "undefined")&&(typeof _appSettingsUnmerged.defaultChannelContent.message === "string")&&(typeof _appSettingsUnmerged.defaultChannelContent.src !== "string")){
+      if((typeof _appSettings.defaultChannelContent !== "undefined")&&(typeof _appSettings.defaultChannelContent.message === "string")){
+        //Remove default src to enable custom message
+        delete _appSettings.defaultChannelContent.src;
+        delete _appSettings.defaultChannelContent.type;
+      }
+    }
+
+    if((typeof _appSettings.defaultChannelContent !== "undefined")&&(typeof _appSettings.defaultChannelContent.src === "string")){
+      if(typeof _appSettings.defaultChannelContent.type === "undefined"){
+        let defaultChannelVideoType = _getVideoTypeForChannel(_appSettings.defaultChannelContent);
+        if(defaultChannelVideoType !== null){
+          _appSettings.defaultChannelContent.type = defaultChannelVideoType;
+        }
       }
     }
 

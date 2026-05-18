@@ -41,7 +41,7 @@ export let ESCAPP_APP_SETTINGS = {
     src: "videos/sample2_16_9.mp4"
   },
   //Override default video for channels
-  // defaultChannelVideo: {
+  // defaultChannelContent: {
   //   src: "videos/TV_Test_Card_16-9.mp4" 
   // },
 

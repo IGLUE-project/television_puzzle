@@ -109,7 +109,6 @@ const MainScreen = forwardRef((props, ref) => {
         loop: appSettings.enableLoopForChannels,
         muted: false,
         techOrder: ["html5"],
-        sources: [ appSettings.defaultChannelVideo ],
         userActions: { click: false },
       };
 
@@ -355,7 +354,7 @@ const MainScreen = forwardRef((props, ref) => {
     let channelData = appSettings.channelsHash[_channel];
     if (!channelData) {
       if(tvState==="channels"){
-        channelData = appSettings.defaultChannelVideo;
+        channelData = appSettings.defaultChannelContent;
       } else {
         channelData = {};
       }
