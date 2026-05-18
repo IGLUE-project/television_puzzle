@@ -117,7 +117,7 @@ const MainScreen = forwardRef((props, ref) => {
         playerRef.current = player;
         playerRef.current.pause();
         player.on('canplay', () => {
-          //Utils.log('Video ready to play');
+          // Utils.log('Video ready to play');
           // canPlayVideoMapRef.current[playerRef.current.currentSrc()] = true;
           setVideoError(false);
         });
@@ -369,6 +369,7 @@ const MainScreen = forwardRef((props, ref) => {
 
       let srcChange = ((typeof channelData.src === "undefined")||(channelData.src !== playerRef.current.src()));
       if(srcChange){
+        tmpHideVideo();
         playerRef.current.src(channelData);
         playerRef.current.load();
       }
@@ -378,8 +379,11 @@ const MainScreen = forwardRef((props, ref) => {
       if (typeof channelsVideoTimeRef.current[_channel] === "number"){
         videoTime = channelsVideoTimeRef.current[_channel];
       }
-      playerRef.current.currentTime(videoTime);
-
+      if(Math.abs(playerRef.current.currentTime() - videoTime) > 0.1){
+        tmpHideVideo();
+        playerRef.current.currentTime(videoTime);
+      }
+      
       if((_channel !== "input")||(inputState === "playing")){
         if (playerRef.current.paused()) {
           playerRef.current.play();
@@ -396,6 +400,14 @@ const MainScreen = forwardRef((props, ref) => {
       checkSolution(_channel);
     }
   }
+
+  const tmpHideVideo = function(){
+    if (playerRef.current.hasClass("hidden_video")) return;
+    playerRef.current.addClass("hidden_video");
+    setTimeout(function(){
+      playerRef.current.removeClass("hidden_video");
+    },400);
+  };
 
   const playAndUpdateChannel = function(_channel){
     _channel = Utils.parseChannelId(_channel);
